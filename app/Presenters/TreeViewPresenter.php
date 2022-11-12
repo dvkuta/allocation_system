@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use App\Presenters\Base\AbstractPresenter;
 use App\UI\TEmptyLayoutView;
 use Dibi\Fluent;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;

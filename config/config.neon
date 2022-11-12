@@ -1,0 +1,17 @@
+#
+# Zakladni konfiguracni soubor - includuji se dalsi neony.
+#
+# To co je uvedene primo zde, nelze prepsat v includovanych neonech.
+#
+parameters:
+    appName: allocation_system
+    appTitle: Systém pro správu činností na projektech
+    version: 0.1
+
+includes:
+    - main.neon             # nejdulezitejsi konfigurace
+    - database.neon   		# pripojeni k DB, rovnez neni v gitu
+    - repository.neon       # repository
+    - facade.neon           # fasady
+    - component.neon        # komponenty
+    - extensions.neon       # rozsireni

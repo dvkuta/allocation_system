@@ -2,13 +2,12 @@
 
 namespace App\Presenters;
 
-use App\Components\BasicGrid;
-use App\Components\BasicGridFactory;
+use App\Components\FormComponents\Sign\SignInForm;
+use App\Components\FormComponents\Sign\SignInFormFactory;
+use App\Components\GridComponents\BasicGrid;
+use App\Presenters\Base\AbstractPresenter;
 use App\UI\TEmptyLayoutView;
-use DateTime;
-use Nette\Database\Explorer;
-use Nette\Database\Row;
-use Nette\Database\Table\ActiveRow;
+use Nette\Application\UI\Form;
 use Ublaboo\DataGrid\DataGrid;
 
 final class BasicPresenter extends AbstractPresenter
@@ -16,12 +15,15 @@ final class BasicPresenter extends AbstractPresenter
 
 
 	private BasicGrid $basicGrid;
+	private SignInForm $signInFormFactory;
 
-	public function __construct(BasicGrid $basicGrid)
+
+	public function __construct(BasicGrid $basicGrid,  SignInForm $signInFormFactory)
 	{
 		parent::__construct();
 
 		$this->basicGrid = $basicGrid;
+		$this->signInFormFactory = $signInFormFactory;
 	}
 
 
@@ -31,7 +33,16 @@ final class BasicPresenter extends AbstractPresenter
 	{
 
 		$grid = $this->basicGrid->createComponentGrid();
+		return $grid;
 
+	}
+
+	public function createComponentSignInForm(): Form
+	{
+
+		$grid = $this->signInFormFactory->create();
+		$grid->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
+		bdump($grid);
 		return $grid;
 
 	}

@@ -1,0 +1,11 @@
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+services:
+	router: App\Router\RouterFactory::create
+
+latte:
+	extensions:
+		- Latte\Essential\RawPhpExtension

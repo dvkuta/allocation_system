@@ -1,6 +1,5 @@
 <?php
-namespace App\Components;
-use App\UI\TEmptyLayoutView;
+namespace App\Components\GridComponents;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
