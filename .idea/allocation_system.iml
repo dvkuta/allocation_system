@@ -53,5 +53,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="live-form-validation" level="application" />
+    <orderEntry type="library" name="admin-lte" level="application" />
   </component>
 </module>

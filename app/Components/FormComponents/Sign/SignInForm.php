@@ -53,7 +53,6 @@ class SignInForm extends Form {
 	public function saveForm(Form $form, ArrayHash $values) {
 		try {
 
-			$form->addError("Error");
 			//TODO base logger manager pro komponenty
 			// $this->loggerManager->get('default')->info("Login try", ["login" => $values->username]);
 			//$this->user->login($values->username, $values->password);
