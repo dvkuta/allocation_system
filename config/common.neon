@@ -1,0 +1,27 @@
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+services:
+	router: App\Router\RouterFactory::create
+	- App\Components\BasicGrid
+
+extensions:
+	dibi: Dibi\Bridges\Nette\DibiExtension22
+
+latte:
+	extensions:
+		- Latte\Essential\RawPhpExtension
+
+dibi:
+	host: database
+	username: mysqlUser
+	password: toor
+	database: allocation_system
+	port: 3306
+
+database:
+	dsn: 'mysql:host=database;dbname=allocation_system'
+	user: mysqlUser
+	password: toor
