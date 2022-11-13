@@ -3,7 +3,6 @@
 namespace App\Presenters;
 
 use App\Components\FormComponents\Sign\SignInForm;
-use App\Components\FormComponents\Sign\SignInFormFactory;
 use App\Components\GridComponents\BasicGrid;
 use App\Presenters\Base\AbstractPresenter;
 use App\UI\TEmptyLayoutView;
@@ -39,7 +38,7 @@ final class BasicPresenter extends AbstractPresenter
 
 	public function createComponentSignInForm(): Form
 	{
-
+        $this->flashMessage("ahoj z formu");
 		$grid = $this->signInFormFactory->create();
 		$grid->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
 		bdump($grid);

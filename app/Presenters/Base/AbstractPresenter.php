@@ -6,6 +6,7 @@ use Dibi\Connection;
 use Nette\Application\UI\Presenter;
 use Nette\ComponentModel\IComponent;
 use Nette\DI\Attributes\Inject;
+use stdClass;
 use Ublaboo\DataGrid\DataGrid;
 use UnexpectedValueException;
 
@@ -142,9 +143,9 @@ abstract class AbstractPresenter extends Presenter
 	 *
 	 * @param string $message
 	 * @param string $type
-	 * @return \stdClass
+	 * @return stdClass
 	 */
-	public function flashMessage($message, string $type = 'info'): \stdClass
+	public function flashMessage($message, string $type = 'info'): stdClass
 	{
 		$f = parent::flashMessage($message, $type);
 		if ($this->isAjax())

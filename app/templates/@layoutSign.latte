@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Allocation system for ZCU">
+    <meta name="keywords" content="Project, Secretariat">
+    <meta name="author" content="David Kůta">
+
+    <title>{ifset title}{include title|stripHtml} | {/ifset}Systém pro správu projektů</title>
+     <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{$basePath}/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{$basePath}/assets/plugins/adminlte/css/adminlte.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{$basePath}/assets/css/styles.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        Systém pro správu projektů
+    </div>
+    <!-- /.login-logo -->
+    {include content}
+        <!-- /.login-card-body -->
+
+</div>
+<!-- /.login-box -->
+{snippet flashes}
+   <script>
+       {do bdump($flashes)}
+        {foreach $flashes as $flash}
+        $(document).Toasts('create', {
+            title: {$flash->message},
+            body: {$flash->message},
+            class: {$flash->type}
+        });
+        {/foreach}
+</script>
+{/snippet}
+<!-- ./wrapper -->
+{block scripts}
+
+<!-- jQuery -->
+<script src="{$basePath}/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="{$basePath}/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{$basePath}/assets/plugins/adminlte/js/adminlte.min.js"></script>
+
+<script src="{$basePath}/assets/js/live-form-validation.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/nette.ajax.js@2.3.0/nette.ajax.js"></script>
+
+<script src="{$basePath}/assets/js/scripts.js"></script>
+{/block}
+</body>
+</html>

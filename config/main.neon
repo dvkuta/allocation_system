@@ -9,3 +9,5 @@ services:
 latte:
 	extensions:
 		- Latte\Essential\RawPhpExtension
+session:
+	autoStart: true

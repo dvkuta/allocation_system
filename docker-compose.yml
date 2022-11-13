@@ -23,7 +23,7 @@ services:
       MYSQL_USER: mysqlUser
       MYSQL_PASSWORD: toor
       MYSQL_DATABASE: allocation_system
-      DB_HOST: "127.0.0.1"
+      DB_HOST: 127.0.0.1
 
   adminer:
     image: dockette/adminer:dg

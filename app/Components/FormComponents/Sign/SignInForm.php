@@ -2,7 +2,10 @@
 
 namespace App\Components\FormComponents\Sign;
 
-use App\Components\FormComponents\BootstrapForm;
+use Contributte\FormsBootstrap\BootstrapForm;
+use Contributte\FormsBootstrap\BootstrapRenderer;
+use Contributte\FormsBootstrap\Enums\DateTimeFormat;
+use Contributte\FormsBootstrap\Enums\RenderMode;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
@@ -13,7 +16,6 @@ use Nette\Utils\ArrayHash;
  * @package App\Components
  */
 class SignInForm extends Form {
-	use BootstrapForm;
 
 	protected User $user;
 
@@ -33,15 +35,18 @@ class SignInForm extends Form {
 	 */
 	public function create():Form {
 
-		$form = new Form();
-		$form->addText('username', 'Uživatelské jméno:')->setRequired('Prosím vyplňte své uživatelské jméno.');
+		$form = new BootstrapForm();
+        $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
+		$form->addText('login', 'Login:')->setRequired('Prosím vyplňte své uživatelské jméno.');
 		$form->addPassword('password', 'Heslo:')->setRequired('Prosím vyplňte své heslo.');
-		$form->addSubmit('send', 'Přihlásit');
+        $parentRow = $form->addRow();
+        $parentRow->addCell(6);
+        $submitCell = $parentRow->addCell(6)->addHtmlClass('inline-buttons');
+		$form->addSubmit('submit', 'Přihlásit');
 
 
 		//$form->onValidate[] = [$this, 'validateForm'];
 		$form->onSuccess[] = [$this, 'saveForm'];
-		$this->makeBootstrap4($form);
 		return $form;
 	}
 
@@ -52,7 +57,7 @@ class SignInForm extends Form {
 	 */
 	public function saveForm(Form $form, ArrayHash $values) {
 		try {
-
+//            $form->addError("error voe");
 			//TODO base logger manager pro komponenty
 			// $this->loggerManager->get('default')->info("Login try", ["login" => $values->username]);
 			//$this->user->login($values->username, $values->password);

@@ -11,8 +11,9 @@ class RouterFactory
 	{
 		$router = new RouteList();
 
-		$router->addRoute('<presenter>[/<id>]', 'Basic:default');
 
+        $router->addRoute('<presenter>/<action>[/<id>]', 'Basic:default');
+        $router->addRoute('<presenter>[/<id>]', 'Basic:default');
 		return $router;
 	}
 
