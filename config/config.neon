@@ -15,3 +15,4 @@ includes:
     - facade.neon           # fasady
     - component.neon        # komponenty
     - extensions.neon       # rozsireni
+    - menu.neon             # menu

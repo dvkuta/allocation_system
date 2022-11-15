@@ -41,7 +41,6 @@ final class BasicPresenter extends AbstractPresenter
         $this->flashMessage("ahoj z formu");
 		$grid = $this->signInFormFactory->create();
 		$grid->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
-		bdump($grid);
 		return $grid;
 
 	}

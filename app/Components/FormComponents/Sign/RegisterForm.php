@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
  * Form component class for sign in proccess
  * @package App\Components
  */
-class SignInForm extends Form {
+class RegisterForm extends Form {
 
 	protected User $user;
 
@@ -37,16 +37,15 @@ class SignInForm extends Form {
 
 		$form = new BootstrapForm();
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
-		$form->addText('login', 'Login:')
-            ->setPlaceholder("Orion login")
+		$form->addText('login', 'Orion login:')
             ->setRequired('Prosím vyplňte své uživatelské jméno.');
-		$form->addPassword('password', 'Heslo:')
-            ->setRequired('Prosím vyplňte své heslo.');
+		$form->addPassword('password', 'Heslo:')->setRequired('Prosím vyplňte své heslo.');
+        $form->addText('workspace', "Hlavní pracoviště");
+        $form->addEmail('email',"Email:");
         $parentRow = $form->addRow();
         $parentRow->addCell(6);
-        $submitCell = $parentRow->addCell(6)
-            ->addHtmlClass('inline-buttons');
-		$form->addSubmit('submit', 'Přihlásit');
+        $submitCell = $parentRow->addCell(6)->addHtmlClass('inline-buttons');
+		$form->addSubmit('submit', 'Registrovat');
 
 
 		//$form->onValidate[] = [$this, 'validateForm'];

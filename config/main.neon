@@ -5,6 +5,7 @@ application:
 
 services:
 	router: App\Router\RouterFactory::create
+	- App\Security\Authenticator
 
 latte:
 	extensions:

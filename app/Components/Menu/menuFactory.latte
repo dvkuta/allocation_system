@@ -1,0 +1,15 @@
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+        data-accordion="false">
+        {foreach $menu as $name => $subInfo}
+            <!-- todo zobrazovani v menu pro jednotive role -->
+            <li class="nav-item">
+                <div n:class="$currentPage === $subInfo['link'] ? 'active', 'nav-link'">
+                    <i class="nav-icon {$subInfo['icon']}"></i>
+                    <a href="{plink $subInfo['link']}">{$name}</a>
+                </div>
+            </li>
+        {/foreach}
+
+    </ul>
+</nav>

@@ -1,3 +1,5 @@
 services:
 - App\Components\GridComponents\BasicGrid
 - App\Components\FormComponents\Sign\SignInForm
+- App\Components\FormComponents\Sign\RegisterForm
+- App\Components\Menu\MenuFactory(%menu%)

@@ -24,13 +24,12 @@
     </div>
     <!-- /.login-logo -->
     {include content}
-        <!-- /.login-card-body -->
+
 
 </div>
 <!-- /.login-box -->
 {snippet flashes}
    <script>
-       {do bdump($flashes)}
         {foreach $flashes as $flash}
         $(document).Toasts('create', {
             title: {$flash->message},
