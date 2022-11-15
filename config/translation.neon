@@ -1,0 +1,8 @@
+translation:
+	locales:
+		whitelist: [en_GB, cs_CZ]
+		default: cs_CZ
+		fallback: [en_GB]
+	dirs:
+		- %appDir%/Locale
+	returnOriginalMessage: true # to not translate undefined messages, default is false

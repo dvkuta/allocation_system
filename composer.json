@@ -29,7 +29,8 @@
     "tracy/tracy": "^2.7.0",
     "ublaboo/datagrid": "^6.0",
     "dibi/dibi": "^4.0.0",
-    "contributte/forms-bootstrap": "^0.5.3"
+    "contributte/forms-bootstrap": "^0.5.3",
+    "contributte/translation": "^2.0"
   },
   "require-dev": {
     "ninjify/qa": "^0.13",

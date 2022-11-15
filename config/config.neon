@@ -16,3 +16,4 @@ includes:
     - component.neon        # komponenty
     - extensions.neon       # rozsireni
     - menu.neon             # menu
+    - translation.neon      # infrastruktura pro preklady

@@ -1,0 +1,10 @@
+title: 'Systém pro správu projektů'
+
+info:
+    name: 'Čeština'
+    code: 'cs_CZ'
+    icon: 'cz'
+
+locales:
+    cs_CZ: 'Čeština'
+    en_GB: 'Angličtina'

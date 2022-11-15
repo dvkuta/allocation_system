@@ -2,10 +2,12 @@
 
 namespace App\Presenters\Base;
 use App\Components\Menu\MenuFactory;
+use Contributte\Translation\LocalesResolvers\Session;
 use Nette;
 use Dibi\Connection;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 use stdClass;
 use Ublaboo\DataGrid\DataGrid;
 use UnexpectedValueException;
@@ -17,6 +19,12 @@ abstract class AbstractPresenter extends Presenter
 
 	#[Inject]
 	public Connection $dibiConnection;
+
+    #[Inject]
+    public Translator $translator;
+
+    #[Inject]
+    public Session $translatorSessionResolver;
 
 	abstract public function createComponentGrid(): DataGrid;
 
@@ -72,6 +80,10 @@ abstract class AbstractPresenter extends Presenter
     public function createComponentMenu(): MenuFactory
     {
         return $this->menuFactory;
+    }
+
+    public function handleChangeLocale(string $locale) {
+        $this->translatorSessionResolver->setLocale($locale);
     }
 
 }

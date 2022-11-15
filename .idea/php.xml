@@ -44,6 +44,13 @@
       <path value="$PROJECT_DIR$/vendor/phpstan/phpstan-nette" />
       <path value="$PROJECT_DIR$/vendor/phpstan/phpstan-dibi" />
       <path value="$PROJECT_DIR$/vendor/contributte/forms-bootstrap" />
+      <path value="$PROJECT_DIR$/vendor/contributte/translation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php81" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />
