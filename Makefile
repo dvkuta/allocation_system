@@ -8,6 +8,12 @@ project: install setup
 install:
 	composer install
 
+up:
+	docker-compose up
+
+bash:
+	docker-compose run web bash
+
 setup:
 	mkdir -p temp temp/sessions log
 	chmod +0777 temp temp/sessions log
