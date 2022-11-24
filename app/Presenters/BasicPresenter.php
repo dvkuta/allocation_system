@@ -3,7 +3,8 @@
 namespace App\Presenters;
 
 use App\Components\FormComponents\Sign\SignInForm;
-use App\Components\GridComponents\BasicGrid;
+use App\Components\GridComponents\BasicGrid\BasicGrid;
+use App\Components\GridComponents\BasicGrid\IBasicGridFactory;
 use App\Presenters\Base\AbstractPresenter;
 use App\UI\TEmptyLayoutView;
 use Nette\Application\UI\Form;
@@ -13,25 +14,26 @@ final class BasicPresenter extends AbstractPresenter
 {
 
 
-	private BasicGrid $basicGrid;
+
 	private SignInForm $signInFormFactory;
+    private IBasicGridFactory $basicGridFactory;
 
 
-	public function __construct(BasicGrid $basicGrid,  SignInForm $signInFormFactory)
+    public function __construct(IBasicGridFactory $basicGridFactory,  SignInForm $signInFormFactory)
 	{
 		parent::__construct();
 
-		$this->basicGrid = $basicGrid;
 		$this->signInFormFactory = $signInFormFactory;
-	}
+        $this->basicGridFactory = $basicGridFactory;
+    }
 
 
 	use TEmptyLayoutView;
 
-	public function createComponentGrid(): DataGrid
+	public function createComponentBasicGrid(): BasicGrid
 	{
 
-		$grid = $this->basicGrid->createComponentGrid();
+		$grid = $this->basicGridFactory->create();
 		return $grid;
 
 	}
@@ -45,4 +47,9 @@ final class BasicPresenter extends AbstractPresenter
 
 	}
 
+    public function createComponentGrid(): DataGrid
+    {
+        // TODO: Implement createComponentGrid() method.
+        return new DataGrid();
+    }
 }

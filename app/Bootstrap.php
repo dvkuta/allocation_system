@@ -19,6 +19,10 @@ final class Bootstrap
 
 		$configurator->addConfig(__DIR__ . '/../config/config.neon');
 
+        $configurator->createRobotLoader()
+            ->addDirectory(__DIR__)
+            ->register();
+
 //		if (file_exists(__DIR__ . '/../config/local.neon')) {
 //			$configurator->addConfig(__DIR__ . '/../config/local.neon');
 //		}

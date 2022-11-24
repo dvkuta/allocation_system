@@ -1,11 +1,13 @@
 <?php
-namespace App\Components\GridComponents;
+namespace App\Components\GridComponents\BasicGrid;
+
+use App\Components\Base\BaseComponent;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 use Ublaboo\DataGrid\DataGrid;
 
-class BasicGrid
+class BasicGrid extends BaseComponent
 {
 	private Explorer $explorer;
 
@@ -45,9 +47,16 @@ class BasicGrid
 				return $row['birth_date']->diff(new DateTime())->y;
 			});
 
+
 		return $grid;
 	}
 
 
+}
+
+
+interface IBasicGridFactory {
+
+    public function create(): BasicGrid;
 }
 
