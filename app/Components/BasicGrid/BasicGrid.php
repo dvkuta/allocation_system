@@ -1,5 +1,5 @@
 <?php
-namespace App\Components\GridComponents\BasicGrid;
+namespace App\Components\BasicGrid;
 
 use App\Components\Base\BaseComponent;
 use Nette\Database\Explorer;

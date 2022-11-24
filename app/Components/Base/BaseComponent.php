@@ -10,7 +10,7 @@ class BaseComponent extends Control
     private ?string $componentNameWithPath = null;
     protected ?string $latteFile = null;
 
-    public function render($params = NULL) {
+    public function render() {
         if(empty($this->latteFile)) {
             $this->latteFile = $this->getComponentNameWithPath();
         }

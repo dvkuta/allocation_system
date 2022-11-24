@@ -2,10 +2,11 @@
 
 namespace App\Components\Menu;
 
+use App\Components\Base\BaseComponent;
 use Nette\Application\UI\Control;
 use Nette\Security\User;
 
-class MenuFactory extends Control
+class MenuFactory extends BaseComponent
 {
 
     private User $user;
@@ -23,6 +24,6 @@ class MenuFactory extends Control
         $this->template->user = $this->user;
         $this->template->menu = $this->menu;
         $this->template->currentPage = $this->presenter->name. ":";
-        $this->template->render(__DIR__ . '/menuFactory.latte');
+        parent::render();
     }
 }

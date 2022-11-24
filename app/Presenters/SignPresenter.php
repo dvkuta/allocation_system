@@ -2,8 +2,10 @@
 
 namespace App\Presenters;
 
-use App\Components\FormComponents\Sign\RegisterForm;
-use App\Components\FormComponents\Sign\SignInForm;
+use App\Components\Sign\IRegisterFormFactory;
+use App\Components\Sign\ISignInFormFactory;
+use App\Components\Sign\RegisterForm;
+use App\Components\Sign\SignInForm;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 
@@ -11,20 +13,19 @@ final class SignPresenter extends Presenter
 {
 
 
-    private SignInForm $signInFormFactory;
-    private RegisterForm $registerFormFactory;
+    private ISignInFormFactory $signInFormFactory;
+    private IRegisterFormFactory $registerFormFactory;
 
-    public function __construct(SignInForm $signInFormFactory, RegisterForm $registerFormFactory)
+    public function __construct(ISignInFormFactory $signInFormFactory, IRegisterFormFactory $registerFormFactory)
     {
         parent::__construct();
-
         $this->signInFormFactory = $signInFormFactory;
         $this->registerFormFactory = $registerFormFactory;
     }
 
 
 
-    public function createComponentSignInForm(): Form
+    public function createComponentSignInForm(): SignInForm
     {
         $loginForm = $this->signInFormFactory->create();
         $loginForm->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
@@ -32,7 +33,7 @@ final class SignPresenter extends Presenter
 
     }
 
-    public function createComponentRegisterForm(): Form
+    public function createComponentRegisterForm(): RegisterForm
     {
         $loginForm = $this->registerFormFactory->create();
         $loginForm->onSuccess[] = function () {$this->flashMessage("ahoj z register formu");};

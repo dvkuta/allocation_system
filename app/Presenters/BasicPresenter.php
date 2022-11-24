@@ -2,9 +2,10 @@
 
 namespace App\Presenters;
 
-use App\Components\FormComponents\Sign\SignInForm;
-use App\Components\GridComponents\BasicGrid\BasicGrid;
-use App\Components\GridComponents\BasicGrid\IBasicGridFactory;
+use App\Components\BasicGrid\BasicGrid;
+use App\Components\BasicGrid\IBasicGridFactory;
+use App\Components\Sign\ISignInFormFactory;
+use App\Components\Sign\SignInForm;
 use App\Presenters\Base\AbstractPresenter;
 use App\UI\TEmptyLayoutView;
 use Nette\Application\UI\Form;
@@ -15,11 +16,11 @@ final class BasicPresenter extends AbstractPresenter
 
 
 
-	private SignInForm $signInFormFactory;
+	private ISignInFormFactory $signInFormFactory;
     private IBasicGridFactory $basicGridFactory;
 
 
-    public function __construct(IBasicGridFactory $basicGridFactory,  SignInForm $signInFormFactory)
+    public function __construct(IBasicGridFactory $basicGridFactory,  ISignInFormFactory $signInFormFactory)
 	{
 		parent::__construct();
 
@@ -38,11 +39,9 @@ final class BasicPresenter extends AbstractPresenter
 
 	}
 
-	public function createComponentSignInForm(): Form
+	public function createComponentSignInForm(): SignInForm
 	{
-        $this->flashMessage("ahoj z formu");
 		$grid = $this->signInFormFactory->create();
-		$grid->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
 		return $grid;
 
 	}

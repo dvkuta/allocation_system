@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Components\FormComponents\Sign;
+namespace App\Components\Sign;
 
+use App\Components\Base\BaseComponent;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
-use Contributte\FormsBootstrap\Enums\DateTimeFormat;
 use Contributte\FormsBootstrap\Enums\RenderMode;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
  * Form component class for sign in proccess
  * @package App\Components
  */
-class SignInForm extends Form {
+class SignInForm extends BaseComponent {
 
 	protected User $user;
 
@@ -25,7 +25,6 @@ class SignInForm extends Form {
 	 */
 	public function __construct(User $user) {
 		$this->user = $user;
-		parent::__construct();
 	}
 
 
@@ -33,7 +32,7 @@ class SignInForm extends Form {
 	 * Factory function for creating sign in form
 	 * @return Form
 	 */
-	public function create():Form {
+	public function createComponentForm():Form {
 
 		$form = new BootstrapForm();
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
@@ -70,4 +69,9 @@ class SignInForm extends Form {
 			//$form->addError('Nesprávné přihlašovací jméno nebo heslo.');
 		}
 	}
+}
+
+interface ISignInFormFactory
+{
+    public function create() :SignInForm;
 }
