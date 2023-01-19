@@ -12,3 +12,4 @@ latte:
 		- Latte\Essential\RawPhpExtension
 session:
 	autoStart: true
+	savePath: "%tempDir%/sessions"

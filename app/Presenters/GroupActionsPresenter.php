@@ -15,7 +15,7 @@ class GroupActionsPresenter extends AbstractPresenter
 	{
 		$grid = new DataGrid();
 
-		$grid->setDataSource($this->dibiConnection->select('*')->from('users'));
+		$grid->setDataSource($this->dibiConnection->select('*')->from('user'));
 
 		$grid->setItemsPerPageList([20, 50, 100]);
 
@@ -73,7 +73,7 @@ class GroupActionsPresenter extends AbstractPresenter
 		if ($ids !== []) {
 			$data = ['status' => $newStatus];
 
-			$this->dibiConnection->update('users', $data)
+			$this->dibiConnection->update('user', $data)
 				->where('id IN (?)', $ids)
 				->execute();
 		}

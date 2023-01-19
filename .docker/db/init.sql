@@ -59,12 +59,12 @@ VALUES
 UNLOCK TABLES;
 
 
-# Dump of table users
+# Dump of table user
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user`;
 
-CREATE TABLE `users` (
+CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(2000) NOT NULL DEFAULT '',
   `name` varchar(2000) NOT NULL DEFAULT '',
@@ -75,10 +75,10 @@ CREATE TABLE `users` (
   KEY `status` (`status`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `email`, `name`, `countries_visited`, `birth_date`, `status`)
+INSERT INTO `user` (`id`, `email`, `name`, `countries_visited`, `birth_date`, `status`)
 VALUES
 	(1,'charmingChicken@yahoo.com','Charming Chicken',11,'1982-02-23 12:58:45','inactive'),
 	(2,'intellectualBubble@yahoo.com','Intellectual Bubble Disaster',2,'1997-01-02 09:27:39','inactive'),

@@ -7,7 +7,7 @@
     <meta name="keywords" content="Project, Secretariat">
     <meta name="author" content="David Kůta">
 
-    <title>{ifset title}{include title|stripHtml} | {/ifset}Systém pro správu projektů</title>
+    <title>{ifset title}{include title|stripHtml} | {/ifset}{_app.title}</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -93,9 +93,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <div class="row">
-                <img src="{$basePath}/assets/img/AdminLTELogo.png" alt="AdminLTE Logo"
-                     class="brand-image img-circle elevation-3 col-4 flex-column" style="opacity: .8">
-            <a href="#" class="brand-link text-center text-wrap col-8 flex-column">
+            <a href="#" class="brand-link text-center text-wrap col-12 flex-column">
                 <span class="brand-text font-weight-light"> {_app.title} </span>
             </a>
             </div>

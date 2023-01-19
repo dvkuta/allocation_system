@@ -15,7 +15,7 @@ final class AddPresenter extends AbstractPresenter
 	{
 		$grid = new DataGrid();
 
-		$grid->setDataSource($this->dibiConnection->select('*')->from('users'));
+		$grid->setDataSource($this->dibiConnection->select('*')->from('user'));
 
 		$grid->setItemsPerPageList([20, 50, 100]);
 

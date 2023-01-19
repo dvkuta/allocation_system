@@ -25,7 +25,7 @@ final class ColumnsPresenter extends AbstractPresenter
 
 		$grid->setDefaultSort(['id' => 'ASC']);
 
-		$grid->setDataSource($this->dibiConnection->select('*')->from('users'));
+		$grid->setDataSource($this->dibiConnection->select('*')->from('user'));
 
 		$grid->setItemsPerPageList([20, 50, 100], true);
 

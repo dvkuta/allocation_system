@@ -39,7 +39,7 @@ abstract class AbstractPresenter extends Presenter
 		if (in_array($newStatus, ['active', 'inactive', 'deleted'], true)) {
 			$data = ['status' => $newStatus];
 
-			$this->dibiConnection->update('users', $data)
+			$this->dibiConnection->update('user', $data)
 				->where('id = ?', $id)
 				->execute();
 		}
@@ -83,6 +83,7 @@ abstract class AbstractPresenter extends Presenter
     }
 
     public function handleChangeLocale(string $locale) {
+
         $this->translatorSessionResolver->setLocale($locale);
     }
 
