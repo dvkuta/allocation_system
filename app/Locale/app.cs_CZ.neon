@@ -9,8 +9,15 @@ locales:
     cs_CZ: 'Čeština'
     en_GB: 'Angličtina'
 
+baseForm:
+    submit: 'Uložit'
+    cancel: 'Zrušit'
+
 userForm:
     firstname: 'Křestní jméno'
     lastname: 'Příjmení'
     email: 'Email'
     login: 'Přihlašovací jméno'
+    password: 'Heslo'
+    roles: 'Role'
+    workplace: 'Hlavní pracoviště'

@@ -41,7 +41,7 @@ class BasicGrid extends BaseGrid
 
 		$grid->addColumnText('email', 'email');
 
-		$grid->addColumnText('user_role.name', 'role');
+		$grid->addColumnText('user_role.type', 'role');
 
 
 		return $grid;

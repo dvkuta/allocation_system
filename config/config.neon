@@ -17,3 +17,4 @@ includes:
     - extensions.neon       # rozsireni
     - menu.neon             # menu
     - translation.neon      # infrastruktura pro preklady
+    - tools.neon            # pomocne tridy. Zejmena ovladani transakci
