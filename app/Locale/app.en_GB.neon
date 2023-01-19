@@ -8,3 +8,9 @@ info:
 locales:
     cs_CZ: 'Czech'
     en_GB: 'English'
+
+userForm:
+    firstname: 'First name'
+    lastname: 'Last name'
+    email: 'Email'
+    login: 'Login name'

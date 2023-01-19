@@ -3,9 +3,12 @@
 namespace App\Components\Base;
 
 use Nette\Application\UI\Control;
+use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 
 class BaseComponent extends Control
 {
+
     private ?string $componentName = null;
     private ?string $componentNameWithPath = null;
     protected ?string $latteFile = null;
@@ -38,4 +41,5 @@ class BaseComponent extends Control
 
         return $this->componentNameWithPath;
     }
+
 }

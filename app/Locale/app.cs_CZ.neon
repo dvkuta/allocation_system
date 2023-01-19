@@ -8,3 +8,9 @@ info:
 locales:
     cs_CZ: 'Čeština'
     en_GB: 'Angličtina'
+
+userForm:
+    firstname: 'Křestní jméno'
+    lastname: 'Příjmení'
+    email: 'Email'
+    login: 'Přihlašovací jméno'

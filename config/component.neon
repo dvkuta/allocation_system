@@ -3,3 +3,4 @@ services:
 - App\Components\Sign\ISignInFormFactory
 - App\Components\Sign\IRegisterFormFactory
 - App\Components\Menu\MenuFactory(%menu%)
+- App\Components\User\IUserFormFactory
