@@ -1,14 +1,14 @@
 {block name}
-    Správa uživatelů
+    Správa projektů
 {/block}
 
 {block content}
     <div class="card">
         <div class="card-header">
-            <a n:href="User:add" class="btn btn-info">Přidat uživatele</a>
+            <a n:href="Project:add" class="btn btn-info">Přidat projekt</a>
         </div>
         <div class="card-body">
-            {control userGrid}
+            {control projectGrid}
         </div>
     </div>
 {/block}

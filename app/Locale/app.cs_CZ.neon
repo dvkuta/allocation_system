@@ -22,6 +22,7 @@ baseForm:
     remove: 'Odstranit'
     yes: 'Ano'
     no: 'Ne'
+    selectInSelectbox: 'Vyberte z možností'
     labelIsRequiredMasculine: '%label je povinný.'
     labelIsRequiredFeminine: '%label je povinná.'
     labelIsRequiredNeuter: '%label je povinné.'
@@ -40,19 +41,6 @@ baseForm:
     saveOK: 'Operace proběhla úspěšně.'
 
 user:
-    emailExists: 'Na zadaný email je již někdo registrován. Zvolte jiný.'
-    loginExists: 'Na zadaný login je již někdo registrován. Zvolte jiný.'
-
-userForm:
-    firstname: 'Křestní jméno'
-    lastname: 'Příjmení'
-    email: 'Email'
-    login: 'Přihlašovací jméno'
-    password: 'Heslo'
-    roles: 'Role'
-    workplace: 'Hlavní pracoviště'
-
-userGrid:
     id: 'ID'
     firstname: 'Křestní jméno'
     lastname: 'Příjmení'
@@ -60,3 +48,13 @@ userGrid:
     login: 'Přihlašovací jméno'
     roles: 'Role'
     workplace: 'Hlavní pracoviště'
+    emailExists: 'Na zadaný email je již někdo registrován. Zvolte jiný.'
+    loginExists: 'Na zadaný login je již někdo registrován. Zvolte jiný.'
+
+project:
+    id:  'ID'
+    name: 'Název'
+    user_id: 'Projektový manažer'
+    from: 'Čas od'
+    to: 'Čas do'
+    description: 'Poznámka'

@@ -40,16 +40,7 @@ baseForm:
     saveError: 'An error occurred while saving.'
     saveOK: 'Operation completed succesfully.'
 
-userForm:
-    firstname: 'First name'
-    lastname: 'Last name'
-    email: 'Email'
-    login: 'Login name'
-    password: 'Password'
-    roles: 'Roles'
-    workplace: 'Primary workplace'
-
-userGrid:
+user:
     id: 'ID'
     firstname: 'First name'
     lastname: 'Last name'
@@ -57,3 +48,13 @@ userGrid:
     login: 'Login name'
     role: 'Role'
     workplace: 'Primary workplace'
+    emailExists: 'Someone is registered to this email. Choose different one.'
+    loginExists: 'Someone is registered to this login. Choose different one.'
+
+project:
+    id:  'ID'
+    name: 'Name'
+    user_id: 'Project manager'
+    from: 'Time from'
+    to: 'Time to'
+    description: 'Description'

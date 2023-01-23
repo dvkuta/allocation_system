@@ -40,30 +40,30 @@ class UserGrid extends BaseGrid
 
 		$grid->setDataSource($this->userRepository->findAll());
 
-		$grid->addColumnText('id', 'app.userGrid.id');
+		$grid->addColumnText('id', 'app.user.id');
 
-        $grid->addColumnText('lastname', 'app.userGrid.lastname')
+        $grid->addColumnText('lastname', 'app.user.lastname')
             ->setSortable()
             ->setFilterText();
 
-        $grid->addColumnText('firstname', 'app.userGrid.firstname')
+        $grid->addColumnText('firstname', 'app.user.firstname')
             ->setSortable()
             ->setFilterText();
 
 
-        $grid->addColumnText('email', 'app.userGrid.email')
+        $grid->addColumnText('email', 'app.user.email')
             ->setSortable()
             ->setFilterText();
 
-        $grid->addColumnText('login', 'app.userGrid.login')
+        $grid->addColumnText('login', 'app.user.login')
             ->setSortable()
             ->setFilterText();
 
-        $grid->addColumnText('workplace', 'app.userGrid.workplace')
+        $grid->addColumnText('workplace', 'app.user.workplace')
             ->setSortable()
             ->setFilterText();
 
-		$grid->addColumnText('user_role.type', 'app.userGrid.role')
+		$grid->addColumnText('user_role.type', 'app.user.role')
             ->setRenderer(function( ActiveRow $row) {
             return $this->translator->translate($row->user_role->type);
         });

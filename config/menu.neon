@@ -7,3 +7,10 @@ parameters:
                 - "User"
                 - "Secretariat"
                 - "ATD"
+        "Správa projektů":
+            icon: fas fa-th
+            link: "Project:"
+            priviledge:
+                - "User"
+                - "Secretariat"
+                - "ATD"

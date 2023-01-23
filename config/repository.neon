@@ -1,3 +1,4 @@
 services:
     - App\Model\User\UserRepository
     - App\Model\User\Role\UserRoleRepository
+    - App\Model\Project\ProjectRepository

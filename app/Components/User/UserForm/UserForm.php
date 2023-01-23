@@ -87,38 +87,39 @@ class UserForm extends BaseComponent
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
-        $form->addText('login', 'app.userForm.login')
+        $form->addText('login', 'app.user.login')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  100);
 
-        $password = $form->addPassword('password', "app.userForm.password");
+        $password = $form->addPassword('password', "app.user.password");
 
         if($this->id === null)
         {
             $password->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
         }
 
-        $form->addText('firstname', 'app.userForm.firstname')
+        $form->addText('firstname', 'app.user.firstname')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
-        $form->addText('lastname', 'app.userForm.lastname')
+        $form->addText('lastname', 'app.user.lastname')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 255);
 
-        $form->addText('workplace', 'app.userForm.workplace')
+        $form->addText('workplace', 'app.user.workplace')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine" ,255);
 
-        $form->addText('email', 'app.userForm.email')
+        $form->addText('email', 'app.user.email')
             ->addRule(FormAlias::EMAIL, "app.baseForm.labelDoesntHaveCorrectFormat")
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 200);
 
-        $form->addSelect('user_role_id', 'app.userForm.roles', $this->userRoleRepository->fetchDataForSelect());
+        $form->addSelect('user_role_id', 'app.user.role', $this->userRoleRepository->fetchDataForSelect());
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
-            ->addButton('cancel', 'app.baseForm.cancel')
+            ->addButton('cancel', $this->translator->translate('app.baseForm.cancel'))
+            ->setTranslator(null)
             ->setBtnClass('btn-danger')
             ->setHtmlAttribute("onclick", "window.location = '" . $this->presenter->link("default") . "';");;
         $submitCell = $parentRow->addCell(4)

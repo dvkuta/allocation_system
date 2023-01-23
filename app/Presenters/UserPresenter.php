@@ -19,19 +19,16 @@ final class UserPresenter extends AbstractPresenter
 {
 
 
-    private ISignInFormFactory $signInFormFactory;
+
     private IUserGridFactory $userGridFactory;
     private IUserFormFactory $userFormFactory;
 
 
     public function __construct(IUserGridFactory $userGridFactory,
-                                ISignInFormFactory $signInFormFactory,
                                 IUserFormFactory   $userFormFactory,
     )
     {
         parent::__construct();
-
-        $this->signInFormFactory = $signInFormFactory;
 
         $this->userFormFactory = $userFormFactory;
         $this->userGridFactory = $userGridFactory;
@@ -51,7 +48,7 @@ final class UserPresenter extends AbstractPresenter
 
     }
 
-    public function createComponentBasicGrid(): UserGrid
+    public function createComponentUserGrid(): UserGrid
     {
 
         $grid = $this->userGridFactory->create();
