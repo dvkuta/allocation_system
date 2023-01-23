@@ -2,13 +2,13 @@
 
 namespace App\Model\User\Role;
 
-class ERole
+enum ERole: string
 {
-    public const USER = 'user';
-    public const SUPERIOR = 'superior' ;
-    public const PROJECT_MANAGER = 'project_manager';
-    public const DEPARTMENT_MANAGER = 'department_manager';
-    public const SECRETARIAT = 'secretariat';
+    case USER = 'user';
+    case SUPERIOR = 'superior' ;
+    case PROJECT_MANAGER = 'project_manager';
+    case DEPARTMENT_MANAGER = 'department_manager';
+    case SECRETARIAT = 'secretariat';
 
 
 }
