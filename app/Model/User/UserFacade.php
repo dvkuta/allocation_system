@@ -3,6 +3,7 @@
 namespace App\Model\User;
 
 use App\Model\Exceptions\ProcessException;
+use App\Model\User\Role\ERole;
 use App\Model\User\Role\UserRoleRepository;
 use App\Tools\Transaction;
 use Nette\Security\Passwords;
@@ -127,5 +128,17 @@ class UserFacade
             Debugger::log($e,ILogger::EXCEPTION);
             throw new ProcessException('app.baseForm.saveError');
         }
+    }
+
+    /**
+     * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
+     * @param ERole $role
+     * @return array
+     */
+    public function getAllUsersInRole(ERole $role){
+        $result = $this->userRepository->findAll()
+            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName' )->where('user_role.type', $role->value)
+            ->fetchPairs(UserRepository::COL_ID, 'fullName');
+        return $result;
     }
 }

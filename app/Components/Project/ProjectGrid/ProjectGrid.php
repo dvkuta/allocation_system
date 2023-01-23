@@ -45,17 +45,26 @@ class ProjectGrid extends BaseGrid
             ->setFilterText();
 
         $grid->addColumnText('user_id', 'app.project.user_id')
-            ->setSortable()
-            ->setFilterText();
+            ->setRenderer(function( ActiveRow $row) {
+            return $row->user->firstname . " " . $row->user->lastname ;
+            })
+            ->setSortable();
 
 
         $grid->addColumnDateTime('from', 'app.project.from')
-            ->setSortable()
-            ->setFilterText();
+            ->setSortable();
 
         $grid->addColumnDateTime('to', 'app.project.to')
-            ->setSortable()
-            ->setFilterText();
+            ->setRendererOnCondition(
+                function( ActiveRow $row)
+                    {
+                        return "Konec není určen";
+                    },
+                function (ActiveRow $row)
+                    {
+                        return $row->to === null;
+                    })
+            ->setSortable();
 
         $grid->addColumnText('description', 'app.project.description')
             ->setSortable()
@@ -79,7 +88,8 @@ class ProjectGrid extends BaseGrid
 
     public function handleDelete(int $id)
     {
-        $this->userRepository->delete($id);
+        //todo
+        $this->projectRepository->delete($id);
         if($this->presenter->isAjax()) {
             /** @var BaseGrid $grid */
             $grid = $this["grid"];

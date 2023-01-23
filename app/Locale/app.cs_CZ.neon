@@ -43,6 +43,7 @@ baseForm:
 user:
     id: 'ID'
     firstname: 'Křestní jméno'
+    password: 'Heslo'
     lastname: 'Příjmení'
     email: 'Email'
     login: 'Přihlašovací jméno'
@@ -58,3 +59,4 @@ project:
     from: 'Čas od'
     to: 'Čas do'
     description: 'Poznámka'
+    dateError: 'Projekt nemůže začínat po svém konci'

@@ -33,5 +33,18 @@ class ProjectRepository extends BaseRepository
 
     }
 
+    public function saveProject(ArrayHash $project, ?int $projectId)
+    {
+        $data = [
+            self::COL_NAME => $project->name,
+            self::COL_USER_ID => $project->user_id,
+            self::COL_FROM => $project->from,
+            self::COL_TO => $project->to,
+            self::COL_DESCRIPTION => $project->description
+        ];
+
+        $this->saveFiltered($data, $projectId);
+    }
+
 
 }

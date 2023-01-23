@@ -43,6 +43,7 @@ baseForm:
 user:
     id: 'ID'
     firstname: 'First name'
+    password: 'Password'
     lastname: 'Last name'
     email: 'Email'
     login: 'Login name'
@@ -58,3 +59,4 @@ project:
     from: 'Time from'
     to: 'Time to'
     description: 'Description'
+    dateError: 'Project must not start after its end.'

@@ -5,6 +5,9 @@ namespace App\Components\Project\ProjectForm;
 use App\Components\Base\BaseComponent;
 use App\Components\Project\ProjectGrid\ProjectGrid;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Project\ProjectFacade;
+use App\Model\Project\ProjectRepository;
+use App\Model\User\Role\ERole;
 use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
@@ -13,6 +16,7 @@ use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
 use Exception;
+use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Form as FormAlias;
@@ -35,23 +39,23 @@ class ProjectForm extends BaseComponent
     private Translator $translator;
     private UserRoleRepository $userRoleRepository;
     private UserFacade $userFacade;
+    private ProjectFacade $projectFacade;
+    private ProjectRepository $projectRepository;
 
-    /**
-     * @param UserRepository $userRepository
-     */
+
     public function __construct(
         ?int               $id,
-        UserRepository     $userRepository,
         Translator         $translator,
-        UserRoleRepository $userRoleRepository,
         UserFacade $userFacade,
+        ProjectFacade $projectFacade,
+        ProjectRepository $projectRepository,
     )
     {
 
         $this->id = $id;
-        $this->userRepository = $userRepository;
         $this->translator = $translator;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->projectFacade = $projectFacade;
+        $this->projectRepository = $projectRepository;
         $this->userFacade = $userFacade;
     }
 
@@ -60,7 +64,7 @@ class ProjectForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            $row = $this->userRepository->findRow($this->id);
+            $row = $this->projectRepository->findRow($this->id);
 
             if ($row) {
                 $defaults = $row->toArray();
@@ -93,11 +97,12 @@ class ProjectForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
 
-        $form->addSelect('user_id', 'app.project.user_id');
+        $projectManagers = $this->userFacade->getAllUsersInRole(ERole::PROJECT_MANAGER);
+        $form->addSelect('user_id', 'app.project.user_id', $projectManagers)
+        ->setTranslator(null);
 
         $form->addDate('from', 'app.project.from')
-            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
-            ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine" ,255);
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
 
         $form->addDate('to', 'app.project.to');
 
@@ -115,33 +120,42 @@ class ProjectForm extends BaseComponent
             ->setBtnClass('btn-success');
 
 
-        //$form->onValidate[] = [$this, 'validateForm'];
+        $form->onValidate[] = [$this, 'validateForm'];
         $form->onSuccess[] = [$this, 'saveForm'];
         return $form;
     }
+
+    public function validateForm(Form $form, ArrayHash $values)
+    {
+        bdump($values);
+        if(!empty($values['to']))
+        {
+            if($values['from'] >= $values['to']) {
+                $form->addError("app.project.dateError");
+            }
+        }
+    }
+
 
     /**
      * Function that is triggered by a successful form submission
      * @param Form $form
      * @param ArrayHash $values
+     * @throws AbortException
      */
     public function saveForm(Form $form, ArrayHash $values)
     {
+        if(empty($values['to']))
+        {
+            $values['to'] = null;
+        }
 
         try {
 
             //vytvoreni uzivatele
-            if($this->id === NULL)
-            {
-//                $this->userFacade->createUser($values, $this->id);
-            }
-            else
-            {
-//                $this->userFacade->editUser($values ,$this->id);
-            }
-
+            $this->projectFacade->saveProject($values, $this->id);
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
-            $this->presenter->redirect("User:");
+            $this->presenter->redirect("Project:");
         } catch (ProcessException $e) {
             $form->addError($e->getMessage());
         }
