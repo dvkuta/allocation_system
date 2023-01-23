@@ -10,7 +10,6 @@ use Nette\SmartObject;
 class BaseRepository
 {
     use SmartObject;
-    use NotDeletedTraitRepository;
 
     /** @var string Table name - melo by byt nastaveno v kazdem repository! */
     protected $tableName;

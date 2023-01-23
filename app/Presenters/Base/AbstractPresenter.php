@@ -26,8 +26,6 @@ abstract class AbstractPresenter extends Presenter
     #[Inject]
     public Session $translatorSessionResolver;
 
-	abstract public function createComponentGrid(): DataGrid;
-
 
 	/**
 	 * @param mixed $id
@@ -86,5 +84,7 @@ abstract class AbstractPresenter extends Presenter
 
         $this->translatorSessionResolver->setLocale($locale);
     }
+
+
 
 }

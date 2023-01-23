@@ -9,9 +9,36 @@ locales:
     cs_CZ: 'Czech'
     en_GB: 'English'
 
+actions:
+    delete: 'Smazat'
+    edit: 'Upravit'
+
 baseForm:
-    submit: 'Save'
+    save: 'Save'
+    saveAndSelect: 'Save and select'
+    back: 'Back'
     cancel: 'Cancel'
+    close: 'Close'
+    remove: 'Remove'
+    yes: 'Yes'
+    no: 'No'
+    selectInSelectbox: 'Select in selectbox'
+    labelIsRequiredMasculine: '%label is required.'
+    labelIsRequiredFeminine: '%label is required.'
+    labelIsRequiredNeuter: '%label is required.'
+    labelNeedsToBeFilled: '%label is required.'
+    labelCanBeOnlyLongMasculine: '%label can only be %maxLength% chars long.'
+    labelCanBeOnlyLongFeminine: '%label can only be %maxLength% chars long.'
+    labelCanBeOnlyLongNeuter: '%label can only be %maxLength% chars long.'
+    labelDoesntHaveCorrectFormat: '%label is not in the correct format.'
+    labelMustBeNonnegative: '%label must be nonnegative.'
+    labelIsNotInCorrectForm: '%label is not in the correct format.'
+    labelMustBeNumber: '%label must be a number.'
+    labelMustBeFromTo: '%label must be in range from %min% to %max%.'
+    labelCanHaveOnlyChars: '%label can only be %max% chars long.'
+    wantedRecordNotFound: 'Requested record not found.'
+    saveError: 'An error occurred while saving.'
+    saveOK: 'Operation completed succesfully.'
 
 userForm:
     firstname: 'First name'
@@ -20,4 +47,13 @@ userForm:
     login: 'Login name'
     password: 'Password'
     roles: 'Roles'
+    workplace: 'Primary workplace'
+
+userGrid:
+    id: 'ID'
+    firstname: 'First name'
+    lastname: 'Last name'
+    email: 'Email'
+    login: 'Login name'
+    role: 'Role'
     workplace: 'Primary workplace'

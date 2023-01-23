@@ -9,9 +9,39 @@ locales:
     cs_CZ: 'Čeština'
     en_GB: 'Angličtina'
 
+actions:
+    delete: 'Smazat'
+    edit: 'Upravit'
+
 baseForm:
-    submit: 'Uložit'
-    cancel: 'Zrušit'
+    save: 'Uložit'
+    saveAndSelect: 'Uložit a vybrat'
+    back: 'Zpět'
+    cancel: 'Storno'
+    close: 'Zavřít'
+    remove: 'Odstranit'
+    yes: 'Ano'
+    no: 'Ne'
+    labelIsRequiredMasculine: '%label je povinný.'
+    labelIsRequiredFeminine: '%label je povinná.'
+    labelIsRequiredNeuter: '%label je povinné.'
+    labelNeedsToBeFilled: '%label je nutné zadat.'
+    labelCanBeOnlyLongMasculine: '%label může být nejvýše %d znaků dlouhý.'
+    labelCanBeOnlyLongFeminine: '%label může být nejvýše %d znaků dlouhá.'
+    labelCanBeOnlyLongNeuter: '%label může být nejvýše %d znaků dlouhé.'
+    labelDoesntHaveCorrectFormat: '%label nemá správný formát.'
+    labelMustBeNonnegative: '%label musí být nezáporný.'
+    labelIsNotInCorrectForm: '%label není ve správném tvaru.'
+    labelMustBeNumber: '%label musí být číslo.'
+    labelMustBeFromTo: '%label musí být od %min% do %max%.'
+    labelCanHaveOnlyChars: '%label může být nejvýše %max% znaky dlouhá.'
+    wantedRecordNotFound: 'Požadovaný záznam nenalezen.'
+    saveError: 'Při ukládání došlo k chybě.'
+    saveOK: 'Operace proběhla úspěšně.'
+
+user:
+    emailExists: 'Na zadaný email je již někdo registrován. Zvolte jiný.'
+    loginExists: 'Na zadaný login je již někdo registrován. Zvolte jiný.'
 
 userForm:
     firstname: 'Křestní jméno'
@@ -19,5 +49,14 @@ userForm:
     email: 'Email'
     login: 'Přihlašovací jméno'
     password: 'Heslo'
+    roles: 'Role'
+    workplace: 'Hlavní pracoviště'
+
+userGrid:
+    id: 'ID'
+    firstname: 'Křestní jméno'
+    lastname: 'Příjmení'
+    email: 'Email'
+    login: 'Přihlašovací jméno'
     roles: 'Role'
     workplace: 'Hlavní pracoviště'
