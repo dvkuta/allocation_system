@@ -1,63 +1,51 @@
 <?php
 
-namespace App\Components\Project\ProjectForm;
+namespace App\Components\Project\ProjectUserForm;
 
 use App\Components\Base\BaseComponent;
-use App\Components\Project\ProjectGrid\ProjectGrid;
 use App\Model\Exceptions\ProcessException;
-
-use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectRepository;
-use App\Model\User\Role\ERole;
-use App\Model\User\Role\UserRoleRepository;
-use App\Model\User\UserFacade;
-use App\Model\User\UserRepository;
-use App\Tools\Transaction;
+use App\Model\Project\ProjectUser\ProjectUserFacade;
+use App\Model\Project\ProjectUser\ProjectUserRepository;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
-use Exception;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
-use Nette\Security\AuthenticationException;
-use Nette\Security\User;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
 
 /**
  * Form component class for user CRUD
  * @package App\Components
  */
-class ProjectForm extends BaseComponent
+class ProjectUserForm extends BaseComponent
 {
 
     private ?int $id;
-    private UserRepository $userRepository;
     private Translator $translator;
-    private UserRoleRepository $userRoleRepository;
-    private UserFacade $userFacade;
-    private ProjectFacade $projectFacade;
+
     private ProjectRepository $projectRepository;
+    private ProjectUserRepository $projectUserRepository;
+    private ProjectUserFacade $projectUserFacade;
 
 
     public function __construct(
         ?int                  $id,
         Translator            $translator,
-        UserFacade            $userFacade,
-        ProjectFacade     $projectFacade,
         ProjectRepository $projectRepository,
+        ProjectUserRepository $projectUserRepository,
+        ProjectUserFacade $projectUserFacade
     )
     {
 
         $this->id = $id;
         $this->translator = $translator;
-        $this->projectFacade = $projectFacade;
         $this->projectRepository = $projectRepository;
-        $this->userFacade = $userFacade;
+        $this->projectUserRepository = $projectUserRepository;
+        $this->projectUserFacade = $projectUserFacade;
     }
 
     public function render()
@@ -68,7 +56,7 @@ class ProjectForm extends BaseComponent
             $row = $this->projectRepository->findRow($this->id);
 
             if ($row) {
-                $defaults = $row->toArray();
+                $defaults[ProjectRepository::COL_NAME] = $row[ProjectRepository::COL_NAME];
             } else {
                 throw new BadRequestException();
             }
@@ -94,20 +82,28 @@ class ProjectForm extends BaseComponent
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
 
-        $form->addText('name', 'app.project.name')
+        $form->addText('name', 'app.projectAllocation.name')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
-            ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
+            ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
+            ->getControlPrototype()->setAttribute('readonly','readonly');
 
-        $projectManagers = $this->userFacade->getAllUsersInfoForSelect(ERole::PROJECT_MANAGER);
-        $form->addSelect('user_id', 'app.project.user_id', $projectManagers)
+        $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
+        $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
 
-        $form->addDate('from', 'app.project.from')
-            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+        $form->addDate('from', 'app.projectAllocation.from')
+//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
+        ;
 
-        $form->addDate('to', 'app.project.to');
+        $form->addDate('to', 'app.projectAllocation.to')
+//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
+        ;
 
-        $form->addTextArea('description', 'app.project.description');
+        $form->addInteger('allocation', 'app.projectAllocation.allocation');
+
+        $form->addTextArea('description', 'app.projectAllocation.description');
+
+        $form->addSelect('state', 'app.projectAllocation.state');
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -154,7 +150,7 @@ class ProjectForm extends BaseComponent
         try {
 
             //vytvoreni uzivatele
-            $this->projectFacade->saveProject($values, $this->id);
+            $this->projectUserFacade->saveUserToProject($values, $this->id);
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");
         } catch (ProcessException $e) {
@@ -164,7 +160,7 @@ class ProjectForm extends BaseComponent
     }
 }
 
-interface IProjectFormFactory
+interface IProjectUserFormFactory
 {
-    public function create(?int $id): ProjectForm;
+    public function create(?int $id): ProjectUserForm;
 }

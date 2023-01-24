@@ -6,3 +6,5 @@ services:
 - App\Components\User\UserForm\IUserFormFactory
 - App\Components\Project\ProjectForm\IProjectFormFactory
 - App\Components\Project\ProjectGrid\IProjectGridFactory
+- App\Components\Project\ProjectUserForm\IProjectUserFormFactory
+- App\Components\Project\ProjectUserGrid\IProjectUserGridFactory

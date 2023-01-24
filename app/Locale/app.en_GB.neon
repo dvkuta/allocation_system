@@ -59,4 +59,16 @@ project:
     from: 'Time from'
     to: 'Time to'
     description: 'Description'
+    worker_count: 'Worker count'
     dateError: 'Project must not start after its end.'
+    addUser: 'Add user'
+
+projectAllocation:
+    id:  'ID'
+    name: 'Project name'
+    user_id: 'Worker name'
+    from: 'Time from'
+    to: 'Time to'
+    allocation: 'Allocation (total number of hours per week)'
+    description: 'Description'
+    state: 'State'

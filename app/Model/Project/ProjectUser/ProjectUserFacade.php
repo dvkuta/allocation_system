@@ -1,41 +1,43 @@
 <?php
 
-namespace App\Model\Project;
+namespace App\Model\Project\ProjectUser;
 
 use App\Model\Exceptions\ProcessException;
-use App\Model\User\Role\UserRoleRepository;
 use App\Tools\Transaction;
-use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
-class ProjectFacade
+class ProjectUserFacade
 {
 
 
-    private ProjectRepository $projectRepository;
+    private ProjectUserRepository $projectUserRepository;
     private Transaction $transaction;
 
     public function __construct(
-        ProjectRepository $projectRepository,
         Transaction           $transaction,
+        ProjectUserRepository $projectUserRepository,
     )
     {
 
-        $this->projectRepository = $projectRepository;
         $this->transaction = $transaction;
+        $this->projectUserRepository = $projectUserRepository;
     }
 
     /**
      * @throws ProcessException
      */
-    public function saveProject(ArrayHash $project, ?int $projectId): void
+    public function saveUserToProject(ArrayHash $formValues, ?int $projectId)
     {
+        if($projectId === null)
+        {
+            throw new ProcessException('app.baseForm.saveError');
+        }
+
         try {
-            bdump($project);
             $this->transaction->begin();
-            $this->projectRepository->saveProject($project, $projectId);
+            $this->projectUserRepository->saveUserToProject($formValues, $projectId);
             $this->transaction->commit();
         }
         catch (\PDOException $e)

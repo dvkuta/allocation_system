@@ -1,3 +1,4 @@
 services:
 - App\Model\User\UserFacade
 - App\Model\Project\ProjectFacade
+- App\Model\Project\ProjectUser\ProjectUserFacade

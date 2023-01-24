@@ -59,4 +59,17 @@ project:
     from: 'Čas od'
     to: 'Čas do'
     description: 'Poznámka'
+    worker_count: 'Počet pracujících'
     dateError: 'Projekt nemůže začínat po svém konci'
+    addUser: 'Přidat pracovníka'
+
+projectAllocation:
+    id:  'ID'
+    name: 'Název projektu'
+    user_id: 'Jméno pracovníka'
+    from: 'Čas od'
+    to: 'Čas do'
+    allocation: 'Alokace (počet hodin za týden)'
+    description: 'Poznámka'
+    state: 'Stav'
+

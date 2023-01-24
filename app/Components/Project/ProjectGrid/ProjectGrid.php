@@ -10,6 +10,7 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Nette\Utils\DateTime;
+use Ublaboo\DataGrid\AggregationFunction\FunctionSum;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Row;
@@ -21,8 +22,8 @@ class ProjectGrid extends BaseGrid
     private ProjectRepository $projectRepository;
 
     public function __construct(
-                                ITranslator $translator,
-                                ProjectRepository $projectRepository
+        ITranslator $translator,
+        ProjectRepository $projectRepository
     )
 	{
         parent::__construct($translator);
@@ -40,7 +41,7 @@ class ProjectGrid extends BaseGrid
 
 		$grid->addColumnText('id', 'app.project.id');
 
-        $grid->addColumnText('name', 'app.project.name')
+        $grid->addColumnLink('name', 'app.project.name', ':detail')
             ->setSortable()
             ->setFilterText();
 
@@ -50,6 +51,11 @@ class ProjectGrid extends BaseGrid
             })
             ->setSortable();
 
+        $grid->addColumnText('status','app.project.worker_count')
+            ->setRenderer(function (ActiveRow $row)
+            {
+               return $row->related('project_user.project_id')->count() ;
+            });
 
         $grid->addColumnDateTime('from', 'app.project.from')
             ->setSortable();
@@ -66,9 +72,8 @@ class ProjectGrid extends BaseGrid
                     })
             ->setSortable();
 
-        $grid->addColumnText('description', 'app.project.description')
-            ->setSortable()
-            ->setFilterText();
+        $grid->addColumnText('description', 'app.project.description');
+
 
 //		$grid->addColumnText('user_role.type', 'app.user.role')
 //            ->setRenderer(function( ActiveRow $row) {
@@ -76,6 +81,8 @@ class ProjectGrid extends BaseGrid
 //        });
 
         $grid->addAction("edit", 'app.actions.edit', ":edit");
+
+        $grid->addAction("addUser", 'app.project.addUser', ":addUser");
 
         $grid->addAction('delete','app.actions.delete')
             ->setConfirmation(

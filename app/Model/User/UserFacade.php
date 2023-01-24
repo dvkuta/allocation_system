@@ -132,13 +132,19 @@ class UserFacade
 
     /**
      * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
-     * @param ERole $role
+     * @param ERole|null $role
      * @return array
      */
-    public function getAllUsersInRole(ERole $role){
-        $result = $this->userRepository->findAll()
-            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName' )->where('user_role.type', $role->value)
-            ->fetchPairs(UserRepository::COL_ID, 'fullName');
-        return $result;
+    public function getAllUsersInfoForSelect(?ERole $role = null): array
+    {
+        $users = $this->userRepository->findAll()
+            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName' );
+
+        if($role !== null)
+        {
+            $users->where('user_role.type', $role->value);
+        }
+
+        return $users->fetchPairs(UserRepository::COL_ID, 'fullName');
     }
 }
