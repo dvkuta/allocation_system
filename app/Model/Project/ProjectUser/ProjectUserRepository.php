@@ -62,5 +62,10 @@ class ProjectUserRepository extends BaseRepository
 
     }
 
+    public function getUser(int $allocationId)
+    {
+
+    }
+
 
 }

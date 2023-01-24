@@ -65,6 +65,11 @@ final class ProjectPresenter extends AbstractPresenter
 
     }
 
+    public function actionEditAllocation(int $id)
+    {
+
+    }
+
     public function createComponentProjectGrid(): ProjectGrid
     {
 
@@ -84,7 +89,16 @@ final class ProjectPresenter extends AbstractPresenter
     public function createComponentProjectUserForm(): ProjectUserForm
     {
         $id = Utils::transformId($this->getParameter("id"));
-        $form = $this->projectUserFormFactory->create($id);
+        $editAllocation = false;
+        $action = $this->getAction();
+
+        if($action === 'editAllocation')
+        {
+            $editAllocation = true;
+        }
+
+
+        $form = $this->projectUserFormFactory->create($id, $editAllocation);
         return $form;
 
     }

@@ -65,7 +65,7 @@ class ProjectUserGrid extends BaseGrid
 //            return $this->translator->translate($row->user_role->type);
 //        });
 
-        $grid->addAction("edit", 'app.actions.edit', ":edit");
+        $grid->addAction("edit", 'app.actions.edit', ":editAllocation");
 
 
 		return $grid;

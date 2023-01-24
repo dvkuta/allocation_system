@@ -1,6 +1,9 @@
 <?php
 namespace App\Tools;
 
+use App\Model\Project\ProjectUser\EState;
+use UnitEnum;
+
 class Utils
 {
     public static function transformId(?string $id = null): ?int
@@ -12,6 +15,17 @@ class Utils
         if(!is_numeric($id)) return null;
 
         return intval($id);
+    }
+
+    public static function getEnumValuesAsArray(array $enums)
+    {
+        $resultArray = [];
+        foreach ($enums as $case)
+        {
+            bdump($case);
+            $resultArray[$case->value] = $case->value;
+        }
+        return $resultArray;
     }
 
 }
