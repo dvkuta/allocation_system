@@ -58,16 +58,17 @@ class BaseRepository
      * Vrací všechny řádky z tabulky.
      * @return \Nette\Database\Table\Selection
      */
-    public function findAll()
+    public function findAll(): Selection
     {
         return $this->getTable();
     }
 
     /**
      * Vrací řádky podle filtru, např. array('name' => 'John').
-     * @return \Nette\Database\Table\Selection
+     * @param array $by
+     * @return Selection
      */
-    public function findBy(array $by)
+    public function findBy(array $by): Selection
     {
         return $this->getTable()->where($by);
     }
@@ -75,9 +76,9 @@ class BaseRepository
     /**
      * Vrací záznamu podle INT primary key
      * @param mixed $id
-     * @return \Nette\Database\Table\ActiveRow|null
+     * @return ActiveRow|null
      */
-    public function findRow($id)
+    public function findRow($id): ?ActiveRow
     {
         return $this->getTable()->get((is_numeric($id) ? (int) $id : $id));
     }
@@ -87,7 +88,7 @@ class BaseRepository
      * @param array|\Traversable|Selection $data
      * @return ActiveRow|int|bool
      */
-    public function insert(iterable $data)
+    public function insert(iterable $data): bool|ActiveRow|int
     {
         return $this->getTable()->insert($data);
     }
@@ -114,7 +115,7 @@ class BaseRepository
      * Ulozi nebo updatne zaznam
      * @param array|\Traversable|Selection $data
      * @param mixed|null $id
-     * @return array|bool|int|iterable|\Nette\Database\Table\ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
+     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
      */
     public function save(iterable $data, $id = null)
     {
@@ -180,7 +181,7 @@ class BaseRepository
 
     /**
      * @param array|\Traversable|Selection $data
-     * @return array|bool|int|iterable|\Nette\Database\Table\ActiveRow|\Nette\Database\Table\Selection|\Traversable
+     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable
      */
     public function insertFiltered(iterable $data)
     {
@@ -192,7 +193,7 @@ class BaseRepository
     /**
      * @param array|\Traversable|Selection $data
      * @param int|null $id
-     * @return array|bool|int|iterable|\Nette\Database\Table\ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
+     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
      */
     public function saveFiltered(iterable $data, ?int $id = null)
     {

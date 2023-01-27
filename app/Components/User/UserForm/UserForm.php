@@ -4,6 +4,7 @@ namespace App\Components\User\UserForm;
 
 use App\Components\Base\BaseComponent;
 use App\Model\Exceptions\ProcessException;
+use App\Model\User\Role\RoleRepository;
 use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
@@ -32,26 +33,29 @@ class UserForm extends BaseComponent
     private ?int $id;
     private UserRepository $userRepository;
     private Translator $translator;
-    private UserRoleRepository $userRoleRepository;
+    private RoleRepository $roleRepository;
     private UserFacade $userFacade;
+    private UserRoleRepository $userRoleRepository;
 
     /**
      * @param UserRepository $userRepository
      */
     public function __construct(
-        ?int               $id,
-        UserRepository     $userRepository,
-        Translator         $translator,
+        ?int           $id,
+        UserRepository $userRepository,
+        Translator     $translator,
+        RoleRepository $roleRepository,
         UserRoleRepository $userRoleRepository,
-        UserFacade $userFacade,
+        UserFacade     $userFacade,
     )
     {
 
         $this->id = $id;
         $this->userRepository = $userRepository;
         $this->translator = $translator;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->roleRepository = $roleRepository;
         $this->userFacade = $userFacade;
+        $this->userRoleRepository = $userRoleRepository;
     }
 
     public function render()
@@ -60,8 +64,11 @@ class UserForm extends BaseComponent
 
         if (isset($this->id)) {
             $row = $this->userRepository->findRow($this->id);
+                //TODO
+            $roles =  $this->userRoleRepository->findRolesForUser($this->id);
 
             if ($row) {
+                $defaults['user_role'] = $roles;
                 $defaults = $row->toArray();
             } else {
                 throw new BadRequestException();
@@ -114,7 +121,11 @@ class UserForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 200);
 
-        $form->addSelect('user_role_id', 'app.user.role', $this->userRoleRepository->fetchDataForSelect());
+        $roles = $this->roleRepository->fetchDataForSelect();
+
+        $form->addCheckboxList('user_role', 'app.user.role', $roles )
+            ->setTranslator($this->translator)
+        ;
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -140,17 +151,17 @@ class UserForm extends BaseComponent
      */
     public function saveForm(Form $form, ArrayHash $values)
     {
-
+        //TODO
         try {
-
+            bdump($values);
             //vytvoreni uzivatele
             if($this->id === NULL)
             {
-                $this->userFacade->createUser($values, $this->id);
+           //     $this->userFacade->createUser($values, $this->id);
             }
             else
             {
-                $this->userFacade->editUser($values ,$this->id);
+             //   $this->userFacade->editUser($values ,$this->id);
             }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');

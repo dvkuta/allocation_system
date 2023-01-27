@@ -1,5 +1,6 @@
 services:
     - App\Model\User\UserRepository
-    - App\Model\User\Role\UserRoleRepository
+    - App\Model\User\Role\RoleRepository
     - App\Model\Project\ProjectRepository
     - App\Model\Project\ProjectUser\ProjectUserRepository
+    - App\Model\User\Role\UserRoleRepository

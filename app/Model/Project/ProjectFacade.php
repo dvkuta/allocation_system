@@ -3,7 +3,7 @@
 namespace App\Model\Project;
 
 use App\Model\Exceptions\ProcessException;
-use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\Role\RoleRepository;
 use App\Tools\Transaction;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;

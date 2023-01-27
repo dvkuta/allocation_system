@@ -4,7 +4,7 @@ namespace App\Components\Project\ProjectGrid;
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
-use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;

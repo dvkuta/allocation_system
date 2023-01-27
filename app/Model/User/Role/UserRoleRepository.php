@@ -14,7 +14,8 @@ class UserRoleRepository extends BaseRepository
     protected $tableName = self::TABLE_NAME;
 
     public const COL_ID = 'id';
-    public const COL_TYPE = 'type';
+    public const COL_USER_ID = 'user_id';
+    public const COL_ROLE_ID = 'role_id';
 
 
     public function __construct(
@@ -25,9 +26,20 @@ class UserRoleRepository extends BaseRepository
 
     }
 
-    public function fetchDataForSelect(): array
+
+    public function findRolesForUser(int $user_id): array
     {
-        return $this->findAll()->fetchPairs(self::COL_ID,self::COL_TYPE);
+        if($user_id <= 0)
+        {
+            return [];
+        }
+
+        $by = [self::COL_USER_ID => $user_id];
+
+        return $this->findBy($by)
+            ->joinWhere(RoleRepository::TABLE_NAME, 'role_id = role.id')
+            ->fetchPairs('role.id', 'role.type');
     }
+
 
 }

@@ -9,7 +9,7 @@ use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectRepository;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
 use App\Tools\Transaction;
@@ -38,7 +38,7 @@ class ProjectForm extends BaseComponent
     private ?int $id;
     private UserRepository $userRepository;
     private Translator $translator;
-    private UserRoleRepository $userRoleRepository;
+    private RoleRepository $userRoleRepository;
     private UserFacade $userFacade;
     private ProjectFacade $projectFacade;
     private ProjectRepository $projectRepository;

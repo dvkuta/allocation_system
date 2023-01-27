@@ -16,7 +16,6 @@ class UserRepository extends BaseRepository
     public const TABLE_NAME = 'user';
 
     public const COL_ID = 'id';
-    public const COL_USER_ROLE_ID = 'user_role_id';
     public const COL_FIRSTNAME = 'firstname';
     public const COL_LASTNAME = 'lastname';
     public const COL_EMAIL ='email';
@@ -69,7 +68,6 @@ class UserRepository extends BaseRepository
             self::COL_FIRSTNAME => $user->firstname,
             self::COL_LASTNAME => $user->lastname,
             self::COL_PASSWORD => $user->password,
-            self::COL_USER_ROLE_ID => $user->user_role_id,
             self::COL_WORKPLACE => $user->workplace
             ];
         return $this->saveFiltered($data);
@@ -82,7 +80,6 @@ class UserRepository extends BaseRepository
             self::COL_LOGIN => $user->login,
             self::COL_FIRSTNAME => $user->firstname,
             self::COL_LASTNAME => $user->lastname,
-            self::COL_USER_ROLE_ID => $user->user_role_id,
             self::COL_WORKPLACE => $user->workplace
         ];
 

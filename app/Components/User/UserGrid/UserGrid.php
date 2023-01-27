@@ -3,7 +3,7 @@ namespace App\Components\User\UserGrid;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
-use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
@@ -15,20 +15,18 @@ use Ublaboo\DataGrid\Row;
 
 class UserGrid extends BaseGrid
 {
-	private Explorer $explorer;
     private UserRepository $userRepository;
 
 
     /**
 	 * @param Explorer $explorer
 	 */
-	public function __construct(Explorer $explorer,
+	public function __construct(
                                 ITranslator $translator,
                                 UserRepository $userRepository,
     )
 	{
         parent::__construct($translator);
-		$this->explorer = $explorer;
         $this->userRepository = $userRepository;
     }
 
@@ -63,11 +61,11 @@ class UserGrid extends BaseGrid
             ->setSortable()
             ->setFilterText();
 
-		$grid->addColumnText('user_role.type', 'app.user.role')
+		/*$grid->addColumnText('user_role.type', 'app.user.role')
             ->setRenderer(function( ActiveRow $row) {
             return $this->translator->translate($row->user_role->type);
         });
-
+*/
         $grid->addAction("edit", 'app.actions.edit', ":edit");
 
         $grid->addAction('delete','app.actions.delete')
