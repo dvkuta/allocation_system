@@ -91,6 +91,7 @@ class UserForm extends BaseComponent
      */
     public function createComponentForm(): Form
     {
+
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));

@@ -5,7 +5,7 @@ namespace App\Model\User;
 use App\Model\Exceptions\ProcessException;
 use App\Model\User\Role\ERole;
 use App\Model\User\Role\RoleRepository;
-use App\Tools\Transaction;
+use App\Tools\ITransaction;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -15,13 +15,13 @@ class UserFacade
 {
     private UserRepository $userRepository;
     private RoleRepository $userRoleRepository;
-    private Transaction $transaction;
+    private ITransaction $transaction;
     private Passwords $passwords;
 
     public function __construct(
         UserRepository $userRepository,
         RoleRepository $userRoleRepository,
-        Transaction    $transaction,
+        ITransaction    $transaction,
         Passwords      $passwords,
     )
     {
