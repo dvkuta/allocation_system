@@ -72,4 +72,5 @@ projectAllocation:
     allocation: 'Alokace (počet hodin za týden)'
     description: 'Poznámka'
     state: 'Stav'
+    editAllocationError: 'Nelze upravit neexistující alokaci'
 

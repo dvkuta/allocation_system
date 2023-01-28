@@ -72,3 +72,4 @@ projectAllocation:
     allocation: 'Allocation (total number of hours per week)'
     description: 'Description'
     state: 'State'
+    editAllocationError: 'Cant edit non existent allocation'

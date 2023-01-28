@@ -28,9 +28,4 @@ final class HomepagePresenter extends AbstractPresenter
 	use TEmptyLayoutView;
 
 
-    public function createComponentGrid(): DataGrid
-    {
-        // TODO: Implement createComponentGrid() method.
-        return new DataGrid();
-    }
 }

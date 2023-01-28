@@ -4,6 +4,7 @@ namespace App\Model\User\Role;
 
 
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 
 
@@ -36,9 +37,42 @@ class UserRoleRepository extends BaseRepository
 
         $by = [self::COL_USER_ID => $user_id];
 
-        return $this->findBy($by)
+
+        return $this->findBy($by)->select('role_id, type')
             ->joinWhere(RoleRepository::TABLE_NAME, 'role_id = role.id')
-            ->fetchPairs('role.id', 'role.type');
+            ->fetchPairs('role_id', 'type');
+    }
+
+    /**
+     * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
+     * @param ERole $role
+     * @return array
+     */
+    public function getAllUsersInRole(ERole $role): array
+    {
+        $users = $this->findAll()
+            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName')
+            ->where('role_id',$role->value);
+
+        return $users->fetchPairs(UserRepository::COL_ID, 'fullName');
+    }
+
+    public function saveUserRoles(array $roles, int $userId)
+    {
+        if(empty($roles))
+        {
+            return;
+        }
+
+        $this->findAll()->where([self::COL_USER_ID => $userId])->delete();
+        $insertData = [];
+        foreach ($roles as $role)
+        {
+            $insertData[] = [self::COL_USER_ID => $userId, self::COL_ROLE_ID => $role];
+        }
+        $this->insert($insertData);
+
+
     }
 
 

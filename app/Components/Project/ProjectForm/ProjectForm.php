@@ -10,6 +10,7 @@ use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectRepository;
 use App\Model\User\Role\ERole;
 use App\Model\User\Role\RoleRepository;
+use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
 use App\Tools\Transaction;
@@ -38,10 +39,9 @@ class ProjectForm extends BaseComponent
     private ?int $id;
     private UserRepository $userRepository;
     private Translator $translator;
-    private RoleRepository $userRoleRepository;
-    private UserFacade $userFacade;
     private ProjectFacade $projectFacade;
     private ProjectRepository $projectRepository;
+    private UserRoleRepository $userRoleRepository;
 
 
     public function __construct(
@@ -50,6 +50,7 @@ class ProjectForm extends BaseComponent
         UserFacade            $userFacade,
         ProjectFacade     $projectFacade,
         ProjectRepository $projectRepository,
+        UserRoleRepository $userRoleRepository,
     )
     {
 
@@ -57,7 +58,7 @@ class ProjectForm extends BaseComponent
         $this->translator = $translator;
         $this->projectFacade = $projectFacade;
         $this->projectRepository = $projectRepository;
-        $this->userFacade = $userFacade;
+        $this->userRoleRepository = $userRoleRepository;
     }
 
     public function render()
@@ -98,7 +99,7 @@ class ProjectForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
 
-        $projectManagers = $this->userFacade->getAllUsersInfoForSelect(ERole::PROJECT_MANAGER);
+        $projectManagers = $this->userRoleRepository->getAllUsersInRole(ERole::project_manager);
         $form->addSelect('user_id', 'app.project.user_id', $projectManagers)
         ->setTranslator(null);
 

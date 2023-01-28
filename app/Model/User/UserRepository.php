@@ -60,7 +60,7 @@ class UserRepository extends BaseRepository
         return $this->findBy($by)->count() > 0;
     }
 
-    public function saveUser(ArrayHash $user): ActiveRow|bool|int
+    public function saveUser(ArrayHash $user): array
     {
         $data = [
             self::COL_EMAIL => $user->email,
@@ -70,10 +70,11 @@ class UserRepository extends BaseRepository
             self::COL_PASSWORD => $user->password,
             self::COL_WORKPLACE => $user->workplace
             ];
-        return $this->saveFiltered($data);
+
+        return $this->saveFiltered($data)->toArray();
     }
 
-    public function updateUser(ArrayHash $user, int $userId): ActiveRow|bool|int
+    public function updateUser(ArrayHash $user, int $userId): array
     {
         $data = [
             self::COL_EMAIL => $user->email,
@@ -88,7 +89,7 @@ class UserRepository extends BaseRepository
             $data[self::COL_PASSWORD] = $user->password;
         }
 
-        return $this->saveFiltered($data, $userId);
+        return $this->saveFiltered($data, $userId)->toArray();
     }
 
 }

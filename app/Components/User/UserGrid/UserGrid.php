@@ -3,7 +3,9 @@ namespace App\Components\User\UserGrid;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
+use App\Model\User\Role\IRoleRepository;
 use App\Model\User\Role\RoleRepository;
+use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
@@ -16,6 +18,7 @@ use Ublaboo\DataGrid\Row;
 class UserGrid extends BaseGrid
 {
     private UserRepository $userRepository;
+    private IRoleRepository $roleRepository;
 
 
     /**
@@ -24,10 +27,12 @@ class UserGrid extends BaseGrid
 	public function __construct(
                                 ITranslator $translator,
                                 UserRepository $userRepository,
+                                IRoleRepository $roleRepository
     )
 	{
         parent::__construct($translator);
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
     }
 
 
@@ -35,12 +40,11 @@ class UserGrid extends BaseGrid
 	public function createComponentGrid(): DataGrid
 	{
 		$grid = parent::createGrid();
-
 		$grid->setDataSource($this->userRepository->findAll());
 
 		$grid->addColumnText('id', 'app.user.id');
 
-        $grid->addColumnText('lastname', 'app.user.lastname')
+        $grid->addColumnLink('lastname', 'app.user.lastname', 'Project:user')
             ->setSortable()
             ->setFilterText();
 
@@ -61,17 +65,22 @@ class UserGrid extends BaseGrid
             ->setSortable()
             ->setFilterText();
 
-		/*$grid->addColumnText('user_role.type', 'app.user.role')
-            ->setRenderer(function( ActiveRow $row) {
-            return $this->translator->translate($row->user_role->type);
-        });
-*/
+        $grid->addColumnText('role_id', 'app.user.role', ':user_role.role_id')
+        ->setRenderer(function (ActiveRow $row)
+            {
+                $roles = $row->related('user_role')
+                    ->joinWhere($this->roleRepository->getTableName(),'role_id = role.id')
+                    ->select('type')->fetchPairs('type','type');
+                $roles = array_map(function ($role) {return $this->translator->translate($role);}, $roles);
+                return implode(', ', $roles);
+            });
+
         $grid->addAction("edit", 'app.actions.edit', ":edit");
 
         $grid->addAction('delete','app.actions.delete')
             ->setConfirmation(
                 new StringConfirmation($this->translator->translate('ublaboo_datagrid.delete_record_quote'))
-            );;
+            );
 
 
 		return $grid;

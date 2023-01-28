@@ -5,6 +5,7 @@ namespace App\Model\User;
 use App\Model\Exceptions\ProcessException;
 use App\Model\User\Role\ERole;
 use App\Model\User\Role\RoleRepository;
+use App\Model\User\Role\UserRoleRepository;
 use App\Tools\ITransaction;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
@@ -14,22 +15,25 @@ use Tracy\ILogger;
 class UserFacade
 {
     private UserRepository $userRepository;
-    private RoleRepository $userRoleRepository;
+    private RoleRepository $roleRepository;
     private ITransaction $transaction;
     private Passwords $passwords;
+    private UserRoleRepository $userRoleRepository;
 
     public function __construct(
         UserRepository $userRepository,
-        RoleRepository $userRoleRepository,
+        RoleRepository $roleRepository,
         ITransaction    $transaction,
+        UserRoleRepository $userRoleRepository,
         Passwords      $passwords,
     )
     {
 
         $this->userRepository = $userRepository;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->roleRepository = $roleRepository;
         $this->transaction = $transaction;
         $this->passwords = $passwords;
+        $this->userRoleRepository = $userRoleRepository;
     }
 
     /**
@@ -77,7 +81,9 @@ class UserFacade
 
             $user->password = $this->passwords->hash($user->password);
 
-            $this->userRepository->saveUser($user, $userId);
+            $savedUser = $this->userRepository->saveUser($user);
+            $this->userRoleRepository->saveUserRoles($user->user_role, $savedUser['id']);
+
 
             $this->transaction->commit();
 
@@ -118,6 +124,7 @@ class UserFacade
             }
 
             $this->userRepository->updateUser($user,$userId);
+            $this->userRoleRepository->saveUserRoles($user->user_role, $userId);
 
             $this->transaction->commit();
 
@@ -138,11 +145,12 @@ class UserFacade
     public function getAllUsersInfoForSelect(?ERole $role = null): array
     {
         $users = $this->userRepository->findAll()
-            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName' );
+            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName');
 
         if($role !== null)
         {
-            $users->where('user_role.type', $role->value);
+            $users->joinWhere('user_role', 'user.id = user_role.id')
+                ->where('user_role.role_id', $role->value);
         }
 
         return $users->fetchPairs(UserRepository::COL_ID, 'fullName');

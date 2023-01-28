@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Project\ProjectUser;
+namespace App\Model\Project\ProjectUserAllocation;
 
 
 use App\Model\Repository\Base\BaseRepository;
@@ -9,15 +9,18 @@ use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
 
-class ProjectUserRepository extends BaseRepository
+class ProjectUserAllocationRepository extends BaseRepository
 {
 
-    public const TABLE_NAME = 'project_user';
+    public const TABLE_NAME = 'project_user_allocation';
 
     public const COL_ID = 'id';
-    public const COL_USER_ID = 'user_id';
-    public const COL_PROJECT_ID = 'project_id';
-
+    public const COL_PROJECT_USER_ID = 'project_user_id';
+    public const COL_ALLOCATION = 'allocation';
+    public const COL_FROM = 'from';
+    public const COL_TO = 'to';
+    public const COL_DESCRIPTION = 'description';
+    public const COL_STATE = 'state';
 
     protected $tableName = self::TABLE_NAME;
 

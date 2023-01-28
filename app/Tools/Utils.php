@@ -17,12 +17,11 @@ class Utils
         return intval($id);
     }
 
-    public static function getEnumValuesAsArray(array $enums)
+    public static function getEnumValuesAsArray(array $enums): array
     {
         $resultArray = [];
         foreach ($enums as $case)
         {
-            bdump($case);
             $resultArray[$case->value] = $case->value;
         }
         return $resultArray;

@@ -1,10 +1,11 @@
 <?php
-namespace App\Components\Project\ProjectUserGrid;
+namespace App\Components\Project\ProjectUserAllocationGrid;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
@@ -16,26 +17,22 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Row;
 
-class ProjectUserGrid extends BaseGrid
+class ProjectUserAllocationGrid extends BaseGrid
 {
-    private ?int $projectId;
-    private ?int $userId;
-
-    private ProjectUserRepository $projectUserRepository;
+    private ?int $id;
+    private ProjectUserAllocationRepository $allocationRepository;
 
 
     public function __construct(
-        ?int $projectId,
-        ?int $userId,
+        ?int $id,
         ITranslator           $translator,
-        ProjectUserRepository $projectUserRepository,
+        ProjectUserAllocationRepository $allocationRepository,
     )
 	{
         parent::__construct($translator);
 
-        $this->projectUserRepository = $projectUserRepository;
-        $this->projectId = $projectId;
-        $this->userId = $userId;
+        $this->id = $id;
+        $this->allocationRepository = $allocationRepository;
     }
 
 
@@ -43,16 +40,6 @@ class ProjectUserGrid extends BaseGrid
 	public function createComponentGrid(): DataGrid
 	{
 		$grid = parent::createGrid();
-
-        if(isset($this->projectId))
-        {
-            $grid->setDataSource($this->projectUserRepository->getAllUsersOnProject($this->projectId));
-        }
-
-        if(isset($this->userId))
-        {
-            $grid->setDataSource($this->projectUserRepository->getAllUserProjects($this->userId));
-        }
 
 
 		$grid->addColumnText('id', 'app.projectAllocation.id');
@@ -90,26 +77,12 @@ class ProjectUserGrid extends BaseGrid
 		return $grid;
 	}
 
-    public function handleDelete(int $id)
-    {
-        //todo
-        $this->projectRepository->delete($id);
-        if($this->presenter->isAjax()) {
-            /** @var BaseGrid $grid */
-            $grid = $this["grid"];
-
-            $grid->reload();
-        }
-        $this->presenter->flashMessage("Smazání proběhlo úspěšně", "bg-success");
-
-    }
-
 
 }
 
 
-interface IProjectUserGridFactory {
+interface IProjectUserAllocationGridFactory {
 
-    public function create(?int $projectId = null, ?int $userId = null): ProjectUserGrid;
+    public function create(?int $id = null): ProjectUserAllocationGrid;
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Components\Project\ProjectUserForm;
+namespace App\Components\Project\ProjectUserAllocationForm;
 
 use App\Components\Base\BaseComponent;
 use App\Model\Exceptions\ProcessException;
@@ -23,7 +23,7 @@ use Nette\Utils\ArrayHash;
  * Form component class for user CRUD
  * @package App\Components
  */
-class ProjectUserForm extends BaseComponent
+class ProjectUserAllocationForm extends BaseComponent
 {
 
     private ?int $id;
@@ -58,14 +58,27 @@ class ProjectUserForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
+            if ($this->editAllocation === false)
+            {
             $row = $this->projectRepository->findRow($this->id);
-            if ($row) {
-                //TODO REPOSITORY
-                $defaults['name'] = $row->name;
-            } else {
-                throw new BadRequestException();
+                if ($row) {
+                    $defaults[ProjectRepository::COL_NAME] = $row[ProjectRepository::COL_NAME];
+                } else {
+                    throw new BadRequestException();
+                }
             }
+            else{
+                $row = $this->projectUserRepository->findRow($this->id);
 
+                if ($row) {
+                    //TODO REPOSITORY
+                    $defaults = $row->toArray();
+                    $defaults['user'] = $row->user->firstname . ' ' . $row->user->lastname;
+                    $defaults['name'] = $row->project->name;
+                } else {
+                    throw new BadRequestException();
+                }
+            }
 
         }
 
@@ -94,9 +107,34 @@ class ProjectUserForm extends BaseComponent
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
+        if($this->editAllocation)
+        {
+            $form->addText('user', 'app.projectAllocation.user_id')
+                ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
+                ->getControlPrototype()->setAttribute('readonly','readonly');
+        }
+        else
+        {
         $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
+        }
+
+        if($this->editAllocation)
+        {
+       $form->addDate('from', 'app.projectAllocation.from')
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+
+        $form->addDate('to', 'app.projectAllocation.to')
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+
+        $form->addInteger('allocation', 'app.projectAllocation.allocation');
+        }
+        //$form->addTextArea('description', 'app.projectAllocation.description');
+
+        $states = Utils::getEnumValuesAsArray(EState::cases());
+
+       // $form->addSelect('state', 'app.projectAllocation.state', $states);
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -109,8 +147,20 @@ class ProjectUserForm extends BaseComponent
         $submitCell->addSubmit('submit', 'app.baseForm.save')
             ->setBtnClass('btn-success');
 
+
+        $form->onValidate[] = [$this, 'validateForm'];
         $form->onSuccess[] = [$this, 'saveForm'];
         return $form;
+    }
+
+    public function validateForm(Form $form, ArrayHash $values)
+    {
+        if(!empty($values['to']))
+        {
+            if($values['from'] >= $values['to']) {
+                $form->addError("app.project.dateError");
+            }
+        }
     }
 
 
@@ -129,7 +179,17 @@ class ProjectUserForm extends BaseComponent
 
         try {
 
-            $this->projectUserFacade->saveUserToProject($values, $this->id);
+
+            if($this->editAllocation)
+            {
+                bdump($this->id);
+
+                $this->projectUserFacade->editAllocation($values, $this->id);
+            }
+            else //akce sekretarky
+            {
+                $this->projectUserFacade->saveUserToProject($values, $this->id);
+            }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");
@@ -140,7 +200,7 @@ class ProjectUserForm extends BaseComponent
     }
 }
 
-interface IProjectUserFormFactory
+interface IProjectUserAllocationFormFactory
 {
-    public function create(?int $id, bool $editAllocation = false): ProjectUserForm;
+    public function create(?int $id, bool $editAllocation = false): ProjectUserAllocationForm;
 }

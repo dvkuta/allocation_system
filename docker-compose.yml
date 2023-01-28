@@ -25,10 +25,5 @@ services:
       MYSQL_DATABASE: allocation_system
       DB_HOST: 127.0.0.1
 
-  adminer:
-    image: dockette/adminer:dg
-    ports:
-      - "8081:80"
-
 volumes:
   my-database:

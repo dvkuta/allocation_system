@@ -6,6 +6,7 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\SmartObject;
+use Traversable;
 
 class BaseRepository
 {
@@ -42,7 +43,7 @@ class BaseRepository
 
     /**
      * Vrací objekt reprezentující databázovou tabulku.
-     * @return \Nette\Database\Table\Selection
+     * @return Selection
      */
     protected function getTable()
     {
@@ -56,7 +57,7 @@ class BaseRepository
 
     /**
      * Vrací všechny řádky z tabulky.
-     * @return \Nette\Database\Table\Selection
+     * @return Selection
      */
     public function findAll(): Selection
     {
@@ -85,7 +86,7 @@ class BaseRepository
 
     /**
      * Vkládá data do tabulky
-     * @param array|\Traversable|Selection $data
+     * @param array|Traversable|Selection $data
      * @return ActiveRow|int|bool
      */
     public function insert(iterable $data): bool|ActiveRow|int
@@ -113,9 +114,9 @@ class BaseRepository
 
     /**
      * Ulozi nebo updatne zaznam
-     * @param array|\Traversable|Selection $data
+     * @param array|Traversable|Selection $data
      * @param mixed|null $id
-     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
+     * @return ActiveRow|bool|int|null
      */
     public function save(iterable $data, $id = null)
     {
@@ -147,7 +148,7 @@ class BaseRepository
             $tableName = $this->getTableName();
         }
 
-        $columns = $this->explorer->getConnection()->getSupplementalDriver()->getColumns($tableName);
+        $columns = $this->explorer->getConnection()->getDriver()->getColumns($tableName);
 
         $columnsResult = array();
 
@@ -161,7 +162,7 @@ class BaseRepository
 
     /**
      * Vrati odfiltrovana data tak, ze obsahuji indexy jen existujicich sloupcu v tabulce.
-     * @param array|\Traversable|Selection $data
+     * @param array|Traversable|Selection $data
      * @return mixed
      */
     protected function getFilteredData(iterable $data)
@@ -180,8 +181,8 @@ class BaseRepository
     }
 
     /**
-     * @param array|\Traversable|Selection $data
-     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable
+     * @param array|Traversable|Selection $data
+     * @return array|bool|int|iterable|ActiveRow|Selection|Traversable
      */
     public function insertFiltered(iterable $data)
     {
@@ -191,9 +192,9 @@ class BaseRepository
     }
 
     /**
-     * @param array|\Traversable|Selection $data
+     * @param array|Traversable|Selection $data
      * @param int|null $id
-     * @return array|bool|int|iterable|ActiveRow|\Nette\Database\Table\Selection|\Traversable|null
+     * @return array|bool|int|iterable|ActiveRow|Selection|Traversable|null
      */
     public function saveFiltered(iterable $data, ?int $id = null)
     {

@@ -4,3 +4,4 @@ services:
     - App\Model\Project\ProjectRepository
     - App\Model\Project\ProjectUser\ProjectUserRepository
     - App\Model\User\Role\UserRoleRepository
+    - App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository

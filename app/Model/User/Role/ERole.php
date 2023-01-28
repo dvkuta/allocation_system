@@ -2,13 +2,13 @@
 
 namespace App\Model\User\Role;
 
-enum ERole: string
+enum ERole: int
 {
-    case USER = 'user';
-    case SUPERIOR = 'superior' ;
-    case PROJECT_MANAGER = 'project_manager';
-    case DEPARTMENT_MANAGER = 'department_manager';
-    case SECRETARIAT = 'secretariat';
+    case user = 1;
+    case superior = 2 ;
+    case project_manager = 3;
+    case department_manager = 4;
+    case secretariat = 5;
 
 
 }

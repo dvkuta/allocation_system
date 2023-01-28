@@ -7,6 +7,10 @@ use App\Components\Project\ProjectForm\IProjectFormFactory;
 use App\Components\Project\ProjectForm\ProjectForm;
 use App\Components\Project\ProjectGrid\IProjectGridFactory;
 use App\Components\Project\ProjectGrid\ProjectGrid;
+use App\Components\Project\ProjectUserAllocationForm\IProjectUserAllocationFormFactory;
+use App\Components\Project\ProjectUserAllocationForm\ProjectUserAllocationForm;
+use App\Components\Project\ProjectUserAllocationGrid\IProjectUserAllocationGridFactory;
+use App\Components\Project\ProjectUserAllocationGrid\ProjectUserAllocationGrid;
 use App\Components\Project\ProjectUserForm\IProjectUserFormFactory;
 use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
@@ -24,12 +28,16 @@ final class ProjectPresenter extends AbstractPresenter
     private IProjectGridFactory $projectGridFactory;
     private IProjectUserFormFactory $projectUserFormFactory;
     private IProjectUserGridFactory $projectUserGridFactory;
+    private IProjectUserAllocationGridFactory $allocationGridFactory;
+    private IProjectUserAllocationFormFactory $allocationFormFactory;
 
     public function __construct(
         IProjectFormFactory $projectFormFactory,
         IProjectGridFactory $projectGridFactory,
         IProjectUserFormFactory $projectUserFormFactory,
-        IProjectUserGridFactory $IProjectUserGridFactory
+        IProjectUserGridFactory $IProjectUserGridFactory,
+        IProjectUserAllocationGridFactory $allocationGridFactory,
+        IProjectUserAllocationFormFactory $allocationFormFactory
 
     )
     {
@@ -39,6 +47,8 @@ final class ProjectPresenter extends AbstractPresenter
         $this->projectGridFactory = $projectGridFactory;
         $this->projectUserFormFactory = $projectUserFormFactory;
         $this->projectUserGridFactory = $IProjectUserGridFactory;
+        $this->allocationGridFactory = $allocationGridFactory;
+        $this->allocationFormFactory = $allocationFormFactory;
     }
 
 
@@ -62,10 +72,23 @@ final class ProjectPresenter extends AbstractPresenter
 
     public function actionDetail(int $id)
     {
-
+        bdump($id);
+        $link = $this->link('Project:addAllocation',$id);
+        bdump($link);
+        $this->template->addAllocationLink = $link;
     }
 
     public function actionEditAllocation(int $id)
+    {
+
+    }
+
+    public function actionUser(int $id)
+    {
+
+    }
+
+    public function actionAddAllocation(int $id)
     {
 
     }
@@ -106,8 +129,38 @@ final class ProjectPresenter extends AbstractPresenter
     public function createComponentProjectUserGrid(): ProjectUserGrid
     {
         $id = Utils::transformId($this->getParameter("id"));
-        $form = $this->projectUserGridFactory->create($id);
+        $action = $this->getAction();
+        $projectId = null;
+        $userId = null;
+
+        if ($action == 'detail')
+        {
+            $projectId = $id;
+        } else if ($action == 'user')
+        {
+            $userId = $id;
+        }
+
+        $form = $this->projectUserGridFactory->create($projectId, $userId);
         return $form;
+
+    }
+
+    public function createComponentProjectUserAllocationForm(): ProjectUserAllocationForm
+    {
+        $id = Utils::transformId($this->getParameter("id"));
+        $form = $this->allocationFormFactory->create($id);
+        return $form;
+
+    }
+
+
+    public function createComponentProjectUserAllocationGrid(): ProjectUserAllocationGrid
+    {
+        $id = Utils::transformId($this->getParameter("id"));
+
+        $grid = $this->allocationGridFactory->create($id);
+        return $grid;
 
     }
 

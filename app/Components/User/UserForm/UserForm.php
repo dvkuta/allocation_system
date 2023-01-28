@@ -63,13 +63,13 @@ class UserForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
+            //todo
             $row = $this->userRepository->findRow($this->id);
-                //TODO
             $roles =  $this->userRoleRepository->findRolesForUser($this->id);
-
             if ($row) {
-                $defaults['user_role'] = $roles;
+
                 $defaults = $row->toArray();
+                $defaults['user_role'] = array_flip($roles);
             } else {
                 throw new BadRequestException();
             }
@@ -123,10 +123,11 @@ class UserForm extends BaseComponent
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 200);
 
         $roles = $this->roleRepository->fetchDataForSelect();
+        bdump($roles);
+        $roles = array_map(function ($role) { return $this->translator->translate($role);}, $roles);
 
         $form->addCheckboxList('user_role', 'app.user.role', $roles )
-            ->setTranslator($this->translator)
-        ;
+            ->setTranslator(null);
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -158,11 +159,11 @@ class UserForm extends BaseComponent
             //vytvoreni uzivatele
             if($this->id === NULL)
             {
-           //     $this->userFacade->createUser($values, $this->id);
+                $this->userFacade->createUser($values, $this->id);
             }
             else
             {
-             //   $this->userFacade->editUser($values ,$this->id);
+                $this->userFacade->editUser($values ,$this->id);
             }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
