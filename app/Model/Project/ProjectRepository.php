@@ -46,5 +46,20 @@ class ProjectRepository extends BaseRepository
         $this->saveFiltered($data, $projectId);
     }
 
+    public function getProject(int $id): array
+    {
+        $project = $this->findRow($id);
+
+        if($project)
+        {
+            return $project->toArray();
+        }
+        else
+        {
+            return [];
+        }
+
+    }
+
 
 }

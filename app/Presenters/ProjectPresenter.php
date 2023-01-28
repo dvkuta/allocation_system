@@ -72,9 +72,7 @@ final class ProjectPresenter extends AbstractPresenter
 
     public function actionDetail(int $id)
     {
-        bdump($id);
         $link = $this->link('Project:addAllocation',$id);
-        bdump($link);
         $this->template->addAllocationLink = $link;
     }
 
@@ -112,16 +110,9 @@ final class ProjectPresenter extends AbstractPresenter
     public function createComponentProjectUserForm(): ProjectUserForm
     {
         $id = Utils::transformId($this->getParameter("id"));
-        $editAllocation = false;
-        $action = $this->getAction();
-
-        if($action === 'editAllocation')
-        {
-            $editAllocation = true;
-        }
 
 
-        $form = $this->projectUserFormFactory->create($id, $editAllocation);
+        $form = $this->projectUserFormFactory->create($id);
         return $form;
 
     }
@@ -148,8 +139,11 @@ final class ProjectPresenter extends AbstractPresenter
 
     public function createComponentProjectUserAllocationForm(): ProjectUserAllocationForm
     {
+
+        $action = $this->getAction();
+        $editAllocation = $action === 'editAllocation';
         $id = Utils::transformId($this->getParameter("id"));
-        $form = $this->allocationFormFactory->create($id);
+        $form = $this->allocationFormFactory->create($id, $editAllocation);
         return $form;
 
     }

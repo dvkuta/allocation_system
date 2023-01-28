@@ -8,6 +8,8 @@ use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
 use App\Tools\Utils;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
@@ -29,58 +31,62 @@ class ProjectUserAllocationForm extends BaseComponent
     private ?int $id;
     private bool $editAllocation;
     private Translator $translator;
-
-    private ProjectRepository $projectRepository;
     private ProjectUserRepository $projectUserRepository;
-    private ProjectUserFacade $projectUserFacade;
+    private ProjectRepository $projectRepository;
+    private ProjectUserAllocationFacade $allocationFacade;
+    private ProjectUserAllocationRepository $allocationRepository;
 
 
     public function __construct(
         ?int                  $id,
         bool $editAllocation,
         Translator            $translator,
-        ProjectRepository $projectRepository,
         ProjectUserRepository $projectUserRepository,
-        ProjectUserFacade $projectUserFacade
+        ProjectRepository $projectRepository,
+        ProjectUserAllocationFacade $allocationFacade,
+        ProjectUserAllocationRepository $allocationRepository,
     )
     {
 
         $this->id = $id;
         $this->editAllocation = $editAllocation;
         $this->translator = $translator;
-        $this->projectRepository = $projectRepository;
         $this->projectUserRepository = $projectUserRepository;
-        $this->projectUserFacade = $projectUserFacade;
+        $this->projectRepository = $projectRepository;
+        $this->allocationFacade = $allocationFacade;
+        $this->allocationRepository = $allocationRepository;
     }
 
+    /**
+     * @throws BadRequestException
+     */
     public function render()
     {
         $defaults = array();
 
-        if (isset($this->id)) {
-            if ($this->editAllocation === false)
+        if (isset($this->id) && $this->editAllocation === false) {
+
+            $project = $this->projectRepository->getProject($this->id);
+
+            if(empty($project))
             {
-            $row = $this->projectRepository->findRow($this->id);
-                if ($row) {
-                    $defaults[ProjectRepository::COL_NAME] = $row[ProjectRepository::COL_NAME];
-                } else {
-                    throw new BadRequestException();
-                }
-            }
-            else{
-                $row = $this->projectUserRepository->findRow($this->id);
-
-                if ($row) {
-                    //TODO REPOSITORY
-                    $defaults = $row->toArray();
-                    $defaults['user'] = $row->user->firstname . ' ' . $row->user->lastname;
-                    $defaults['name'] = $row->project->name;
-                } else {
-                    throw new BadRequestException();
-                }
+                throw new BadRequestException();
             }
 
+            $defaults['projectName'] = $project['name'];
         }
+
+        if(isset($this->id) && $this->editAllocation === true)
+        {
+            $allocation = $this->allocationRepository->getAllocationData($this->id);
+            if(empty($allocation))
+            {
+                throw new BadRequestException();
+            }
+
+            $defaults = $allocation;
+        }
+
 
         // nastaveni defaultnich hodnot formulare
         if (!empty($defaults)) {
@@ -102,39 +108,39 @@ class ProjectUserAllocationForm extends BaseComponent
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
 
-        $form->addText('name', 'app.projectAllocation.name')
+        $form->addText('projectName', 'app.projectAllocation.name')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
         if($this->editAllocation)
         {
-            $form->addText('user', 'app.projectAllocation.user_id')
+            $form->addText('userFullName', 'app.projectAllocation.user_id')
                 ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
                 ->getControlPrototype()->setAttribute('readonly','readonly');
         }
         else
         {
-        $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
+        $users = $this->projectUserRepository->getAllUsersInfoOnProject($this->id);
+        bdump($users);
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
         }
 
-        if($this->editAllocation)
-        {
+
        $form->addDate('from', 'app.projectAllocation.from')
-            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
-
+//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+;
         $form->addDate('to', 'app.projectAllocation.to')
-            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
-
+//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+;
         $form->addInteger('allocation', 'app.projectAllocation.allocation');
-        }
-        //$form->addTextArea('description', 'app.projectAllocation.description');
+
+        $form->addTextArea('description', 'app.projectAllocation.description');
 
         $states = Utils::getEnumValuesAsArray(EState::cases());
-
-       // $form->addSelect('state', 'app.projectAllocation.state', $states);
+        $states = array_map(function ($state) {return $this->translator->translate('app.projectAllocation.'.$state);}, $states);
+        $form->addSelect('state', 'app.projectAllocation.state', $states);
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -177,19 +183,24 @@ class ProjectUserAllocationForm extends BaseComponent
             $values['to'] = null;
         }
 
+        if(empty($values['from']))
+        {
+            $values['from'] = null;
+        }
+
         try {
 
-
-            if($this->editAllocation)
-            {
-                bdump($this->id);
-
-                $this->projectUserFacade->editAllocation($values, $this->id);
-            }
-            else //akce sekretarky
-            {
-                $this->projectUserFacade->saveUserToProject($values, $this->id);
-            }
+            $this->allocationFacade->createAllocation($values, $this->id);
+//            if($this->editAllocation)
+//            {
+//                bdump($this->id);
+//
+//                $this->projectUserFacade->editAllocation($values, $this->id);
+//            }
+//            else //akce sekretarky
+//            {
+//                $this->projectUserFacade->saveUserToProject($values, $this->id);
+//            }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");

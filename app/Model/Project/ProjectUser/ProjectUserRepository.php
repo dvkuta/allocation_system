@@ -4,6 +4,7 @@ namespace App\Model\Project\ProjectUser;
 
 
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
@@ -63,6 +64,42 @@ class ProjectUserRepository extends BaseRepository
     {
         return $this->findAll()->where(self::COL_PROJECT_ID, $projectId);
 
+    }
+
+    /**
+     * Vrati pole id zaznamu, ktere reprezentuji clenstvi useru v konkretnim projektu s projektem $projectId
+     * @param int $projectId
+     * @return array
+     */
+    public function getAllUsersOnProjectIds(int $projectId): array
+    {
+        return $this->findAll()->select(self::COL_ID)->where(self::COL_PROJECT_ID, $projectId)->fetchAssoc('id');
+
+    }
+
+    public function getAllUsersInfoOnProject(int $projectId): array
+    {
+        $data = $this->getAllUsersOnProject($projectId)
+            ->joinWhere(UserRepository::TABLE_NAME, 'user.id = user_id')
+            ->select('user.id, CONCAT_WS(" ", firstname, lastname) AS fullName')
+            ->fetchPairs('id','fullName');
+
+        return $data;
+
+    }
+
+    public function isUserOnProject(int $userId, int $projectId): int
+    {
+        $by = [self::COL_USER_ID => $userId, self::COL_PROJECT_ID => $projectId];
+        $data = $this->findBy($by)->fetch();
+        if($data)
+        {
+            return $data[self::COL_ID];
+        }
+        else
+        {
+            return -1;
+        }
     }
 
 

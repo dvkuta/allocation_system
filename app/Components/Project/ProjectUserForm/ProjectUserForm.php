@@ -27,7 +27,6 @@ class ProjectUserForm extends BaseComponent
 {
 
     private ?int $id;
-    private bool $editAllocation;
     private Translator $translator;
 
     private ProjectRepository $projectRepository;
@@ -37,7 +36,6 @@ class ProjectUserForm extends BaseComponent
 
     public function __construct(
         ?int                  $id,
-        bool $editAllocation,
         Translator            $translator,
         ProjectRepository $projectRepository,
         ProjectUserRepository $projectUserRepository,
@@ -46,7 +44,6 @@ class ProjectUserForm extends BaseComponent
     {
 
         $this->id = $id;
-        $this->editAllocation = $editAllocation;
         $this->translator = $translator;
         $this->projectRepository = $projectRepository;
         $this->projectUserRepository = $projectUserRepository;
@@ -142,5 +139,5 @@ class ProjectUserForm extends BaseComponent
 
 interface IProjectUserFormFactory
 {
-    public function create(?int $id, bool $editAllocation = false): ProjectUserForm;
+    public function create(?int $id): ProjectUserForm;
 }

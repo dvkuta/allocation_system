@@ -3,8 +3,11 @@
 namespace App\Model\Project\ProjectUserAllocation;
 
 
+use App\Model\Project\ProjectRepository;
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
@@ -33,39 +36,46 @@ class ProjectUserAllocationRepository extends BaseRepository
 
     }
 
-    public function saveUserToProject(ArrayHash $formValues, ?int $projectId)
+    public function getAllocationData(int $id): array
+    {
+        $allocation = $this->findRow($id);
+
+        if($allocation)
+        {
+            /** @var ActiveRow $user */
+            $user = $allocation->project_user->user;
+            /** @var ActiveRow $user */
+            $project = $allocation->project_user->project;
+
+            $allocation = $allocation->toArray();
+            $allocation['projectName'] = $project[ProjectRepository::COL_NAME];
+            $allocation['userFullName'] = $user[UserRepository::COL_FIRSTNAME] . ' ' . $user[UserRepository::COL_LASTNAME];
+            return $allocation;
+        }
+        else
+        {
+            return [];
+        }
+    }
+
+    public function saveAllocation(ArrayHash $allocation, int $projectUserId)
     {
         $data = [
-            self::COL_USER_ID => $formValues->user_id,
-            self::COL_PROJECT_ID => $projectId,
+            self::COL_PROJECT_USER_ID => $projectUserId,
+            self::COL_ALLOCATION => $allocation[self::COL_ALLOCATION],
+            self::COL_FROM => $allocation[self::COL_FROM],
+            self::COL_TO => $allocation[self::COL_TO],
+            self::COL_DESCRIPTION => $allocation[self::COL_DESCRIPTION],
+            self::COL_STATE => $allocation[self::COL_STATE]
         ];
 
         $this->saveFiltered($data);
     }
 
-    public function getAllUsersThatDoesNotWorkOnProject(int $projectId): array
+    public function getAllAllocationsOnProject( array $usersOnProjectIds): Selection
     {
-        $users = $this->explorer->query('select user.id, CONCAT_WS(" ", firstname, lastname) as fullName
-            from user
-            where  user.id not in
-            (select user_id
-            from project_user
-            where project_id = ? );', $projectId)->fetchPairs('id', 'fullName');
-
-        return $users;
-
-    }
-
-    public function getAllUserProjects(int $userId): Selection
-    {
-        $by = [self::COL_USER_ID => $userId];
+        $by = [self::COL_PROJECT_USER_ID => $usersOnProjectIds];
         return $this->findBy($by);
-    }
-
-    public function getAllUsersOnProject(int $projectId): Selection
-    {
-        return $this->findAll()->where(self::COL_PROJECT_ID, $projectId);
-
     }
 
 

@@ -73,4 +73,10 @@ projectAllocation:
     description: 'Poznámka'
     state: 'Stav'
     editAllocationError: 'Nelze upravit neexistující alokaci'
+    active: 'Aktivní'
+    draft: 'Předloha'
+    cancel: 'Zrušený'
+    projectNotExists: 'Projekt neexistuje.'
+    userNotOnProject: 'Uživatel není na projektu přiřazen'
+    timeWindowError: 'Časové okno alokace není v součástí časového okna projektu. Zkontrolujte časové meze.'
 

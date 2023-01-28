@@ -88,6 +88,11 @@ class UserFacade
             $this->transaction->commit();
 
         }
+        catch (ProcessException $e)
+        {
+            $this->transaction->rollback();
+            throw $e;
+        }
         catch (\PDOException $e)
         {
             $this->transaction->rollback();
@@ -129,6 +134,11 @@ class UserFacade
             $this->transaction->commit();
 
         }
+        catch (ProcessException $e)
+        {
+            $this->transaction->rollback();
+            throw $e;
+        }
         catch (\PDOException $e)
         {
             $this->transaction->rollback();
@@ -137,22 +147,4 @@ class UserFacade
         }
     }
 
-    /**
-     * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
-     * @param ERole|null $role
-     * @return array
-     */
-    public function getAllUsersInfoForSelect(?ERole $role = null): array
-    {
-        $users = $this->userRepository->findAll()
-            ->select('user.id, CONCAT_WS( " ", firstname, lastname) AS fullName');
-
-        if($role !== null)
-        {
-            $users->joinWhere('user_role', 'user.id = user_role.id')
-                ->where('user_role.role_id', $role->value);
-        }
-
-        return $users->fetchPairs(UserRepository::COL_ID, 'fullName');
-    }
 }

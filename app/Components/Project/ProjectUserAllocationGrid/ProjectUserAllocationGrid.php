@@ -5,6 +5,7 @@ use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
@@ -20,19 +21,21 @@ use Ublaboo\DataGrid\Row;
 class ProjectUserAllocationGrid extends BaseGrid
 {
     private ?int $id;
-    private ProjectUserAllocationRepository $allocationRepository;
+    private ProjectUserAllocationFacade $allocationFacade;
 
 
     public function __construct(
         ?int $id,
         ITranslator           $translator,
-        ProjectUserAllocationRepository $allocationRepository,
+        ProjectUserAllocationFacade $allocationFacade
+
     )
 	{
         parent::__construct($translator);
 
         $this->id = $id;
-        $this->allocationRepository = $allocationRepository;
+
+        $this->allocationFacade = $allocationFacade;
     }
 
 
@@ -41,21 +44,21 @@ class ProjectUserAllocationGrid extends BaseGrid
 	{
 		$grid = parent::createGrid();
 
-
+        $grid->setDataSource($this->allocationFacade->getProjectUserAllocationGridSelection($this->id));
 		$grid->addColumnText('id', 'app.projectAllocation.id');
 
-        if(isset($this->userId))
-        {
-            $grid->addColumnText('project_id','app.projectAllocation.name', 'project.name');
-        }
+
+//        $grid->addColumnText('project_id','app.projectAllocation.name', 'project_user.project.name');
+
 
         $grid->addColumnText('user_id', 'app.projectAllocation.user_id')
             ->setRenderer(function( ActiveRow $row) {
-                return $row->user->firstname . " " . $row->user->lastname ;
-            })
-            ->setSortable();
+                return $row->project_user->user->firstname . " " . $row->project_user->user->lastname ;
+            });
 
-        /*$grid->addColumnText('allocation','app.projectAllocation.allocation');
+        $grid->addColumnText('allocation','app.projectAllocation.allocation')
+        ->setSortable()
+        ->setFilterRange();
 
         $grid->addColumnDateTime('from', 'app.projectAllocation.from')
             ->setSortable();
@@ -64,12 +67,8 @@ class ProjectUserAllocationGrid extends BaseGrid
             ->setSortable();
 
         $grid->addColumnText('description', 'app.projectAllocation.description');
-        $grid->addColumnText('state', 'app.projectAllocation.state');*/
+        $grid->addColumnText('state', 'app.projectAllocation.state');
 
-//		$grid->addColumnText('user_role.type', 'app.user.role')
-//            ->setRenderer(function( ActiveRow $row) {
-//            return $this->translator->translate($row->user_role->type);
-//        });
 
         $grid->addAction("edit", 'app.actions.edit', ":editAllocation");
 

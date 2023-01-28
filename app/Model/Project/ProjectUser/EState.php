@@ -6,7 +6,7 @@ enum EState: string
 {
     case ACTIVE = 'active';
     case DRAFT = 'draft' ;
-    case CANCELED = 'canceled';
+    case CANCEL = 'cancel';
 
 
 }

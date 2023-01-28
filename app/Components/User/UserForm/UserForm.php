@@ -93,6 +93,7 @@ class UserForm extends BaseComponent
     {
 
         $form = new BootstrapForm();
+        $form->setAutoShowValidation(false);
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
         $form->addText('login', 'app.user.login')
@@ -169,6 +170,7 @@ class UserForm extends BaseComponent
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("User:");
         } catch (ProcessException $e) {
+
             $form->addError($e->getMessage());
         }
 
