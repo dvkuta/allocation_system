@@ -36,19 +36,28 @@ create table project
 
 create table project_user
 (
-    id          int(11) unsigned auto_increment
+    id         int(11) unsigned auto_increment
         primary key,
-    user_id     int(11) unsigned                                     not null,
-    project_id  int(11) unsigned                                     not null,
-    allocation  tinyint(4) unsigned                  default 0       null,
-    `from`      date                                                 null,
-    `to`        date                                                 null,
-    description text                                                 null,
-    state       enum ('active', 'draft', 'canceled') default 'draft' not null,
+    user_id    int(11) unsigned not null,
+    project_id int(11) unsigned not null,
     constraint project_user_project_FK
         foreign key (project_id) references project (id),
     constraint project_user_user_FK
         foreign key (user_id) references user (id)
+);
+
+create table project_user_allocation
+(
+    id              int(11) unsigned auto_increment
+        primary key,
+    project_user_id int(11) unsigned                                   not null,
+    allocation      tinyint(4) unsigned                                not null,
+    `from`          date                                               not null,
+    `to`            date                                               not null,
+    description     text                                               null,
+    state           enum ('active', 'draft', 'cancel') default 'draft' not null,
+    constraint project_user_assignment_PROJECT_USER_FK
+        foreign key (project_user_id) references project_user (id)
 );
 
 create table user_role
