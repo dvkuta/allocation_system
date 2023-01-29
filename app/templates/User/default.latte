@@ -1,11 +1,11 @@
 {block name}
-    Správa uživatelů
+{_app.userPresenter.title}
 {/block}
 
 {block content}
     <div class="card">
         <div class="card-header">
-            <a n:href="User:add" class="btn btn-info">Přidat uživatele</a>
+            <a n:href="User:add" class="btn btn-info">{_app.userPresenter.addUser}</a>
         </div>
         <div class="card-body">
             {control userGrid}

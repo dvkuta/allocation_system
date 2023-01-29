@@ -141,7 +141,7 @@ class BaseRepository
      * @param string|null $tableName
      * @return array
      */
-    public function getColumns($tableName = null)
+    public function getColumns($tableName = null): array
     {
         if (!$tableName)
         {
@@ -182,21 +182,10 @@ class BaseRepository
 
     /**
      * @param array|Traversable|Selection $data
-     * @return array|bool|int|iterable|ActiveRow|Selection|Traversable
-     */
-    public function insertFiltered(iterable $data)
-    {
-        $data = $this->getFilteredData($data);
-
-        return $this->insert($data);
-    }
-
-    /**
-     * @param array|Traversable|Selection $data
      * @param int|null $id
-     * @return array|bool|int|iterable|ActiveRow|Selection|Traversable|null
+     * @return int|ActiveRow|bool|array|Selection|null
      */
-    public function saveFiltered(iterable $data, ?int $id = null)
+    public function saveFiltered(iterable $data, ?int $id = null): int|ActiveRow|bool|array|Selection|null
     {
         $data = (array) $data;
         $data = $this->getFilteredData($data);

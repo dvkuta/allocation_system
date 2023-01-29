@@ -1,5 +1,5 @@
 {block name}
-    Detail projektu
+    {_app.projectPresenter.detail}
 
 {/block}
 
@@ -15,8 +15,8 @@
 
     <div class="card col-12">
         <div class="card-header">
-            <h3>Alokace na projektu</h3>
-            <a href="{$addAllocationLink}" class="btn btn-info"> Přidat alokaci pracovníka</a>
+            <h3>{_app.projectPresenter.allocationsOnProject}</h3>
+            <a href="{$addAllocationLink}" class="btn btn-info"> {_app.projectPresenter.addWorkerAllocation}</a>
         </div>
         <div class="card-body">
             {control projectUserAllocationGrid}

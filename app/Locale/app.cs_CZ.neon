@@ -4,6 +4,11 @@ info:
     name: 'Čeština'
     code: 'cs_CZ'
     icon: 'cz'
+    footer: 'Semestrální práce z předmětu KIV/PIA-E (David Kůta)'
+
+menu:
+    userManagement: 'Správa uživatelů'
+    projectManagement: 'Správa projektů'
 
 locales:
     cs_CZ: 'Čeština'
@@ -55,6 +60,8 @@ user:
     roleCombError: 'Uživatel nemůže být pracovník a zároveň nadřízený.'
     loginError: 'Kombinace login a hesla není správná. Zkuste to prosím znovu.'
     loginAction: 'Přihlásit se'
+    logoutAction: 'Odhlásit se'
+    addSubordinates: 'Přidat podřízené'
 
 project:
     id:  'ID'
@@ -98,3 +105,24 @@ subordinate:
 
 sign:
     signOut: 'Byli jste úspěšně odhlášeni.'
+    advice: 'Pro práci se systémem se musíte přihlásit'
+
+userPresenter:
+    title: 'Správa uživatelů'
+    add: 'Přidat uživatele'
+    edit: 'Upravit uživatele'
+    addSubordinate: 'Přidat podřízeného'
+    addUser: 'Přidat uživatele'
+
+projectPresenter:
+    title: 'Správa projektů'
+    add: 'Přidat projekt'
+    edit: 'Upravit projekt'
+    addUser: 'Přidat pracovníka k projektu'
+    detail: 'Detail prjektu'
+    projectWorkers: 'Pracovníci na projektu'
+    allocationsOnProject: 'Alokace na projektu'
+    addWorkerAllocation: 'Přidat alokaci pracovníka'
+    addWorkerAllocationProject: 'Přidat alokaci pracovníka na projektu'
+    editWorkerAllocationProject: 'Upravit alokaci pracovníka na projektu'
+    user: 'Projekty uživatele'

@@ -1,11 +1,11 @@
 {block name}
-    Správa projektů
+    {_app.projectPresenter.title}
 {/block}
 
 {block content}
     <div class="card">
         <div class="card-header">
-            <a n:href="Project:add" class="btn btn-info">Přidat projekt</a>
+            <a n:href="Project:add" class="btn btn-info">{_app.projectPresenter.add}</a>
         </div>
         <div class="card-body">
             {control projectGrid}

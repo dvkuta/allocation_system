@@ -1,9 +1,14 @@
-title: 'EN Systém pro správu projektů'
+title: 'Job allocation system'
 
 info:
     name: 'English'
     code: 'en_GB'
     icon: 'gb'
+    footer: 'Semestral assignment of KIV/PIA-E (David Kůta)'
+
+menu:
+    userManagement: 'User management'
+    projectManagement: 'Project management'
 
 locales:
     cs_CZ: 'Czech'
@@ -11,7 +16,7 @@ locales:
 
 actions:
     delete: 'Smazat'
-    edit: 'Upravit'
+    edit: 'Edit'
 
 baseForm:
     save: 'Save'
@@ -55,6 +60,8 @@ user:
     roleCombError: 'User cant be worker and superior at the same time.'
     loginError: 'Combination of login and password is incorrect. Please, try again.'
     loginAction: 'Login'
+    logoutAction: 'Log out'
+    addSubordinates: 'Add subordinates'
 
 project:
     id:  'ID'
@@ -98,3 +105,24 @@ subordinate:
 
 sign:
     signOut: 'You were signed out succesfully.'
+    advice: 'You must log in to work with the system'
+
+userPresenter:
+    title: 'User management'
+    add: 'Add user'
+    edit: 'Edit user'
+    addSubordinate: 'Add subordinate'
+    addUser: 'Add user'
+
+projectPresenter:
+    title: 'Project management'
+    add: 'Add project'
+    edit: 'Edit project'
+    addUser: 'Add user to project'
+    detail: 'Project detail'
+    projectWorkers: 'Workers on project'
+    allocationsOnProject: 'Allocations on project'
+    addWorkerAllocation: 'Add worker allocation'
+    addWorkerAllocationProject: 'Add worker allocation on project'
+    editWorkerAllocationProject: 'Edit worker allocation on project'
+    user: 'User projects'

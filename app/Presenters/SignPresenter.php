@@ -2,9 +2,7 @@
 
 namespace App\Presenters;
 
-use App\Components\Sign\IRegisterFormFactory;
 use App\Components\Sign\ISignInFormFactory;
-use App\Components\Sign\RegisterForm;
 use App\Components\Sign\SignInForm;
 use App\Presenters\Base\AbstractPresenter;
 use Nette\Application\AbortException;
@@ -16,14 +14,11 @@ final class SignPresenter extends AbstractPresenter
 
 
     private ISignInFormFactory $signInFormFactory;
-    private IRegisterFormFactory $registerFormFactory;
 
-    public function __construct(ISignInFormFactory $signInFormFactory,
-                                IRegisterFormFactory $registerFormFactory)
+    public function __construct(ISignInFormFactory $signInFormFactory,)
     {
         parent::__construct();
         $this->signInFormFactory = $signInFormFactory;
-        $this->registerFormFactory = $registerFormFactory;
     }
 
     public function actionIn()

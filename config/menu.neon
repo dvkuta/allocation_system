@@ -1,16 +1,14 @@
 parameters:
     menu:
-        "Správa uživatelů":
-            icon: fas fa-th
-            link: "User:"
+        "app.menu.userManagement":
+            icon: fa fa-users
+            link: 'User:'
             priviledge:
-                - "User"
-                - "Secretariat"
-                - "ATD"
-        "Správa projektů":
-            icon: fas fa-th
-            link: "Project:"
+                - 'secretariat'
+        "app.menu.projectManagement":
+            icon: fa fa-calendar
+            link: 'Project:'
             priviledge:
-                - "User"
-                - "Secretariat"
-                - "ATD"
+                - 'secretariat'
+                - 'project_manager'
+                - 'department_manager'

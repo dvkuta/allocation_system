@@ -79,7 +79,7 @@ class UserGrid extends BaseGrid
 
         $grid->addAction("edit", 'app.actions.edit', ":edit");
 
-        $grid->addAction("addSubordinate", 'Přidat podřízené', ":addSubordinate");
+        $grid->addAction("addSubordinate", 'app.user.addSubordinates', ":addSubordinate");
 
         $grid->allowRowsAction('addSubordinate', function(ActiveRow $row): bool {
             $roles = $row->related('user_role')->joinWhere($this->roleRepository->getTableName(),'role_id = role.id')
