@@ -59,10 +59,16 @@
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a id="base-upperNavbar-langInfoIcon" class="nav-link" data-toggle="dropdown" href="#">
-                        Jméno a příjemní a role <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                        {$user->getIdentity()->getData()['name']} -
+
+                        {foreach $user->getRoles() as $role}
+                            {do $role = 'messages.' . $role}
+                            {$role|translate}
+                        {/foreach}
+                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right p-0">
-                        <a  class="dropdown-item">
+                        <a n:href="Sign:out" class="dropdown-item">
                            Odhlásit se
                         </a>
 

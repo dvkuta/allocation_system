@@ -6,7 +6,10 @@ use App\Components\Base\BaseComponent;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
+use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
+use Nette\Forms\Form as FormAlias;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
@@ -18,14 +21,17 @@ use Nette\Utils\ArrayHash;
 class SignInForm extends BaseComponent {
 
 	protected User $user;
+    private Translator $translator;
 
-	/**
+    /**
 	 * Component constructor
 	 * @param User $user
 	 */
-	public function __construct(User $user) {
+	public function __construct(User $user, Translator $translator) {
 		$this->user = $user;
-	}
+
+        $this->translator = $translator;
+    }
 
 
 	/**
@@ -36,16 +42,22 @@ class SignInForm extends BaseComponent {
 
 		$form = new BootstrapForm();
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
-		$form->addText('login', 'Login:')
+        $form->setTranslator($this->translator);
+        $form->setAutoShowValidation(false);
+
+        $form->addText('login', 'app.user.login')
             ->setPlaceholder("Orion login")
-            ->setRequired('Prosím vyplňte své uživatelské jméno.');
-		$form->addPassword('password', 'Heslo:')
-            ->setRequired('Prosím vyplňte své heslo.');
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
+            ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  100);
+
+        $form->addPassword('password', 'app.user.password')
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+
         $parentRow = $form->addRow();
         $parentRow->addCell(6);
         $submitCell = $parentRow->addCell(6)
             ->addHtmlClass('inline-buttons');
-		$form->addSubmit('submit', 'Přihlásit');
+		$form->addSubmit('submit', 'app.user.loginAction');
 
 
 		//$form->onValidate[] = [$this, 'validateForm'];
@@ -53,20 +65,20 @@ class SignInForm extends BaseComponent {
 		return $form;
 	}
 
-	/**
-	 * Function that is triggered by a successful form submission
-	 * @param Form $form
-	 * @param ArrayHash $values
-	 */
+    /**
+     * Function that is triggered by a successful form submission
+     * @param Form $form
+     * @param ArrayHash $values
+     * @throws AbortException
+     */
 	public function saveForm(Form $form, ArrayHash $values) {
 		try {
-//            $form->addError("error voe");
-			//TODO base logger manager pro komponenty
-			// $this->loggerManager->get('default')->info("Login try", ["login" => $values->username]);
-			//$this->user->login($values->username, $values->password);
+
+			$this->user->login($values->login, $values->password);
+            $this->presenter->redirect("Homepage:");
+
 		} catch (AuthenticationException $e) {
-			//$this->loggerManager->get('default')->notice("Login fail, wrong password", ["login" => $values->username]);
-			//$form->addError('Nesprávné přihlašovací jméno nebo heslo.');
+			$form->addError($e->getMessage());
 		}
 	}
 }

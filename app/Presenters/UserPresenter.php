@@ -13,13 +13,14 @@ use App\Components\User\UserForm\UserForm;
 use App\Components\User\UserGrid\IUserGridFactory;
 use App\Components\User\UserGrid\UserGrid;
 use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
 use App\UI\TEmptyLayoutView;
 
 
 final class UserPresenter extends AbstractPresenter
 {
-
+    use SecuredTrait;
 
 
     private IUserGridFactory $userGridFactory;

@@ -89,7 +89,7 @@ class UserFacade
      * Pokud uz existuje, tak ho upravi
      * @throws ProcessException
      */
-    public function createUser(ArrayHash $user, ?int $userId): void
+    public function createUser(ArrayHash $user): void
     {
         try {
             $this->transaction->begin();
@@ -123,7 +123,7 @@ class UserFacade
     /**
      * @throws ProcessException
      */
-    public function editUser(ArrayHash $user, int $userId,): void
+    public function editUser(ArrayHash $user, int $userId): void
     {
         try
         {
@@ -145,6 +145,7 @@ class UserFacade
             if(!empty($user->password))
             {
                 $user->password = $this->passwords->hash($user->password);
+                bdump($user->password);
             }
 
             $this->userRepository->updateUser($user,$userId);

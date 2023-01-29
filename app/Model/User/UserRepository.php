@@ -51,7 +51,7 @@ class UserRepository extends BaseRepository
 
         if($user)
         {
-            return new UserDTO(
+            return new UserDTO($user->id,
                 $user->firstname,
                 $user->lastname,
                 $user->email,
@@ -63,7 +63,29 @@ class UserRepository extends BaseRepository
         {
             return null;
         }
+    }
 
+    public function getUserByLogin(string $login): ?UserDTO
+    {
+        $by = [self::COL_LOGIN => $login];
+        $user =  $this->findBy($by)->fetch();
+
+        if($user)
+        {
+            return new UserDTO(
+                $user->id,
+                $user->firstname,
+                $user->lastname,
+                $user->email,
+                $user->login,
+                $user->workplace,
+                $user->password,
+            );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**

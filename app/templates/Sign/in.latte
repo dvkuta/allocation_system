@@ -2,7 +2,27 @@
 
 {block content}
     <div class="card">
-        <div class="card-header"></div>
+        <div class="card-header">
+            <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a id="base-upperNavbar-langInfoIcon" class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="flag-icon flag-icon-{_app.info.icon}"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right p-0">
+                    <a  n:href="ChangeLocale! locale=>cs_CZ"
+                            class="dropdown-item">
+                        <i class="flag-icon flag-icon-cz mr-2"></i> {_app.locales.cs_CZ}
+                    </a>
+
+                    <a n:href="ChangeLocale! locale=>en_GB"
+                            class="dropdown-item">
+                        <i class="flag-icon flag-icon-gb mr-2"></i> {_app.locales.en_GB}
+                    </a>
+
+                </div>
+            </li>
+            </ul>
+        </div>
         <div class="card-body login-card-body">
             <p class="login-box-msg">Pro práci se systémem se prosím přihlaste</p>
             {control signInForm}

@@ -46,13 +46,15 @@ user:
     password: 'Heslo'
     lastname: 'Příjmení'
     email: 'Email'
-    login: 'Přihlašovací jméno'
+    login: 'Login'
     roles: 'Role'
     workplace: 'Hlavní pracoviště'
     emailExists: 'Na zadaný email je již někdo registrován. Zvolte jiný.'
     loginExists: 'Na zadaný login je již někdo registrován. Zvolte jiný.'
     roleEmptyError: 'Uživatel nemůže být bez role.'
     roleCombError: 'Uživatel nemůže být pracovník a zároveň nadřízený.'
+    loginError: 'Kombinace login a hesla není správná. Zkuste to prosím znovu.'
+    loginAction: 'Přihlásit se'
 
 project:
     id:  'ID'
@@ -93,3 +95,6 @@ subordinate:
     superior: 'Nadřízený'
     worker: 'Pracovník'
     error: 'Zvolený pracovník je již podřízený zvoleného nadřízeného.'
+
+sign:
+    signOut: 'Byli jste úspěšně odhlášeni.'

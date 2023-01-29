@@ -12,6 +12,7 @@ use App\Components\Sign\SignInForm;
 use App\Components\User\IUserFormFactory;
 use App\Components\User\UserForm;
 use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
 use App\UI\TEmptyLayoutView;
 use Nette\Application\UI\Form;
@@ -20,6 +21,8 @@ use Ublaboo\DataGrid\DataGrid;
 
 final class HomepagePresenter extends AbstractPresenter
 {
+
+    use SecuredTrait;
 
     private IProjectUserAllocationGridFactory $allocationGridFactory;
 

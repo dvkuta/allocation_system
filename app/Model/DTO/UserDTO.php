@@ -3,28 +3,52 @@ namespace App\Model\DTO;
 
 class UserDTO
 {
-private string $firstname;
-private string $lastname;
-private string $email;
-private string $login;
-private string $workplace;
+    private string $firstname;
+    private string $lastname;
+    private string $email;
+    private string $login;
+    private string $workplace;
+    private string $password;
+    private int $id;
 
     /**
+     * @param int $id
      * @param string $firstname
      * @param string $lastname
      * @param string $email
      * @param string $login
      * @param string $workplace
-     * @param array $roles
+     * @param string $password
      */
-    public function __construct(string $firstname, string $lastname, string $email, string $login, string $workplace)
+    public function __construct(int $id, string $firstname, string $lastname, string $email, string $login, string $workplace , string $password = "")
     {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->email = $email;
         $this->login = $login;
         $this->workplace = $workplace;
+        $this->password = $password;
+        $this->id = $id;
     }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+
+
 
     /**
      * @return string

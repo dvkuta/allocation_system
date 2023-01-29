@@ -1,39 +1,50 @@
 <?php
 namespace App\Security;
+use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\UserRepository;
 use Nette;
+use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
 class Authenticator implements Nette\Security\Authenticator
 {
-    private $database;
     private $passwords;
+    private UserRepository $userRepository;
+    private UserRoleRepository $userRoleRepository;
 
     public function __construct(
-        Nette\Database\Explorer $database,
-        Nette\Security\Passwords $passwords
+        Passwords $passwords,
+        UserRepository $userRepository,
+        UserRoleRepository $userRoleRepository,
     ) {
-        $this->database = $database;
         $this->passwords = $passwords;
+        $this->userRepository = $userRepository;
+        $this->userRoleRepository = $userRoleRepository;
     }
 
-    public function authenticate(string $username, string $password): SimpleIdentity
+    public function authenticate(string $login, string $password): SimpleIdentity
     {
-        $row = $this->database->table('users')
-            ->where('username', $username)
-            ->fetch();
+        $user = $this->userRepository->getUserByLogin($login);
 
-        if (!$row) {
-            throw new Nette\Security\AuthenticationException('User not found.');
+        bdump($user);
+
+        if ($user === null) {
+            throw new Nette\Security\AuthenticationException('app.user.loginError');
         }
 
-        if (!$this->passwords->verify($password, $row->password)) {
-            throw new Nette\Security\AuthenticationException('Invalid password.');
+
+        if (!$this->passwords->verify($password, $user->getPassword())) {
+            throw new Nette\Security\AuthenticationException('app.user.loginError');
         }
 
+        $roles = $this->userRoleRepository->findRolesForUser($user->getId());
+        bdump($roles);
         return new SimpleIdentity(
-            $row->id,
-            ["Admin"], // nebo pole více rolí
-            ['name' => $row->username]
+            $user->getId(),
+            $roles, // nebo pole více rolí
+            [
+                'name' => $user->getFullName()
+            ]
         );
     }
 }

@@ -46,13 +46,15 @@ user:
     password: 'Password'
     lastname: 'Last name'
     email: 'Email'
-    login: 'Login name'
+    login: 'Login'
     role: 'Role'
     workplace: 'Primary workplace'
     emailExists: 'Someone is registered to this email. Choose different one.'
     loginExists: 'Someone is registered to this login. Choose different one.'
     roleEmptyError: 'User cant be without role.'
     roleCombError: 'User cant be worker and superior at the same time.'
+    loginError: 'Combination of login and password is incorrect. Please, try again.'
+    loginAction: 'Login'
 
 project:
     id:  'ID'
@@ -93,3 +95,6 @@ subordinate:
     superior: 'Superior'
     worker: 'Worker'
     error: 'Chosen worker is subordinate of chosen superior already.'
+
+sign:
+    signOut: 'You were signed out succesfully.'

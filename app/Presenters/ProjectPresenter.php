@@ -17,6 +17,7 @@ use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
 use App\Model\Project\ProjectRepository;
 use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
 use App\UI\TEmptyLayoutView;
 use Nette\Application\BadRequestException;
@@ -24,7 +25,7 @@ use Nette\Application\BadRequestException;
 
 final class ProjectPresenter extends AbstractPresenter
 {
-
+    use SecuredTrait;
 
     private IProjectFormFactory $projectFormFactory;
     private IProjectGridFactory $projectGridFactory;
