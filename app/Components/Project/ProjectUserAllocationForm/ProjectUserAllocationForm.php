@@ -78,7 +78,7 @@ class ProjectUserAllocationForm extends BaseComponent
 
         if(isset($this->id) && $this->editAllocation === true)
         {
-            $allocation = $this->allocationRepository->getAllocationData($this->id);
+            $allocation = $this->allocationRepository->getAllocation($this->id);
             if(empty($allocation))
             {
                 throw new BadRequestException();
@@ -107,6 +107,7 @@ class ProjectUserAllocationForm extends BaseComponent
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
+        $form->setAutoShowValidation(false);
 
         $form->addText('projectName', 'app.projectAllocation.name')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
@@ -129,18 +130,21 @@ class ProjectUserAllocationForm extends BaseComponent
 
 
        $form->addDate('from', 'app.projectAllocation.from')
-//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
 ;
         $form->addDate('to', 'app.projectAllocation.to')
-//            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
 ;
-        $form->addInteger('allocation', 'app.projectAllocation.allocation');
+        $form->addInteger('allocation', 'app.projectAllocation.allocation')
+        ->addRule(FormAlias::MIN, 'app.projectAllocation.allocationMin',0)
+        ->addRule(FormAlias::MAX, 'app.projectAllocation.allocationMax',40);
 
         $form->addTextArea('description', 'app.projectAllocation.description');
 
         $states = Utils::getEnumValuesAsArray(EState::cases());
         $states = array_map(function ($state) {return $this->translator->translate('app.projectAllocation.'.$state);}, $states);
-        $form->addSelect('state', 'app.projectAllocation.state', $states);
+        $form->addSelect('state', 'app.projectAllocation.state', $states)
+        ->setTranslator(null);
 
         $parentRow = $form->addRow();
         $parentRow->addCell(8)
@@ -190,20 +194,19 @@ class ProjectUserAllocationForm extends BaseComponent
 
         try {
 
-            $this->allocationFacade->createAllocation($values, $this->id);
-//            if($this->editAllocation)
-//            {
-//                bdump($this->id);
-//
-//                $this->projectUserFacade->editAllocation($values, $this->id);
-//            }
-//            else //akce sekretarky
-//            {
-//                $this->projectUserFacade->saveUserToProject($values, $this->id);
-//            }
+            if($this->editAllocation)
+            {
+                $this->allocationFacade->editAllocation($values, $this->id);
+                $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
+                $this->presenter->redirect("Project:");
+            }
+            else
+            {
+                $this->allocationFacade->createAllocation($values, $this->id);
+                $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
+                $this->presenter->redirect("Project:detail",$this->id);
+            }
 
-            $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
-            $this->presenter->redirect("Project:");
         } catch (ProcessException $e) {
             $form->addError($e->getMessage());
         }

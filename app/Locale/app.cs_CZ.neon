@@ -77,6 +77,9 @@ projectAllocation:
     draft: 'Předloha'
     cancel: 'Zrušený'
     projectNotExists: 'Projekt neexistuje.'
-    userNotOnProject: 'Uživatel není na projektu přiřazen'
-    timeWindowError: 'Časové okno alokace není v součástí časového okna projektu. Zkontrolujte časové meze.'
-
+    allocationNotExists: 'Upravovaná alokace neexistuje.'
+    userNotOnProject: 'Uživatel není na projektu přiřazen.'
+    timeWindowError: 'Časové okno alokace není součástí časového okna projektu. Zkontrolujte časové meze.'
+    allocationError: 'Pracovník nemůže mít větší úvazek, než 40 hodin.'
+    allocationMin: 'Alokace musí být kladné číslo.'
+    allocationMax: 'Alokace nesmí být více, než %d hodin.'

@@ -94,7 +94,7 @@ class ProjectForm extends BaseComponent
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
-
+        $form->setAutoShowValidation(false);
         $form->addText('name', 'app.project.name')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
@@ -129,7 +129,7 @@ class ProjectForm extends BaseComponent
 
     public function validateForm(Form $form, ArrayHash $values)
     {
-        bdump($values);
+
         if(!empty($values['to']))
         {
             if($values['from'] >= $values['to']) {

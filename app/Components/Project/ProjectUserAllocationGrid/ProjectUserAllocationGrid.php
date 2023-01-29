@@ -48,6 +48,9 @@ class ProjectUserAllocationGrid extends BaseGrid
 		$grid->addColumnText('id', 'app.projectAllocation.id');
 
 
+
+        bdump($this->allocationFacade->getCurrentWorkloadForUser(58));
+
 //        $grid->addColumnText('project_id','app.projectAllocation.name', 'project_user.project.name');
 
 
@@ -57,8 +60,7 @@ class ProjectUserAllocationGrid extends BaseGrid
             });
 
         $grid->addColumnText('allocation','app.projectAllocation.allocation')
-        ->setSortable()
-        ->setFilterRange();
+        ->setSortable();
 
         $grid->addColumnDateTime('from', 'app.projectAllocation.from')
             ->setSortable();

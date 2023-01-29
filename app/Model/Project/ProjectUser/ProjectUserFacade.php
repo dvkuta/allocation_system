@@ -28,7 +28,7 @@ class ProjectUserFacade
     /**
      * @throws ProcessException
      */
-    public function saveUserToProject(ArrayHash $formValues, ?int $projectId)
+    public function saveUserToProject(ArrayHash $formValues, ?int $projectId): void
     {
         if($projectId === null)
         {
@@ -48,40 +48,6 @@ class ProjectUserFacade
             throw new ProcessException('app.baseForm.saveError');
 
         }
-
-    }
-
-    /**
-     * @throws ProcessException
-     * @deprecated
-     */
-    public function editAllocation(ArrayHash $values, int $allocationId): void
-    {
-
-        try {
-        $this->transaction->begin();
-        $allocation = $this->projectUserRepository->findRow($allocationId);
-
-        if($allocation === null)
-        {
-            $this->transaction->rollback();
-            throw new ProcessException('app.projectAllocation.editAllocationError');
-        }
-
-        //todo kontrola, jestli muze
-
-        $this->projectUserRepository->saveFiltered($values, $allocationId);
-
-        $this->transaction->commit();
-        }
-        catch (\PDOException $e)
-        {
-            $this->transaction->rollback();
-            Debugger::log($e, ILogger::EXCEPTION);
-            throw new ProcessException('app.baseForm.saveError');
-        }
-
-
 
     }
 

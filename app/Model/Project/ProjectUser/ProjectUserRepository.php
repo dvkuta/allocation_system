@@ -60,9 +60,16 @@ class ProjectUserRepository extends BaseRepository
         return $this->findBy($by);
     }
 
-    public function getAllUsersOnProject(int $projectId): Selection
+    public function getAllProjectMembershipIds(int $userId): array
     {
-        return $this->findAll()->where(self::COL_PROJECT_ID, $projectId);
+        return $this->getAllUserProjects($userId)
+            ->select(self::COL_ID)
+            ->fetchAssoc(self::COL_ID);
+    }
+
+    public function getAllUsersOnProject(int $projectId): Selection
+    {   $by = [self::COL_PROJECT_ID => $projectId];
+        return $this->findBy($by);
 
     }
 
@@ -73,7 +80,8 @@ class ProjectUserRepository extends BaseRepository
      */
     public function getAllUsersOnProjectIds(int $projectId): array
     {
-        return $this->findAll()->select(self::COL_ID)->where(self::COL_PROJECT_ID, $projectId)->fetchAssoc('id');
+
+        return $this->getAllUsersOnProject($projectId)->select(self::COL_ID)->fetchAssoc(self::COL_ID);
 
     }
 
