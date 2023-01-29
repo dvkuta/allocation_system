@@ -79,7 +79,7 @@ class ProjectUserAllocationRepository extends BaseRepository
         $this->saveFiltered($data, $allocation_id);
     }
 
-    public function getAllAllocationsOnProject( array $usersOnProjectIds): Selection
+    public function getAllAllocations(array $usersOnProjectIds): Selection
     {
         $by = [self::COL_PROJECT_USER_ID => $usersOnProjectIds];
         return $this->findBy($by);
@@ -102,9 +102,10 @@ class ProjectUserAllocationRepository extends BaseRepository
         return intval($result->currWorkLoad);
     }
 
-    public function getSumOfAllAllocationsForUser(array $userProjectIds )
+    public function getSumOfAllWorkload(array $userProjectIds )
     {
-
+        $result = $this->getAllAllocations($userProjectIds)->select('SUM(allocation) AS allWorkLoad')->fetch();
+        return intval($result->allWorkLoad);
     }
 
 

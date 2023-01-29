@@ -15,9 +15,11 @@ use App\Components\Project\ProjectUserForm\IProjectUserFormFactory;
 use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
+use App\Model\Project\ProjectRepository;
 use App\Presenters\Base\AbstractPresenter;
 use App\Tools\Utils;
 use App\UI\TEmptyLayoutView;
+use Nette\Application\BadRequestException;
 
 
 final class ProjectPresenter extends AbstractPresenter
@@ -30,6 +32,7 @@ final class ProjectPresenter extends AbstractPresenter
     private IProjectUserGridFactory $projectUserGridFactory;
     private IProjectUserAllocationGridFactory $allocationGridFactory;
     private IProjectUserAllocationFormFactory $allocationFormFactory;
+    private ProjectRepository $projectRepository;
 
     public function __construct(
         IProjectFormFactory $projectFormFactory,
@@ -37,7 +40,8 @@ final class ProjectPresenter extends AbstractPresenter
         IProjectUserFormFactory $projectUserFormFactory,
         IProjectUserGridFactory $IProjectUserGridFactory,
         IProjectUserAllocationGridFactory $allocationGridFactory,
-        IProjectUserAllocationFormFactory $allocationFormFactory
+        IProjectUserAllocationFormFactory $allocationFormFactory,
+        ProjectRepository $projectRepository
 
     )
     {
@@ -49,6 +53,7 @@ final class ProjectPresenter extends AbstractPresenter
         $this->projectUserGridFactory = $IProjectUserGridFactory;
         $this->allocationGridFactory = $allocationGridFactory;
         $this->allocationFormFactory = $allocationFormFactory;
+        $this->projectRepository = $projectRepository;
     }
 
 
@@ -72,6 +77,14 @@ final class ProjectPresenter extends AbstractPresenter
 
     public function actionDetail(int $id)
     {
+        $project = $this->projectRepository->getProject($id);
+
+        if(empty($project))
+        {
+            $this->error("Error message", 404);
+        }
+
+        $this->template->project = $project;
         $link = $this->link('Project:addAllocation',$id);
         $this->template->addAllocationLink = $link;
     }

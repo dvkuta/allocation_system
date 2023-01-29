@@ -28,17 +28,9 @@ final class SignPresenter extends Presenter
     public function createComponentSignInForm(): SignInForm
     {
         $loginForm = $this->signInFormFactory->create();
-        $loginForm->onSuccess[] = function () {$this->flashMessage("ahoj z formu");};
         return $loginForm;
 
     }
 
-    public function createComponentRegisterForm(): RegisterForm
-    {
-        $loginForm = $this->registerFormFactory->create();
-        $loginForm->onSuccess[] = function () {$this->flashMessage("ahoj z register formu");};
-        return $loginForm;
-
-    }
 
 }

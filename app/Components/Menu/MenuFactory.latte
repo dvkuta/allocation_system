@@ -4,10 +4,12 @@
         {foreach $menu as $name => $subInfo}
             <!-- todo zobrazovani v menu pro jednotive role -->
             <li class="nav-item">
-                <div n:class="$currentPage === $subInfo['link'] ? 'bg-light', 'nav-link'">
-                    <i class="nav-icon {$subInfo['icon']}"></i>
-                    <a href="{plink $subInfo['link']}">{$name}</a>
-                </div>
+                    <a href="{plink $subInfo['link']}" n:class="$currentPage === $subInfo['link'] ? 'bg-light', 'nav-link'">
+                        <i class="nav-icon {$subInfo['icon']}"></i>
+                        <p>
+                            {$name}
+                        </p>
+                    </a>
             </li>
         {/foreach}
 

@@ -51,6 +51,8 @@ user:
     workplace: 'Primary workplace'
     emailExists: 'Someone is registered to this email. Choose different one.'
     loginExists: 'Someone is registered to this login. Choose different one.'
+    roleEmptyError: 'User cant be without role.'
+    roleCombError: 'User cant be worker and superior at the same time.'
 
 project:
     id:  'ID'
@@ -76,6 +78,7 @@ projectAllocation:
     active: 'Active'
     draft: 'Draft'
     cancel: 'Canceled'
+    past: 'Past'
     projectNotExists: 'Project not exist.'
     allocationNotExists: 'Edited allocation not exists.'
     userNotOnProject: 'User is not on project anymore.'
@@ -83,3 +86,10 @@ projectAllocation:
     allocationError: 'A worker cannot work more than 40 hours.'
     allocationMin: 'The allocation must be a positive number greater than %d.'
     allocationMax: 'The allocation must not be more than %d hours.'
+    currentAllocation: 'Allocations now'
+    totalAllocation: 'Allocations total [h]'
+
+subordinate:
+    superior: 'Superior'
+    worker: 'Worker'
+    error: 'Chosen worker is subordinate of chosen superior already.'

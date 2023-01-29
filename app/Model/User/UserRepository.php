@@ -3,6 +3,7 @@
 namespace App\Model\User;
 
 
+use App\Model\DTO\UserDTO;
 use App\Model\Repository\Base\BaseRepository;
 
 use Nette\Database\Explorer;
@@ -44,6 +45,27 @@ class UserRepository extends BaseRepository
         return $this->isColumnValueUsed(self::COL_EMAIL, $email);
     }
 
+    public function getUser(int $id): ?UserDTO
+    {
+        $user =  $this->findRow($id);
+
+        if($user)
+        {
+            return new UserDTO(
+                $user->firstname,
+                $user->lastname,
+                $user->email,
+                $user->login,
+                $user->workplace,
+            );
+        }
+        else
+        {
+            return null;
+        }
+
+    }
+
     /**
      * Kontrola, jestli je registrovan uzivatel se zadanym loginem
      * @param string $login
@@ -54,12 +76,13 @@ class UserRepository extends BaseRepository
         return $this->isColumnValueUsed(self::COL_LOGIN, $login);
     }
 
-    private function isColumnValueUsed(string $column, $value)
+    private function isColumnValueUsed(string $column, $value): bool
     {
         $by = [$column => $value];
         return $this->findBy($by)->count() > 0;
     }
 
+    //taky vraci userDTO
     public function saveUser(ArrayHash $user): array
     {
         $data = [
@@ -74,6 +97,7 @@ class UserRepository extends BaseRepository
         return $this->saveFiltered($data)->toArray();
     }
 
+    //taky vraci userDTO
     public function updateUser(ArrayHash $user, int $userId): array
     {
         $data = [

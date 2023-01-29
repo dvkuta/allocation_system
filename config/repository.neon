@@ -5,3 +5,4 @@ services:
     - App\Model\Project\ProjectUser\ProjectUserRepository
     - App\Model\User\Role\UserRoleRepository
     - App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository
+    - App\Model\User\Superior\SuperiorUserRepository

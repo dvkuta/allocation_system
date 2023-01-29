@@ -3,3 +3,4 @@ services:
 - App\Model\Project\ProjectFacade
 - App\Model\Project\ProjectUser\ProjectUserFacade
 - App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade
+- App\Model\User\Superior\SuperiorUserFacade

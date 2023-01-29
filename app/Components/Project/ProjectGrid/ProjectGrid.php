@@ -39,7 +39,8 @@ class ProjectGrid extends BaseGrid
 
 		$grid->setDataSource($this->projectRepository->findAll());
 
-		$grid->addColumnText('id', 'app.project.id');
+		$grid->addColumnText('id', 'app.project.id')
+            ->setDefaultHide();;
 
         $grid->addColumnLink('name', 'app.project.name', ':detail')
             ->setSortable()
@@ -84,28 +85,9 @@ class ProjectGrid extends BaseGrid
 
         $grid->addAction("addUser", 'app.project.addUser', ":addUser");
 
-        $grid->addAction('delete','app.actions.delete')
-            ->setConfirmation(
-                new StringConfirmation($this->translator->translate('ublaboo_datagrid.delete_record_quote'))
-            );;
-
 
 		return $grid;
 	}
-
-    public function handleDelete(int $id)
-    {
-        //todo
-        $this->projectRepository->delete($id);
-        if($this->presenter->isAjax()) {
-            /** @var BaseGrid $grid */
-            $grid = $this["grid"];
-
-            $grid->reload();
-        }
-        $this->presenter->flashMessage("Smazání proběhlo úspěšně", "bg-success");
-
-    }
 
 
 }

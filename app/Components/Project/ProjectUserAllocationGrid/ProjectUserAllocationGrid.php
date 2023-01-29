@@ -4,11 +4,13 @@ namespace App\Components\Project\ProjectUserAllocationGrid;
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
+use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
+use App\Tools\Utils;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
@@ -20,22 +22,28 @@ use Ublaboo\DataGrid\Row;
 
 class ProjectUserAllocationGrid extends BaseGrid
 {
-    private ?int $id;
+    private ?int $projectId;
     private ProjectUserAllocationFacade $allocationFacade;
+    private ?int $userId;
+    private ?int $superiorId;
 
 
     public function __construct(
-        ?int $id,
-        ITranslator           $translator,
+        ?int                        $projectId,
+        ?int                        $userId,
+        ?int                        $superiorId,
+        ITranslator                 $translator,
         ProjectUserAllocationFacade $allocationFacade
 
     )
 	{
         parent::__construct($translator);
 
-        $this->id = $id;
+        $this->projectId = $projectId;
 
         $this->allocationFacade = $allocationFacade;
+        $this->userId = $userId;
+        $this->superiorId = $superiorId;
     }
 
 
@@ -44,22 +52,40 @@ class ProjectUserAllocationGrid extends BaseGrid
 	{
 		$grid = parent::createGrid();
 
-        $grid->setDataSource($this->allocationFacade->getProjectUserAllocationGridSelection($this->id));
-		$grid->addColumnText('id', 'app.projectAllocation.id');
+        if(isset($this->projectId))
+        {
+            $grid->setDataSource($this->allocationFacade->getProjectUserAllocationGridSelection($this->projectId));
+        }
+        if(isset($this->userId))
+        {
+            $grid->setDataSource($this->allocationFacade->getAllUserAllocationsGridSelection($this->userId));
+        }
 
+        if(isset($this->superiorId))
+        {
+            $grid->setDataSource($this->allocationFacade->getAllSubordinateAllocationsGridSelection($this->superiorId));
+        }
 
+		$grid->addColumnText('id', 'app.projectAllocation.id')
+            ->setDefaultHide();
 
-        bdump($this->allocationFacade->getCurrentWorkloadForUser(58));
+        if(isset($this->userId)) {
+            $grid->addColumnText('projectName','app.projectAllocation.name')
+            ->setRenderer(function (ActiveRow $row) {
+                return $row->project_user->project->name;
 
-//        $grid->addColumnText('project_id','app.projectAllocation.name', 'project_user.project.name');
-
+            });
+        }
 
         $grid->addColumnText('user_id', 'app.projectAllocation.user_id')
             ->setRenderer(function( ActiveRow $row) {
                 return $row->project_user->user->firstname . " " . $row->project_user->user->lastname ;
             });
 
-        $grid->addColumnText('allocation','app.projectAllocation.allocation')
+        $grid->addColumnNumber('allocation','app.projectAllocation.allocation')
+            ->setRenderer(function( ActiveRow $row) {
+                return Utils::getAllocationString($row->allocation, ProjectUserAllocationFacade::MAX_ALLOCATION);
+            })
         ->setSortable();
 
         $grid->addColumnDateTime('from', 'app.projectAllocation.from')
@@ -69,7 +95,11 @@ class ProjectUserAllocationGrid extends BaseGrid
             ->setSortable();
 
         $grid->addColumnText('description', 'app.projectAllocation.description');
-        $grid->addColumnText('state', 'app.projectAllocation.state');
+        $grid->addColumnText('state', 'app.projectAllocation.state')
+        ->setRenderer(function (ActiveRow $row) {
+            $state = $this->allocationFacade->calculateState($row->to, EState::from($row->state));
+            return $this->translator->translate('app.projectAllocation.' . $state);
+        });
 
 
         $grid->addAction("edit", 'app.actions.edit', ":editAllocation");
@@ -84,6 +114,6 @@ class ProjectUserAllocationGrid extends BaseGrid
 
 interface IProjectUserAllocationGridFactory {
 
-    public function create(?int $id = null): ProjectUserAllocationGrid;
+    public function create(?int $projectId = null, ?int $userId = null, ?int $superiorId = null): ProjectUserAllocationGrid;
 }
 

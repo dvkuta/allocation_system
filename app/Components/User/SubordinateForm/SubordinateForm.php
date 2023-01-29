@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Components\Project\ProjectUserForm;
+namespace App\Components\User\SubordinateForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\User\Role\ERole;
+use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\Superior\SuperiorUserFacade;
+use App\Model\User\UserRepository;
 use App\Tools\Utils;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
@@ -23,31 +28,31 @@ use Nette\Utils\ArrayHash;
  * Form component class for user CRUD
  * @package App\Components
  */
-class ProjectUserForm extends BaseComponent
+class SubordinateForm extends BaseComponent
 {
 
     private ?int $id;
     private Translator $translator;
-
-    private ProjectRepository $projectRepository;
-    private ProjectUserRepository $projectUserRepository;
-    private ProjectUserFacade $projectUserFacade;
+    private UserRepository $userRepository;
+    private UserRoleRepository $userRoleRepository;
+    private SuperiorUserFacade $superiorUserFacade;
 
 
     public function __construct(
         ?int                  $id,
         Translator            $translator,
-        ProjectRepository $projectRepository,
-        ProjectUserRepository $projectUserRepository,
-        ProjectUserFacade $projectUserFacade
+        UserRepository $userRepository,
+        UserRoleRepository $userRoleRepository,
+        SuperiorUserFacade $superiorUserFacade,
     )
     {
 
         $this->id = $id;
         $this->translator = $translator;
-        $this->projectRepository = $projectRepository;
-        $this->projectUserRepository = $projectUserRepository;
-        $this->projectUserFacade = $projectUserFacade;
+
+        $this->userRepository = $userRepository;
+        $this->userRoleRepository = $userRoleRepository;
+        $this->superiorUserFacade = $superiorUserFacade;
     }
 
     public function render()
@@ -55,10 +60,10 @@ class ProjectUserForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            $row = $this->projectRepository->findRow($this->id);
-            if ($row) {
-                //TODO REPOSITORY
-                $defaults['name'] = $row->name;
+            /** @var UserDTO $user */
+            $user = $this->userRepository->getUser($this->id);
+            if ($user) {
+                $defaults['name'] = $user->getFullName();
             } else {
                 throw new BadRequestException();
             }
@@ -85,15 +90,15 @@ class ProjectUserForm extends BaseComponent
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
+        $form->setAutoShowValidation(false);
 
-        $form->addText('name', 'app.projectAllocation.name')
+        $form->addText('name', 'app.subordinate.superior')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
-        $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
-        bdump($users);
-        $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
+        $users = $this->userRoleRepository->getAllUsersInRole(ERole::worker);
+        $form->addSelect('user_id', 'app.subordinate.worker', $users)
         ->setTranslator(null);
 
         $parentRow = $form->addRow();
@@ -127,10 +132,10 @@ class ProjectUserForm extends BaseComponent
 
         try {
 
-            $this->projectUserFacade->saveUserToProject($values, $this->id);
+            $this->superiorUserFacade->save($this->id, $values['user_id']);
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
-            $this->presenter->redirect("Project:");
+            $this->presenter->redirect("User:");
         } catch (ProcessException $e) {
             $form->addError($e->getMessage());
         }
@@ -138,7 +143,7 @@ class ProjectUserForm extends BaseComponent
     }
 }
 
-interface IProjectUserFormFactory
+interface ISubordinateFormFactory
 {
-    public function create(?int $id): ProjectUserForm;
+    public function create(?int $id): SubordinateForm;
 }

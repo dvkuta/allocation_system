@@ -59,12 +59,14 @@ class UserRoleRepository extends BaseRepository
 
     public function saveUserRoles(array $roles, int $userId)
     {
+        $this->findAll()->where([self::COL_USER_ID => $userId])->delete();
+
         if(empty($roles))
         {
             return;
         }
 
-        $this->findAll()->where([self::COL_USER_ID => $userId])->delete();
+
         $insertData = [];
         foreach ($roles as $role)
         {

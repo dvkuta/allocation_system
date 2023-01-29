@@ -67,6 +67,24 @@ class UserFacade
     }
 
     /**
+     * @param array $roles
+     * @return void
+     * @throws ProcessException
+     */
+    public function validateRoles(array $roles): void
+    {
+        if(empty($roles))
+        {
+            throw new ProcessException('app.user.roleEmptyError');
+        }
+        if(in_array(ERole::worker->value, $roles) && in_array(ERole::superior->value, $roles))
+        {
+
+            throw new ProcessException('app.user.roleCombError');
+        }
+    }
+
+    /**
      * Vytvori uzivatele a zalozi zaznam do databaze
      * Pokud uz existuje, tak ho upravi
      * @throws ProcessException
@@ -82,6 +100,7 @@ class UserFacade
             $user->password = $this->passwords->hash($user->password);
 
             $savedUser = $this->userRepository->saveUser($user);
+            $this->validateRoles($user['user_role']);
             $this->userRoleRepository->saveUserRoles($user->user_role, $savedUser['id']);
 
 
@@ -129,6 +148,8 @@ class UserFacade
             }
 
             $this->userRepository->updateUser($user,$userId);
+
+            $this->validateRoles($user['user_role']);
             $this->userRoleRepository->saveUserRoles($user->user_role, $userId);
 
             $this->transaction->commit();

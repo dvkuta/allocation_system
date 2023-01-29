@@ -6,7 +6,6 @@
 parameters:
     appName: allocation_system
     appTitle: Systém pro správu činností na projektech
-    version: 0.1
 
 includes:
     - main.neon             # nejdulezitejsi konfigurace

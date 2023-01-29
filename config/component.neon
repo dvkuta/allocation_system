@@ -10,3 +10,4 @@ services:
 - App\Components\Project\ProjectUserGrid\IProjectUserGridFactory
 - App\Components\Project\ProjectUserAllocationGrid\IProjectUserAllocationGridFactory
 - App\Components\Project\ProjectUserAllocationForm\IProjectUserAllocationFormFactory
+- App\Components\User\SubordinateForm\ISubordinateFormFactory

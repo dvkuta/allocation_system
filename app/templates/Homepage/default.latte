@@ -1,14 +1,19 @@
 {block name}
-    Hlavní stránka
+    Vaše alokace
 {/block}
 
 {block content}
     <div class="card">
-        <div class="card-header">
-            <a class="btn btn-info">Zde bude</a>
-        </div>
         <div class="card-body">
-            Něco
+            {control myAllocationsGrid}
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-body">
+            {control subordinateAllocationsGrid}
+        </div>
+    </div>
+
+
 {/block}

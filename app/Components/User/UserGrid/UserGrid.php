@@ -3,6 +3,7 @@ namespace App\Components\User\UserGrid;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
+use App\Model\User\Role\ERole;
 use App\Model\User\Role\IRoleRepository;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\Role\UserRoleRepository;
@@ -42,7 +43,8 @@ class UserGrid extends BaseGrid
 		$grid = parent::createGrid();
 		$grid->setDataSource($this->userRepository->findAll());
 
-		$grid->addColumnText('id', 'app.user.id');
+		$grid->addColumnText('id', 'app.user.id')
+            ->setDefaultHide();
 
         $grid->addColumnLink('lastname', 'app.user.lastname', 'Project:user')
             ->setSortable()
@@ -77,27 +79,18 @@ class UserGrid extends BaseGrid
 
         $grid->addAction("edit", 'app.actions.edit', ":edit");
 
-        $grid->addAction('delete','app.actions.delete')
-            ->setConfirmation(
-                new StringConfirmation($this->translator->translate('ublaboo_datagrid.delete_record_quote'))
-            );
+        $grid->addAction("addSubordinate", 'Přidat podřízené', ":addSubordinate");
+
+        $grid->allowRowsAction('addSubordinate', function(ActiveRow $row): bool {
+            $roles = $row->related('user_role')->joinWhere($this->roleRepository->getTableName(),'role_id = role.id')
+                ->select('type')->fetchPairs('type','type');
+            return key_exists(ERole::superior->name, $roles);
+        });
+
 
 
 		return $grid;
 	}
-
-    public function handleDelete(int $id)
-    {
-        $this->userRepository->delete($id);
-        if($this->presenter->isAjax()) {
-            /** @var BaseGrid $grid */
-            $grid = $this["grid"];
-
-            $grid->reload();
-        }
-        $this->presenter->flashMessage("Smazání proběhlo úspěšně", "bg-success");
-
-    }
 
 
 }

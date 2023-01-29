@@ -41,6 +41,11 @@ class ProjectUserRepository extends BaseRepository
         $this->saveFiltered($data);
     }
 
+    /**
+     * Vrati pole uzivatelu v roli pracovnik, kteri momentalne nepracuji na danem projektu
+     * @param int $projectId
+     * @return array pole ve tvaru [id => cele_jmeno]
+     */
     public function getAllUsersThatDoesNotWorkOnProject(int $projectId): array
     {
         $users = $this->explorer->query('select user.id, CONCAT_WS(" ", firstname, lastname) as fullName
@@ -48,7 +53,10 @@ class ProjectUserRepository extends BaseRepository
             where  user.id not in
             (select user_id
             from project_user
-            where project_id = ? );', $projectId)->fetchPairs('id', 'fullName');
+            where project_id = ? )
+            AND user.id IN ( select user_id from user_role where user_role.role_id = 1 )
+
+;', $projectId)->fetchPairs('id', 'fullName');
 
         return $users;
 
@@ -58,6 +66,12 @@ class ProjectUserRepository extends BaseRepository
     {
         $by = [self::COL_USER_ID => $userId];
         return $this->findBy($by);
+    }
+
+    public function getAllProjectsMembershipsOfUserIds(array $userIds)
+    {
+        $by = [self::COL_USER_ID => $userIds];
+        return $this->findBy($by)->select('id')->fetchPairs(self::COL_ID, self::COL_ID);
     }
 
     public function getAllProjectMembershipIds(int $userId): array

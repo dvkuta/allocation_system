@@ -27,4 +27,9 @@ class Utils
         return $resultArray;
     }
 
+    public static function getAllocationString(int $allocation, int $max_allocation): string
+    {
+        return $allocation . "h (FTE: ". $allocation / $max_allocation. ")";
+    }
+
 }

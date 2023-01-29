@@ -8,6 +8,7 @@ use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\User\Superior\SuperiorUserRepository;
 use App\Tools\Transaction;
 use Cassandra\Date;
 use DateTime;
@@ -26,11 +27,13 @@ class ProjectUserAllocationFacade
     private ProjectRepository $projectRepository;
 
     public const  MAX_ALLOCATION = 40;
+    private SuperiorUserRepository $superiorUserRepository;
 
     public function __construct(
         ProjectUserRepository $projectUserRepository,
         ProjectUserAllocationRepository $allocationRepository,
         ProjectRepository $projectRepository,
+        SuperiorUserRepository $superiorUserRepository,
         Transaction $transaction
     )
     {
@@ -39,6 +42,7 @@ class ProjectUserAllocationFacade
         $this->allocationRepository = $allocationRepository;
         $this->transaction = $transaction;
         $this->projectRepository = $projectRepository;
+        $this->superiorUserRepository = $superiorUserRepository;
     }
 
 
@@ -203,12 +207,49 @@ class ProjectUserAllocationFacade
 
     }
 
+    public function getAllAllocationStatistic(int $userId): int
+    {
+
+        $usersOnProject = $this->projectUserRepository->getAllProjectMembershipIds($userId);
+        bdump($usersOnProject);
+        return $this->allocationRepository->getSumOfAllWorkload($usersOnProject);
+    }
+
+
     public function getProjectUserAllocationGridSelection(int $projectId): Selection
     {
 
         $usersOnProject = $this->projectUserRepository->getAllUsersOnProjectIds($projectId);
         bdump($usersOnProject);
-        return $this->allocationRepository->getAllAllocationsOnProject($usersOnProject);
+        return $this->allocationRepository->getAllAllocations($usersOnProject);
+    }
+
+    public function getAllUserAllocationsGridSelection(int $userId): Selection
+    {
+
+        $usersOnProject = $this->projectUserRepository->getAllProjectMembershipIds($userId);
+        return $this->allocationRepository->getAllAllocations($usersOnProject);
+    }
+
+    public function getAllSubordinateAllocationsGridSelection(int $superiorId): Selection
+    {
+        $subordinatesIds = $this->superiorUserRepository->getAllSubordinates($superiorId);
+        $ids = $this->projectUserRepository->getAllProjectsMembershipsOfUserIds($subordinatesIds);
+        return $this->allocationRepository->getAllAllocations($ids);
+    }
+
+    public function calculateState(DateTime $dateTo, EState $state): string
+    {
+        if($state->value === EState::ACTIVE->value)
+        {
+            if($dateTo < new DateTime())
+            {
+                return 'past';
+            }
+        }
+
+        return $state->value;
+
     }
 
 

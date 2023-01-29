@@ -1,4 +1,4 @@
-user: 'User'
+worker: 'Worker'
 superior: 'Superior'
 project_manager: 'Project manager'
 department_manager: 'Department manager'

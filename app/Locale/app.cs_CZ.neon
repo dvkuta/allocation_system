@@ -51,6 +51,8 @@ user:
     workplace: 'Hlavní pracoviště'
     emailExists: 'Na zadaný email je již někdo registrován. Zvolte jiný.'
     loginExists: 'Na zadaný login je již někdo registrován. Zvolte jiný.'
+    roleEmptyError: 'Uživatel nemůže být bez role.'
+    roleCombError: 'Uživatel nemůže být pracovník a zároveň nadřízený.'
 
 project:
     id:  'ID'
@@ -76,6 +78,7 @@ projectAllocation:
     active: 'Aktivní'
     draft: 'Předloha'
     cancel: 'Zrušený'
+    past: 'Proběhlá'
     projectNotExists: 'Projekt neexistuje.'
     allocationNotExists: 'Upravovaná alokace neexistuje.'
     userNotOnProject: 'Uživatel není na projektu přiřazen.'
@@ -83,3 +86,10 @@ projectAllocation:
     allocationError: 'Pracovník nemůže mít větší úvazek, než 40 hodin.'
     allocationMin: 'Alokace musí být kladné číslo.'
     allocationMax: 'Alokace nesmí být více, než %d hodin.'
+    currentAllocation: 'Alokace nyní'
+    totalAllocation: 'Alokací celkem [h]'
+
+subordinate:
+    superior: 'Nadřízený'
+    worker: 'Pracovník'
+    error: 'Zvolený pracovník je již podřízený zvoleného nadřízeného.'

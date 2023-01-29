@@ -5,8 +5,10 @@ use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\UserRepository;
+use App\Tools\Utils;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
@@ -22,6 +24,7 @@ class ProjectUserGrid extends BaseGrid
     private ?int $userId;
 
     private ProjectUserRepository $projectUserRepository;
+    private ProjectUserAllocationFacade $allocationFacade;
 
 
     public function __construct(
@@ -29,6 +32,7 @@ class ProjectUserGrid extends BaseGrid
         ?int $userId,
         ITranslator           $translator,
         ProjectUserRepository $projectUserRepository,
+        ProjectUserAllocationFacade $allocationFacade,
     )
 	{
         parent::__construct($translator);
@@ -36,6 +40,7 @@ class ProjectUserGrid extends BaseGrid
         $this->projectUserRepository = $projectUserRepository;
         $this->projectId = $projectId;
         $this->userId = $userId;
+        $this->allocationFacade = $allocationFacade;
     }
 
 
@@ -55,18 +60,32 @@ class ProjectUserGrid extends BaseGrid
         }
 
 
-		$grid->addColumnText('id', 'app.projectAllocation.id');
+		$grid->addColumnNumber('id', 'app.projectAllocation.id', 'project_id');
 
         if(isset($this->userId))
         {
-            $grid->addColumnText('project_id','app.projectAllocation.name', 'project.name');
+            $grid->addColumnLink('projectName','app.projectAllocation.name',  "Project:detail", 'project.name', ["id" => "project_id"]);
         }
 
         $grid->addColumnText('user_id', 'app.projectAllocation.user_id')
-            ->setRenderer(function( ActiveRow $row) {
-                return $row->user->firstname . " " . $row->user->lastname ;
+            ->setRenderer(function(ActiveRow $row) {
+                return $row->user->firstname . " " . $row->user->lastname . " (". $row->user->email. ")" ;
             })
             ->setSortable();
+
+
+        $grid->addColumnNumber('currentAllocation', 'app.projectAllocation.currentAllocation')
+            ->setRenderer(function(ActiveRow $row) {
+                $userId = $row->user->id;
+                $allocation = $this->allocationFacade->getCurrentWorkloadForUser($userId);
+                return Utils::getAllocationString($allocation, ProjectUserAllocationFacade::MAX_ALLOCATION);
+            });
+
+        $grid->addColumnNumber('allAllocations', 'app.projectAllocation.currentAllocation')
+            ->setRenderer(function(ActiveRow $row) {
+                $userId = $row->user->id;
+                return $this->allocationFacade->getAllAllocationStatistic($userId);
+            });
 
         /*$grid->addColumnText('allocation','app.projectAllocation.allocation');
 
