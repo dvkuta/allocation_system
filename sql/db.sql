@@ -60,6 +60,18 @@ create table project_user_allocation
         foreign key (project_user_id) references project_user (id)
 );
 
+create table superior_user
+(
+    id          int(11) unsigned auto_increment
+        primary key,
+    superior_id int(11) unsigned not null comment 'tabulka user',
+    worker_id   int(11) unsigned not null comment 'tabulka user',
+    constraint superior_user_user_superior_fk
+        foreign key (superior_id) references user (id),
+    constraint superior_user_user_worker_fk
+        foreign key (worker_id) references user (id)
+);
+
 create table user_role
 (
     id      int(11) unsigned auto_increment
