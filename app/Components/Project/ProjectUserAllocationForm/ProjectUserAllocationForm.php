@@ -6,12 +6,11 @@ use App\Components\Base\BaseComponent;
 use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
-use App\Model\Project\ProjectUser\ProjectUserFacade;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
-use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
+use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Base\IProjectUserAllocationRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\Utils;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
@@ -33,29 +32,29 @@ class ProjectUserAllocationForm extends BaseComponent
     private ?int $id; //při editaci je to id alokace, a při vytváření je to id projektu
     private bool $editAllocation; //jde o editaci
     private Translator $translator;
-    private ProjectUserRepository $projectUserRepository;
-    private ProjectRepository $projectRepository;
+    private IProjectUserRepository $projectUserRepository;
+    private IProjectRepository $projectRepository;
     private ProjectUserAllocationFacade $allocationFacade;
-    private ProjectUserAllocationRepository $allocationRepository;
+    private IProjectUserAllocationRepository $allocationRepository;
 
 
     /**
      * @param int|null $id
      * @param bool $editAllocation
      * @param Translator $translator
-     * @param ProjectUserRepository $projectUserRepository
-     * @param ProjectRepository $projectRepository
+     * @param IProjectUserRepository $projectUserRepository
+     * @param IProjectRepository $projectRepository
      * @param ProjectUserAllocationFacade $allocationFacade
-     * @param ProjectUserAllocationRepository $allocationRepository
+     * @param IProjectUserAllocationRepository $allocationRepository
      */
     public function __construct(
-        ?int                  $id,
-        bool $editAllocation,
-        Translator            $translator,
-        ProjectUserRepository $projectUserRepository,
-        ProjectRepository $projectRepository,
-        ProjectUserAllocationFacade $allocationFacade,
-        ProjectUserAllocationRepository $allocationRepository,
+        ?int                            $id,
+        bool                            $editAllocation,
+        Translator                      $translator,
+        IProjectUserRepository           $projectUserRepository,
+        IProjectRepository               $projectRepository,
+        ProjectUserAllocationFacade     $allocationFacade,
+        IProjectUserAllocationRepository $allocationRepository,
     )
     {
 

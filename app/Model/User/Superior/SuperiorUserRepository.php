@@ -5,12 +5,13 @@ namespace App\Model\User\Superior;
 
 use App\Model\Repository\Base\BaseRepository;
 
+use App\Model\Repository\Base\ISuperiorUserRepository;
 use Nette\Database\Explorer;
 
 /**
  * Přístup k datům z tabulky superior_user
  */
-class SuperiorUserRepository extends BaseRepository
+class SuperiorUserRepository extends BaseRepository implements ISuperiorUserRepository
 {
 
     public const TABLE_NAME = 'superior_user';
@@ -56,7 +57,7 @@ class SuperiorUserRepository extends BaseRepository
      * @param int $workerId
      * @return void
      */
-    public function saveData(int $superiorId, int $workerId)
+    public function saveData(int $superiorId, int $workerId): void
     {
         $data = [self::COL_SUPERIOR_ID => $superiorId,
             self::COL_WORKER_ID => $workerId];

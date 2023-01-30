@@ -5,6 +5,7 @@ namespace App\Model\Project\ProjectUser;
 
 use App\Model\DTO\ProjectUserDTO;
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
@@ -12,7 +13,7 @@ use Nette\Database\Table\Selection;
 /**
  * Přístup k datům z tabulky project_user
  */
-class ProjectUserRepository extends BaseRepository
+class ProjectUserRepository extends BaseRepository implements IProjectUserRepository
 {
 
     public const TABLE_NAME = 'project_user';

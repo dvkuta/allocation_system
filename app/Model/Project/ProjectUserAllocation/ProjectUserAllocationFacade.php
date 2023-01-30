@@ -6,11 +6,12 @@ namespace App\Model\Project\ProjectUserAllocation;
 use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
-use App\Model\User\Superior\SuperiorUserRepository;
-use App\Tools\Transaction;
+use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Base\IProjectUserAllocationRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
+use App\Model\Repository\Base\ISuperiorUserRepository;
+use App\Tools\ITransaction;
 use DateTime;
 use Nette\Database\Table\Selection;
 use Tracy\Debugger;
@@ -21,20 +22,20 @@ use Tracy\ILogger;
  */
 class ProjectUserAllocationFacade
 {
-    private ProjectUserRepository $projectUserRepository;
-    private ProjectUserAllocationRepository $allocationRepository;
-    private Transaction $transaction;
-    private ProjectRepository $projectRepository;
+    private IProjectUserRepository $projectUserRepository;
+    private IProjectUserAllocationRepository $allocationRepository;
+    private ITransaction $transaction;
+    private IProjectRepository $projectRepository;
 
-    public const  MAX_ALLOCATION = 40;
-    private SuperiorUserRepository $superiorUserRepository;
+    public const MAX_ALLOCATION = 40;
+    private ISuperiorUserRepository $superiorUserRepository;
 
     public function __construct(
-        ProjectUserRepository $projectUserRepository,
-        ProjectUserAllocationRepository $allocationRepository,
-        ProjectRepository $projectRepository,
-        SuperiorUserRepository $superiorUserRepository,
-        Transaction $transaction
+        IProjectUserRepository                $projectUserRepository,
+        IProjectUserAllocationRepository      $allocationRepository,
+        IProjectRepository                    $projectRepository,
+        ISuperiorUserRepository $superiorUserRepository,
+        ITransaction                          $transaction
     )
     {
 

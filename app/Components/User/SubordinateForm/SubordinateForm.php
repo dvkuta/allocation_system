@@ -5,15 +5,10 @@ namespace App\Components\User\SubordinateForm;
 use App\Components\Base\BaseComponent;
 use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
-use App\Model\Project\ProjectUser\EState;
-use App\Model\Project\ProjectUser\ProjectUserFacade;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
+use App\Model\Repository\Base\IUserRepository;
+use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\Superior\SuperiorUserFacade;
-use App\Model\User\UserRepository;
-use App\Tools\Utils;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
@@ -32,23 +27,23 @@ class SubordinateForm extends BaseComponent
     // id nadřízeného
     private ?int $id;
     private Translator $translator;
-    private UserRepository $userRepository;
-    private UserRoleRepository $userRoleRepository;
+    private IUserRepository $userRepository;
+    private IUserRoleRepository $userRoleRepository;
     private SuperiorUserFacade $superiorUserFacade;
 
 
     /**
      * @param int|null $id
      * @param Translator $translator
-     * @param UserRepository $userRepository
-     * @param UserRoleRepository $userRoleRepository
+     * @param iUserRepository $userRepository
+     * @param iUserRoleRepository $userRoleRepository
      * @param SuperiorUserFacade $superiorUserFacade
      */
     public function __construct(
-        ?int                  $id,
-        Translator            $translator,
-        UserRepository $userRepository,
-        UserRoleRepository $userRoleRepository,
+        ?int               $id,
+        Translator         $translator,
+        IUserRepository     $userRepository,
+        IUserRoleRepository $userRoleRepository,
         SuperiorUserFacade $superiorUserFacade,
     )
     {

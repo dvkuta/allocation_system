@@ -29,16 +29,19 @@
 </div>
 <!-- /.login-box -->
 {snippet flashes}
-   <script>
-        {foreach $flashes as $flash}
-        $(document).Toasts('create', {
-            title: {$flash->message},
-            body: {$flash->message},
-            class: {$flash->type}
-        });
-        {/foreach}
-</script>
+    <script>
+        function callFlashMessages() {
+            {foreach $flashes as $flash}
+            $(document).Toasts('create', {
+                title: {$flash->message},
+                body: {$flash->message},
+                class: {$flash->type}
+            });
+            {/foreach}
+        }
+    </script>
 {/snippet}
+
 <!-- ./wrapper -->
 {block scripts}
 
@@ -53,7 +56,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/nette.ajax.js@2.3.0/nette.ajax.js"></script>
 
-<script src="{$basePath}/assets/js/scripts.js"></script>
 {/block}
+
+<script>
+    $.nette.ext("initOnAjax",
+        {
+            success: function (payload) {
+                callFlashMessages();
+            }
+
+        });
+</script>
+
 </body>
 </html>

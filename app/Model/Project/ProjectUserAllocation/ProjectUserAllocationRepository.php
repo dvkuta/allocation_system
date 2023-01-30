@@ -7,6 +7,7 @@ use App\Model\DTO\AllocationDTO;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\Repository\Base\IProjectUserAllocationRepository;
 use App\Model\User\UserRepository;
 use DateTime;
 use Nette\Database\Explorer;
@@ -17,7 +18,7 @@ use Nette\Database\Table\Selection;
 /**
  * Přístup k datům z tabulky project_user_allocation
  */
-class ProjectUserAllocationRepository extends BaseRepository
+class ProjectUserAllocationRepository extends BaseRepository implements IProjectUserAllocationRepository
 {
 
     public const TABLE_NAME = 'project_user_allocation';

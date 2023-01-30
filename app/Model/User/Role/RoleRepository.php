@@ -4,6 +4,7 @@ namespace App\Model\User\Role;
 
 
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\Repository\Base\IRoleRepository;
 use Nette\Database\Explorer;
 
 

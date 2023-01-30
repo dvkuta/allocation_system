@@ -4,7 +4,7 @@ namespace App\Model\Project\ProjectUser;
 
 use App\Model\DTO\ProjectUserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\ITransaction;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -15,20 +15,17 @@ use Tracy\ILogger;
 class ProjectUserFacade
 {
 
-    private ProjectUserRepository $projectUserRepository;
+    private IProjectUserRepository $projectUserRepository;
     private ITransaction $transaction;
-    private ProjectRepository $projectRepository;
 
     public function __construct(
-        ITransaction           $transaction,
-        ProjectUserRepository $projectUserRepository,
-        ProjectRepository $projectRepository,
+        ITransaction          $transaction,
+        IProjectUserRepository $projectUserRepository,
     )
     {
 
         $this->transaction = $transaction;
         $this->projectUserRepository = $projectUserRepository;
-        $this->projectRepository = $projectRepository;
     }
 
     /**

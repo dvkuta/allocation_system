@@ -16,8 +16,8 @@ class Authenticator implements Nette\Security\Authenticator
     private UserRoleRepository $userRoleRepository;
 
     public function __construct(
-        Passwords $passwords,
-        UserRepository $userRepository,
+        Passwords          $passwords,
+        UserRepository     $userRepository,
         UserRoleRepository $userRoleRepository,
     ) {
         $this->passwords = $passwords;

@@ -2,7 +2,7 @@
 namespace App\Components\Project\ProjectGrid;
 
 use App\Components\Base\BaseGrid;
-use App\Model\Project\ProjectRepository;
+use App\Model\Repository\Base\IProjectRepository;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Ublaboo\DataGrid\DataGrid;
@@ -13,13 +13,13 @@ use Ublaboo\DataGrid\DataGrid;
  */
 class ProjectGrid extends BaseGrid
 {
-    private ProjectRepository $projectRepository;
+    private IProjectRepository $projectRepository;
 
     public function __construct(
 
         //pouzity kvuli kompatibilite, jinak naprosto stejne, jako Translator
         ITranslator $translator,
-        ProjectRepository $projectRepository
+        IProjectRepository $projectRepository
     )
 	{
         parent::__construct($translator);

@@ -4,6 +4,7 @@ namespace App\Model\User\Role;
 
 
 use App\Model\Repository\Base\BaseRepository;
+use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 
@@ -11,7 +12,7 @@ use Nette\Database\Explorer;
 /**
  * Přístup k datům z tabulky UserRole
  */
-class UserRoleRepository extends BaseRepository
+class UserRoleRepository extends BaseRepository implements IUserRoleRepository
 {
     public const TABLE_NAME = 'user_role';
     protected $tableName = self::TABLE_NAME;

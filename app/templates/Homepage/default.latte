@@ -1,5 +1,5 @@
 {block name}
-    Vaše alokace
+{_app.homepagePresenter.workerAllocations}
 {/block}
 
 {block content}
@@ -9,7 +9,7 @@
         </div>
     </div>
 {if $user->isInRole(App\Model\User\Role\ERole::superior->value)} {/if}
-    <h3>Alokace vašich podřízených </h3>
+    <h3>{_app.homepagePresenter.subordinateAllocations}</h3>
     <div class="card">
         <div class="card-body">
             {control subordinateAllocationsGrid}

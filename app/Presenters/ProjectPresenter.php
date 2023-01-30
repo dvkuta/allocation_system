@@ -15,7 +15,7 @@ use App\Components\Project\ProjectUserForm\IProjectUserFormFactory;
 use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
-use App\Model\Project\ProjectRepository;
+use App\Model\Repository\Base\IProjectRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
@@ -36,7 +36,7 @@ final class ProjectPresenter extends BasePresenter
     private IProjectUserGridFactory $projectUserGridFactory;
     private IProjectUserAllocationGridFactory $allocationGridFactory;
     private IProjectUserAllocationFormFactory $allocationFormFactory;
-    private ProjectRepository $projectRepository;
+    private IProjectRepository $projectRepository;
 
     public function __construct(
         IProjectFormFactory $projectFormFactory,
@@ -45,7 +45,7 @@ final class ProjectPresenter extends BasePresenter
         IProjectUserGridFactory $IProjectUserGridFactory,
         IProjectUserAllocationGridFactory $allocationGridFactory,
         IProjectUserAllocationFormFactory $allocationFormFactory,
-        ProjectRepository $projectRepository
+        IProjectRepository $projectRepository
 
     )
     {

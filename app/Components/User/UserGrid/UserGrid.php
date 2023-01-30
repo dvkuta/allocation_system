@@ -3,8 +3,9 @@ namespace App\Components\User\UserGrid;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
+use App\Model\Repository\Base\IRoleRepository;
+use App\Model\Repository\Base\IUserRepository;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\IRoleRepository;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserRepository;
@@ -18,17 +19,19 @@ use Ublaboo\DataGrid\Row;
 
 class UserGrid extends BaseGrid
 {
-    private UserRepository $userRepository;
+    private IUserRepository $userRepository;
     private IRoleRepository $roleRepository;
 
 
     /**
-	 * @param Explorer $explorer
-	 */
+     * @param ITranslator $translator
+     * @param UserRepository $userRepository
+     * @param IRoleRepository $roleRepository
+     */
 	public function __construct(
-                                ITranslator $translator,
-                                UserRepository $userRepository,
-                                IRoleRepository $roleRepository
+        ITranslator     $translator,
+        UserRepository  $userRepository,
+        IRoleRepository $roleRepository
     )
 	{
         parent::__construct($translator);

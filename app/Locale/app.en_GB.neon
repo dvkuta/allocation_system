@@ -129,3 +129,7 @@ projectPresenter:
     addWorkerAllocationProject: 'Add worker allocation on project'
     editWorkerAllocationProject: 'Edit worker allocation on project'
     user: 'User projects'
+
+homepagePresenter:
+    workerAllocations: 'Your allocations'
+    subordinateAllocations: 'Allocations of your subordinates'

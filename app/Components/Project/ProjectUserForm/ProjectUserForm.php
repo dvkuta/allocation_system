@@ -6,11 +6,9 @@ use App\Components\Base\BaseComponent;
 use App\Model\DTO\ProjectDTO;
 use App\Model\DTO\ProjectUserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
-use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
-use App\Tools\Utils;
+use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
@@ -30,17 +28,17 @@ class ProjectUserForm extends BaseComponent
     private ?int $id;
     private Translator $translator;
 
-    private ProjectRepository $projectRepository;
-    private ProjectUserRepository $projectUserRepository;
+    private IProjectRepository $projectRepository;
+    private IProjectUserRepository $projectUserRepository;
     private ProjectUserFacade $projectUserFacade;
 
 
     public function __construct(
         ?int                  $id,
         Translator            $translator,
-        ProjectRepository $projectRepository,
-        ProjectUserRepository $projectUserRepository,
-        ProjectUserFacade $projectUserFacade
+        IProjectRepository     $projectRepository,
+        IProjectUserRepository $projectUserRepository,
+        ProjectUserFacade     $projectUserFacade
     )
     {
 

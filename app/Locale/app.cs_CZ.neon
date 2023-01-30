@@ -129,3 +129,7 @@ projectPresenter:
     addWorkerAllocationProject: 'Přidat alokaci pracovníka na projektu'
     editWorkerAllocationProject: 'Upravit alokaci pracovníka na projektu'
     user: 'Projekty uživatele'
+
+homepagePresenter:
+    workerAllocations: 'Vaše alokace'
+    subordinateAllocations: 'Alokace podřízených'

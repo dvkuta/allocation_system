@@ -3,33 +3,24 @@
 namespace App\Components\Project\ProjectForm;
 
 use App\Components\Base\BaseComponent;
-use App\Components\Project\ProjectGrid\ProjectGrid;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
-
 use App\Model\Project\ProjectFacade;
-use App\Model\Project\ProjectRepository;
+use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\RoleRepository;
-use App\Model\User\Role\UserRoleRepository;
-use App\Model\User\UserFacade;
-use App\Model\User\UserRepository;
-use App\Tools\Transaction;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
-use Exception;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
-use Nette\Security\AuthenticationException;
-use Nette\Security\User;
+
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
+
 
 /**
  * Komponenta formuláře pro editaci a vytváření projektů
@@ -45,16 +36,16 @@ class ProjectForm extends BaseComponent
     private Translator $translator;
 
     private ProjectFacade $projectFacade;
-    private ProjectRepository $projectRepository;
-    private UserRoleRepository $userRoleRepository;
+    private IProjectRepository $projectRepository;
+    private IUserRoleRepository $userRoleRepository;
 
 
     public function __construct(
-        ?int                  $id,
-        Translator            $translator,
-        ProjectFacade     $projectFacade,
-        ProjectRepository $projectRepository,
-        UserRoleRepository $userRoleRepository,
+        ?int               $id,
+        Translator         $translator,
+        ProjectFacade      $projectFacade,
+        IProjectRepository  $projectRepository,
+        IUserRoleRepository $userRoleRepository,
     )
     {
 

@@ -3,15 +3,10 @@
 namespace App\Model\User\Superior;
 
 
-use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Repository\Base\BaseRepository;
 
+use App\Model\Repository\Base\ISuperiorUserRepository;
 use App\Tools\ITransaction;
-use Nette\Database\Explorer;
-use Nette\Database\Table\ActiveRow;
-use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 use Tracy\ILogger;
 
 /**
@@ -20,13 +15,13 @@ use Tracy\ILogger;
 class SuperiorUserFacade
 {
 
-    private SuperiorUserRepository $superiorUserRepository;
+    private ISuperiorUserRepository $superiorUserRepository;
     private ITransaction $transaction;
 
 
     public function __construct(
-        SuperiorUserRepository $superiorUserRepository,
-        ITransaction $transaction,
+        ISuperiorUserRepository $superiorUserRepository,
+        ITransaction                         $transaction,
     )
     {
         $this->superiorUserRepository = $superiorUserRepository;

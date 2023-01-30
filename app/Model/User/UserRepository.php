@@ -6,14 +6,13 @@ namespace App\Model\User;
 use App\Model\DTO\UserDTO;
 use App\Model\Repository\Base\BaseRepository;
 
+use App\Model\Repository\Base\IUserRepository;
 use Nette\Database\Explorer;
-use Nette\Database\Table\ActiveRow;
-use Nette\Utils\ArrayHash;
 
 /**
  * Přístup k datům z tabulky user
  */
-class UserRepository extends BaseRepository
+class UserRepository extends BaseRepository implements IUserRepository
 {
 
     public const TABLE_NAME = 'user';

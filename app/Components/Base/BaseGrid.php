@@ -6,6 +6,9 @@ use Nette\Localization\ITranslator;
 use Nette\Localization\Translator;
 use Ublaboo\DataGrid\DataGrid;
 
+/**
+ * Základní třída pro grid, definuje počáteční nastavení
+ */
 class BaseGrid extends BaseComponent
 {
     public ITranslator $translator;

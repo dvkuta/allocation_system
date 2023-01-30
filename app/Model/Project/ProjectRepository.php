@@ -6,6 +6,7 @@ namespace App\Model\Project;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Repository\Base\BaseRepository;
 
+use App\Model\Repository\Base\IProjectRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
@@ -14,7 +15,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Přístup k datům z tabulky Project
  */
-class ProjectRepository extends BaseRepository
+class ProjectRepository extends BaseRepository implements IProjectRepository
 {
 
     public const TABLE_NAME = 'project';

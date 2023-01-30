@@ -1,22 +1,14 @@
 <?php
 namespace App\Components\Project\ProjectUserGrid;
 
-use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
-use App\Model\Project\ProjectRepository;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
-use App\Model\User\Role\RoleRepository;
-use App\Model\User\UserRepository;
+use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\Utils;
-use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
-use Nette\Utils\DateTime;
-use Ublaboo\DataGrid\AggregationFunction\FunctionSum;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Row;
+
 
 /**
  * Grid sloužící k zobrazení vztahu projekt - pracovník
@@ -27,15 +19,15 @@ class ProjectUserGrid extends BaseGrid
     private ?int $projectId;
     private ?int $userId;
 
-    private ProjectUserRepository $projectUserRepository;
+    private iProjectUserRepository $projectUserRepository;
     private ProjectUserAllocationFacade $allocationFacade;
 
 
     public function __construct(
-        ?int $projectId,
-        ?int $userId,
-        ITranslator           $translator,
-        ProjectUserRepository $projectUserRepository,
+        ?int                        $projectId,
+        ?int                        $userId,
+        ITranslator                 $translator,
+        IProjectUserRepository       $projectUserRepository,
         ProjectUserAllocationFacade $allocationFacade,
     )
 	{

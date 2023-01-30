@@ -5,24 +5,19 @@ namespace App\Components\User\UserForm;
 use App\Components\Base\BaseComponent;
 use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\User\Role\RoleRepository;
-use App\Model\User\Role\UserRoleRepository;
+use App\Model\Repository\Base\IRoleRepository;
+use App\Model\Repository\Base\IUserRepository;
+use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\UserFacade;
-use App\Model\User\UserRepository;
-use App\Tools\Transaction;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
-use Exception;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
-use Nette\Security\AuthenticationException;
-use Nette\Security\User;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
+
 
 /**
  * Formulář pro úpravu a přidávání uživatelů
@@ -31,27 +26,27 @@ class UserForm extends BaseComponent
 {
 
     private ?int $id; //id uživatele, pouze při editaci
-    private UserRepository $userRepository;
+    private IUserRepository $userRepository;
     private Translator $translator;
-    private RoleRepository $roleRepository;
+    private IRoleRepository $roleRepository;
     private UserFacade $userFacade;
-    private UserRoleRepository $userRoleRepository;
+    private IUserRoleRepository $userRoleRepository;
 
     /**
      * @param int|null $id
-     * @param UserRepository $userRepository
+     * @param IUserRepository $userRepository
      * @param Translator $translator
-     * @param RoleRepository $roleRepository
-     * @param UserRoleRepository $userRoleRepository
+     * @param IRoleRepository $roleRepository
+     * @param IUserRoleRepository $userRoleRepository
      * @param UserFacade $userFacade
      */
     public function __construct(
-        ?int           $id,
-        UserRepository $userRepository,
-        Translator     $translator,
-        RoleRepository $roleRepository,
-        UserRoleRepository $userRoleRepository,
-        UserFacade     $userFacade,
+        ?int               $id,
+        IUserRepository     $userRepository,
+        Translator         $translator,
+        IRoleRepository     $roleRepository,
+        IUserRoleRepository $userRoleRepository,
+        UserFacade         $userFacade,
     )
     {
 
@@ -165,9 +160,9 @@ class UserForm extends BaseComponent
      */
     public function saveForm(Form $form, ArrayHash $values)
     {
-        //TODO
+
         try {
-            bdump($values);
+
             $user = new UserDTO(null,
                 $values['firstname'],
                 $values['lastname'],
