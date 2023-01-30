@@ -12,6 +12,7 @@ use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
+use Nette\Security\User;
 use Nette\Utils\DateTime;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
@@ -21,22 +22,26 @@ class UserGrid extends BaseGrid
 {
     private IUserRepository $userRepository;
     private IRoleRepository $roleRepository;
+    private User $user;
 
 
     /**
      * @param ITranslator $translator
      * @param UserRepository $userRepository
      * @param IRoleRepository $roleRepository
+     * @param User $user
      */
 	public function __construct(
         ITranslator     $translator,
         UserRepository  $userRepository,
-        IRoleRepository $roleRepository
+        IRoleRepository $roleRepository,
+        User $user,
     )
 	{
         parent::__construct($translator);
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->user = $user;
     }
 
 
@@ -87,7 +92,11 @@ class UserGrid extends BaseGrid
         $grid->allowRowsAction('addSubordinate', function(ActiveRow $row): bool {
             $roles = $row->related('user_role')->joinWhere($this->roleRepository->getTableName(),'role_id = role.id')
                 ->select('type')->fetchPairs('type','type');
-            return key_exists(ERole::superior->name, $roles);
+            return key_exists(ERole::superior->name, $roles) && $this->user->isInRole(ERole::secretariat->name);
+        });
+
+        $grid->allowRowsAction('edit', function(ActiveRow $row): bool {
+            return $this->user->isInRole(ERole::secretariat->name);
         });
 
 

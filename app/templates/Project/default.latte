@@ -5,7 +5,7 @@
 {block content}
     <div class="card">
         <div class="card-header">
-            <a n:href="Project:add" class="btn btn-info">{_app.projectPresenter.add}</a>
+            <a n:href="Project:add" n:if="$user->isInRole(App\Model\User\Role\ERole::secretariat->name)" class="btn btn-info">{_app.projectPresenter.add}</a>
         </div>
         <div class="card-body">
             {control projectGrid}

@@ -1,8 +1,11 @@
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
         data-accordion="false">
+        {do bdump($menu)}
         {foreach $menu as $name => $subInfo}
-            <!-- todo zobrazovani v menu pro jednotive role -->
+            {do bdump($subInfo)}
+            {do $userRoles = $user->getRoles()}
+{*            {if !empty(array_intersect($userRoles, $subInfo['priviledge'] ))}*}
             <li class="nav-item">
                     <a href="{plink $subInfo['link']}" n:class="$currentPage === $subInfo['link'] ? 'bg-light', 'nav-link'">
                         <i class="nav-icon {$subInfo['icon']}"></i>
@@ -11,6 +14,7 @@
                         </p>
                     </a>
             </li>
+{*                {/if}*}
         {/foreach}
 
     </ul>

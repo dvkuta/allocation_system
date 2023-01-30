@@ -122,7 +122,7 @@ projectPresenter:
     add: 'Přidat projekt'
     edit: 'Upravit projekt'
     addUser: 'Přidat pracovníka k projektu'
-    detail: 'Detail prjektu'
+    detail: 'Detail projektu'
     projectWorkers: 'Pracovníci na projektu'
     allocationsOnProject: 'Alokace na projektu'
     addWorkerAllocation: 'Přidat alokaci pracovníka'

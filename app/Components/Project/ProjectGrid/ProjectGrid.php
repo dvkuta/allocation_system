@@ -3,8 +3,10 @@ namespace App\Components\Project\ProjectGrid;
 
 use App\Components\Base\BaseGrid;
 use App\Model\Repository\Base\IProjectRepository;
+use App\Model\User\Role\ERole;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
+use Nette\Security\User;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -14,17 +16,20 @@ use Ublaboo\DataGrid\DataGrid;
 class ProjectGrid extends BaseGrid
 {
     private IProjectRepository $projectRepository;
+    private User $user;
 
     public function __construct(
 
         //pouzity kvuli kompatibilite, jinak naprosto stejne, jako Translator
         ITranslator $translator,
-        IProjectRepository $projectRepository
+        IProjectRepository $projectRepository,
+        User $user
     )
 	{
         parent::__construct($translator);
 
         $this->projectRepository = $projectRepository;
+        $this->user = $user;
     }
 
 
@@ -71,10 +76,17 @@ class ProjectGrid extends BaseGrid
 
         $grid->addColumnText('description', 'app.project.description');
 
-        //TODO prava
-        $grid->addAction("edit", 'app.actions.edit', ":edit");
 
+        $grid->addAction("edit", 'app.actions.edit', ":edit");
         $grid->addAction("addUser", 'app.project.addUser', ":addUser");
+
+        $grid->allowRowsAction('edit', function(ActiveRow $row): bool {
+            return $this->user->isInRole(ERole::secretariat->name);
+        });
+
+        $grid->allowRowsAction('addUser', function(ActiveRow $row): bool {
+            return $this->user->isInRole(ERole::secretariat->name);
+        });
 
 
 		return $grid;

@@ -12,6 +12,7 @@ use App\Components\User\UserForm\IUserFormFactory;
 use App\Components\User\UserForm\UserForm;
 use App\Components\User\UserGrid\IUserGridFactory;
 use App\Components\User\UserGrid\UserGrid;
+use App\Model\User\Role\ERole;
 use App\Presenters\Base\BasePresenter;
 use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
@@ -48,12 +49,25 @@ final class UserPresenter extends BasePresenter
     use TEmptyLayoutView;
 
     /**
+     * /user/
+     * @return void
+     */
+    public function actionDefault()
+    {
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
+    }
+
+    /**
      * /user/add
      * @return void
      */
     public function actionAdd()
     {
-
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
     }
 
     /**
@@ -62,7 +76,9 @@ final class UserPresenter extends BasePresenter
      */
     public function actionEdit(int $id)
     {
-
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
     }
 
     /**
@@ -71,7 +87,9 @@ final class UserPresenter extends BasePresenter
      */
     public function actionAddSubordinate(int $id)
     {
-
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
     }
 
 
