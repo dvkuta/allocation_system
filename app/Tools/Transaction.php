@@ -6,6 +6,7 @@ use Nette\Database\Explorer;
 
 class Transaction implements ITransaction
 {
+
     private Explorer $explorer;
 
     /**

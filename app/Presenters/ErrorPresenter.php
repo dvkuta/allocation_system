@@ -4,22 +4,26 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App\Presenters\Base\BasePresenter;
 use Nette;
 use Nette\Application\Responses;
 use Nette\Http;
 use Tracy\ILogger;
 
-
-final class ErrorPresenter implements Nette\Application\IPresenter
+/**
+ * Presenter, ktery forwarduje errory na prislusny error 4xx presenter, nebo vyhodi 500
+ */
+final class ErrorPresenter extends BasePresenter
 {
 	use Nette\SmartObject;
 
 	/** @var ILogger */
-	private $logger;
+	private ILogger $logger;
 
 
 	public function __construct(ILogger $logger)
 	{
+        parent::__construct();
 		$this->logger = $logger;
 	}
 

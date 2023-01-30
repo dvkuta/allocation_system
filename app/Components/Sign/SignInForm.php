@@ -15,18 +15,14 @@ use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form component class for sign in proccess
- * @package App\Components
+ * Přihlašovací formulář
  */
 class SignInForm extends BaseComponent {
 
 	protected User $user;
     private Translator $translator;
 
-    /**
-	 * Component constructor
-	 * @param User $user
-	 */
+
 	public function __construct(User $user, Translator $translator) {
 		$this->user = $user;
 
@@ -35,8 +31,7 @@ class SignInForm extends BaseComponent {
 
 
 	/**
-	 * Factory function for creating sign in form
-	 * @return Form
+	 * Definice formuláře
 	 */
 	public function createComponentForm():Form {
 
@@ -66,7 +61,7 @@ class SignInForm extends BaseComponent {
 	}
 
     /**
-     * Function that is triggered by a successful form submission
+     * Funkce zavolaná po úspěšném odeslání formuláře
      * @param Form $form
      * @param ArrayHash $values
      * @throws AbortException

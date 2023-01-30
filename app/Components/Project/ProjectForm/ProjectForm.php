@@ -4,6 +4,7 @@ namespace App\Components\Project\ProjectForm;
 
 use App\Components\Base\BaseComponent;
 use App\Components\Project\ProjectGrid\ProjectGrid;
+use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
 
 use App\Model\Project\ProjectFacade;
@@ -21,6 +22,7 @@ use Exception;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
@@ -30,15 +32,18 @@ use Tracy\Debugger;
 use Tracy\ILogger;
 
 /**
- * Form component class for user CRUD
- * @package App\Components
+ * Komponenta formuláře pro editaci a vytváření projektů
+ *
  */
 class ProjectForm extends BaseComponent
 {
-
+    /**
+     * @var int|null Id projektu - je vyplnene pri editaci
+     */
     private ?int $id;
-    private UserRepository $userRepository;
+
     private Translator $translator;
+
     private ProjectFacade $projectFacade;
     private ProjectRepository $projectRepository;
     private UserRoleRepository $userRoleRepository;
@@ -47,7 +52,6 @@ class ProjectForm extends BaseComponent
     public function __construct(
         ?int                  $id,
         Translator            $translator,
-        UserFacade            $userFacade,
         ProjectFacade     $projectFacade,
         ProjectRepository $projectRepository,
         UserRoleRepository $userRoleRepository,
@@ -61,17 +65,30 @@ class ProjectForm extends BaseComponent
         $this->userRoleRepository = $userRoleRepository;
     }
 
+    /**
+     * Vykreslení komponenty a naplnení defaultními daty při editaci
+     * @return void
+     * @throws BadRequestException pokud projekt neexistuje
+     */
     public function render()
     {
         $defaults = array();
 
         if (isset($this->id)) {
-            $row = $this->projectRepository->findRow($this->id);
+            /** @var ProjectDTO $project */
+            $project = $this->projectRepository->getProject($this->id);
 
-            if ($row) {
-                $defaults = $row->toArray();
+            if ($project) {
+                $defaults = [
+                    'name' => $project->getName(),
+                    'user_id' => $project->getProjectManagerId(),
+                    'from' => $project->getFrom(),
+                    'to' => $project->getTo(),
+                    'description' => $project->getDescription()
+                ];
+
             } else {
-                throw new BadRequestException();
+                $this->error("Project not exists",404);
             }
         }
 
@@ -86,8 +103,9 @@ class ProjectForm extends BaseComponent
     }
 
     /**
-     * Factory function for creating sign in form
+     * Definice formuláře
      * @return Form
+     * @throws InvalidLinkException
      */
     public function createComponentForm(): Form
     {
@@ -95,6 +113,8 @@ class ProjectForm extends BaseComponent
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer(RenderMode::SIDE_BY_SIDE_MODE));
         $form->setAutoShowValidation(false);
+
+
         $form->addText('name', 'app.project.name')
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
@@ -127,12 +147,17 @@ class ProjectForm extends BaseComponent
         return $form;
     }
 
+    /** Validace zadaných dat
+     * @param Form $form
+     * @param ArrayHash $values
+     * @return void
+     */
     public function validateForm(Form $form, ArrayHash $values)
     {
 
         if(!empty($values['to']))
         {
-            if($values['from'] >= $values['to']) {
+            if($values['from'] > $values['to']) {
                 $form->addError("app.project.dateError");
             }
         }
@@ -140,7 +165,7 @@ class ProjectForm extends BaseComponent
 
 
     /**
-     * Function that is triggered by a successful form submission
+     * Uložení dat z formuláře
      * @param Form $form
      * @param ArrayHash $values
      * @throws AbortException
@@ -154,8 +179,13 @@ class ProjectForm extends BaseComponent
 
         try {
 
+            $project = new ProjectDTO($this->id, $values['name'],
+                $values['user_id'],"", $values['from'],
+                $values['to'], $values['description']);
+
+
             //vytvoreni uzivatele
-            $this->projectFacade->saveProject($values, $this->id);
+            $this->projectFacade->saveProject($project);
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");
         } catch (ProcessException $e) {

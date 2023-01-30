@@ -4,12 +4,16 @@ namespace App\Presenters;
 
 use App\Components\Sign\ISignInFormFactory;
 use App\Components\Sign\SignInForm;
-use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\BasePresenter;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 
-final class SignPresenter extends AbstractPresenter
+/**
+ * Stranka pro prihlaseni
+ * /sign
+ */
+final class SignPresenter extends BasePresenter
 {
 
 
@@ -21,7 +25,13 @@ final class SignPresenter extends AbstractPresenter
         $this->signInFormFactory = $signInFormFactory;
     }
 
-    public function actionIn()
+    /**
+     * prihlaseni
+     * /sign/in
+     * @return void
+     * @throws AbortException
+     */
+    public function actionIn(): void
     {
         if($this->getUser()->isLoggedIn())
         {

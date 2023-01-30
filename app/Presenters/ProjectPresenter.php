@@ -16,14 +16,17 @@ use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
 use App\Model\Project\ProjectRepository;
-use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\BasePresenter;
 use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
 use App\UI\TEmptyLayoutView;
 use Nette\Application\BadRequestException;
+use Nette\Application\UI\InvalidLinkException;
 
-
-final class ProjectPresenter extends AbstractPresenter
+/**
+ * Stranka /project
+ */
+final class ProjectPresenter extends BasePresenter
 {
     use SecuredTrait;
 
@@ -61,22 +64,45 @@ final class ProjectPresenter extends AbstractPresenter
     use TEmptyLayoutView;
 
 
-    public function actionAdd()
+    /**
+     * /project/add
+     * @return void
+     */
+    public function actionAdd(): void
     {
 
     }
 
-    public function actionEdit(int $id)
+    /**
+     *
+     * /project/edit/$id
+     * @param int $id
+     * @return void
+     */
+    public function actionEdit(int $id): void
     {
 
     }
 
-    public function actionAddUser(int $id)
+    /**
+     * pridani uzivatele do projektu
+     * /project/addUser/$id
+     * @param int $id
+     * @return void
+     */
+    public function actionAddUser(int $id): void
     {
 
     }
 
-    public function actionDetail(int $id)
+    /**
+     * /project/detail/$id
+     * @param int $id
+     * @return void
+     * @throws BadRequestException
+     * @throws InvalidLinkException
+     */
+    public function actionDetail(int $id): void
     {
         $project = $this->projectRepository->getProject($id);
 
@@ -90,17 +116,32 @@ final class ProjectPresenter extends AbstractPresenter
         $this->template->addAllocationLink = $link;
     }
 
-    public function actionEditAllocation(int $id)
+    /**
+     * /project/editAllocation/$id
+     * @param int $id
+     * @return void
+     */
+    public function actionEditAllocation(int $id): void
     {
 
     }
 
-    public function actionUser(int $id)
+    /** zobrazeni projektu uzivatele
+     * /project/user/$id
+     * @param int $id
+     * @return void
+     */
+    public function actionUser(int $id): void
     {
 
     }
 
-    public function actionAddAllocation(int $id)
+    /**
+     * /project/addAllocation/$id
+     * @param int $id
+     * @return void
+     */
+    public function actionAddAllocation(int $id): void
     {
 
     }

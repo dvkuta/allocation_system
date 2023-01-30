@@ -8,7 +8,9 @@ use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 
 
-
+/**
+ * Přístup k datům z tabulky UserRole
+ */
 class UserRoleRepository extends BaseRepository
 {
     public const TABLE_NAME = 'user_role';
@@ -28,6 +30,10 @@ class UserRoleRepository extends BaseRepository
     }
 
 
+    /**
+     * @param int $user_id
+     * @return array ve tvaru [id => typ]
+     */
     public function findRolesForUser(int $user_id): array
     {
         if($user_id <= 0)
@@ -45,8 +51,9 @@ class UserRoleRepository extends BaseRepository
 
     /**
      * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
+     * Vraci pole, jelikoz je vyuzita pouze jako zdroj vyctu moznosti pro formulare
      * @param ERole $role
-     * @return array
+     * @return array ve formatu [id => cele jmeno]
      */
     public function getAllUsersInRole(ERole $role): array
     {

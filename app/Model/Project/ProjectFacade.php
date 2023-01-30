@@ -2,24 +2,24 @@
 
 namespace App\Model\Project;
 
+use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\User\Role\RoleRepository;
-use App\Tools\Transaction;
-use Nette\Security\Passwords;
-use Nette\Utils\ArrayHash;
+use App\Tools\ITransaction;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
+/**
+ * Komplexní akce týkající se projektu
+ */
 class ProjectFacade
 {
 
-
     private ProjectRepository $projectRepository;
-    private Transaction $transaction;
+    private ITransaction $transaction;
 
     public function __construct(
         ProjectRepository $projectRepository,
-        Transaction           $transaction,
+        ITransaction           $transaction,
     )
     {
 
@@ -28,15 +28,31 @@ class ProjectFacade
     }
 
     /**
-     * @throws ProcessException
+     * Uloží stav projektu do databáze, tj pokud už existuje, tak ho upraví.
+     * @throws ProcessException uložení selže, vrací identifikátor pro Translator
      */
-    public function saveProject(ArrayHash $project, ?int $projectId): void
+    public function saveProject(ProjectDTO $project): void
     {
         try {
-            bdump($project);
+
             $this->transaction->begin();
-            $this->projectRepository->saveProject($project, $projectId);
+
+            if($project->getId() !== null)
+            {
+                $storedProject = $this->projectRepository->getProject($project->getId());
+                if($storedProject === null)
+                {
+                    throw new ProcessException('app.project.notExists');
+                }
+            }
+
+            $this->projectRepository->saveProject($project);
             $this->transaction->commit();
+        }
+        catch (ProcessException $e)
+        {
+            $this->transaction->rollback();
+            throw $e;
         }
         catch (\PDOException $e)
         {

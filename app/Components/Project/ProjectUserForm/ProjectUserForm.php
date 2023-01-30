@@ -3,6 +3,8 @@
 namespace App\Components\Project\ProjectUserForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\DTO\ProjectDTO;
+use App\Model\DTO\ProjectUserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
@@ -20,12 +22,11 @@ use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form component class for user CRUD
- * @package App\Components
+ * Formulář pro přiřazení uživatelů k projektu
  */
 class ProjectUserForm extends BaseComponent
 {
-
+    //id projektu
     private ?int $id;
     private Translator $translator;
 
@@ -55,10 +56,11 @@ class ProjectUserForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            $row = $this->projectRepository->findRow($this->id);
-            if ($row) {
-                //TODO REPOSITORY
-                $defaults['name'] = $row->name;
+
+            /** @var ProjectDTO $project */
+            $project = $this->projectRepository->getProject($this->id);
+            if ($project) {
+                $defaults['name'] = $project->getName();
             } else {
                 throw new BadRequestException();
             }
@@ -77,7 +79,7 @@ class ProjectUserForm extends BaseComponent
     }
 
     /**
-     * Factory function for creating sign in form
+     * Definice formuláře
      * @return Form
      */
     public function createComponentForm(): Form
@@ -113,21 +115,17 @@ class ProjectUserForm extends BaseComponent
 
 
     /**
-     * Function that is triggered by a successful form submission
+     * Funkce, která se vykoná pokud je odeslání formuláře validní
      * @param Form $form
      * @param ArrayHash $values
      * @throws AbortException
      */
     public function saveForm(Form $form, ArrayHash $values)
     {
-        if(empty($values['to']))
-        {
-            $values['to'] = null;
-        }
 
         try {
-
-            $this->projectUserFacade->saveUserToProject($values, $this->id);
+            $projectUser = new ProjectUserDTO($values['user_id'], $this->id);
+            $this->projectUserFacade->saveUserToProject($projectUser);
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");

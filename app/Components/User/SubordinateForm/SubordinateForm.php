@@ -25,12 +25,11 @@ use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form component class for user CRUD
- * @package App\Components
+ * Formulář sloužící k přiřazení pracovníků k nadřízeným
  */
 class SubordinateForm extends BaseComponent
 {
-
+    // id nadřízeného
     private ?int $id;
     private Translator $translator;
     private UserRepository $userRepository;
@@ -38,6 +37,13 @@ class SubordinateForm extends BaseComponent
     private SuperiorUserFacade $superiorUserFacade;
 
 
+    /**
+     * @param int|null $id
+     * @param Translator $translator
+     * @param UserRepository $userRepository
+     * @param UserRoleRepository $userRoleRepository
+     * @param SuperiorUserFacade $superiorUserFacade
+     */
     public function __construct(
         ?int                  $id,
         Translator            $translator,
@@ -82,7 +88,7 @@ class SubordinateForm extends BaseComponent
     }
 
     /**
-     * Factory function for creating sign in form
+     * Definice formuláře
      * @return Form
      */
     public function createComponentForm(): Form
@@ -118,17 +124,13 @@ class SubordinateForm extends BaseComponent
 
 
     /**
-     * Function that is triggered by a successful form submission
+     * Funkce zavolaná po úspěšném odeslání formuláře
      * @param Form $form
      * @param ArrayHash $values
      * @throws AbortException
      */
     public function saveForm(Form $form, ArrayHash $values)
     {
-        if(empty($values['to']))
-        {
-            $values['to'] = null;
-        }
 
         try {
 

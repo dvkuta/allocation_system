@@ -1,27 +1,23 @@
 <?php
 namespace App\Components\Project\ProjectGrid;
 
-use App\Components\Base\BaseComponent;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectRepository;
-use App\Model\User\Role\RoleRepository;
-use App\Model\User\UserRepository;
-use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
-use Nette\Utils\DateTime;
-use Ublaboo\DataGrid\AggregationFunction\FunctionSum;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Row;
 
+/**
+ * Komponenta pro vytvoření tabulky pro projekty
+ * Obsahuje odkazy na akce editace a přiřazení pracovníka do projektu
+ */
 class ProjectGrid extends BaseGrid
 {
-
-
     private ProjectRepository $projectRepository;
 
     public function __construct(
+
+        //pouzity kvuli kompatibilite, jinak naprosto stejne, jako Translator
         ITranslator $translator,
         ProjectRepository $projectRepository
     )
@@ -37,10 +33,10 @@ class ProjectGrid extends BaseGrid
 	{
 		$grid = parent::createGrid();
 
-		$grid->setDataSource($this->projectRepository->findAll());
+		$grid->setDataSource($this->projectRepository->getAllProjects());
 
 		$grid->addColumnText('id', 'app.project.id')
-            ->setDefaultHide();;
+            ->setDefaultHide();
 
         $grid->addColumnLink('name', 'app.project.name', ':detail')
             ->setSortable()
@@ -63,9 +59,9 @@ class ProjectGrid extends BaseGrid
 
         $grid->addColumnDateTime('to', 'app.project.to')
             ->setRendererOnCondition(
-                function( ActiveRow $row)
+                function()
                     {
-                        return "Konec není určen";
+                        return $this->translator->translate('app.project.indefiniteEnd');
                     },
                 function (ActiveRow $row)
                     {
@@ -75,12 +71,7 @@ class ProjectGrid extends BaseGrid
 
         $grid->addColumnText('description', 'app.project.description');
 
-
-//		$grid->addColumnText('user_role.type', 'app.user.role')
-//            ->setRenderer(function( ActiveRow $row) {
-//            return $this->translator->translate($row->user_role->type);
-//        });
-
+        //TODO prava
         $grid->addAction("edit", 'app.actions.edit', ":edit");
 
         $grid->addAction("addUser", 'app.project.addUser', ":addUser");

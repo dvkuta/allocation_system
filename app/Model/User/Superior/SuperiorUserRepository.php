@@ -7,7 +7,9 @@ use App\Model\Repository\Base\BaseRepository;
 
 use Nette\Database\Explorer;
 
-
+/**
+ * Přístup k datům z tabulky superior_user
+ */
 class SuperiorUserRepository extends BaseRepository
 {
 
@@ -48,6 +50,12 @@ class SuperiorUserRepository extends BaseRepository
         return $count > 0;
     }
 
+    /**
+     * ulozi data do db
+     * @param int $superiorId
+     * @param int $workerId
+     * @return void
+     */
     public function saveData(int $superiorId, int $workerId)
     {
         $data = [self::COL_SUPERIOR_ID => $superiorId,

@@ -10,7 +10,9 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\ArrayHash;
 
-
+/**
+ * Přístup k datům z tabulky user
+ */
 class UserRepository extends BaseRepository
 {
 
@@ -104,38 +106,60 @@ class UserRepository extends BaseRepository
         return $this->findBy($by)->count() > 0;
     }
 
-    //taky vraci userDTO
-    public function saveUser(ArrayHash $user): array
+    /**
+     * Uloží uživatele v databází a vrátí nová data pro nastavení rolí
+     * @param UserDTO $user
+     * @return UserDTO
+     */
+    public function saveUser(UserDTO $user): UserDTO
     {
         $data = [
-            self::COL_EMAIL => $user->email,
-            self::COL_LOGIN => $user->login,
-            self::COL_FIRSTNAME => $user->firstname,
-            self::COL_LASTNAME => $user->lastname,
-            self::COL_PASSWORD => $user->password,
-            self::COL_WORKPLACE => $user->workplace
+            self::COL_EMAIL => $user->getEmail(),
+            self::COL_LOGIN => $user->getLogin(),
+            self::COL_FIRSTNAME => $user->getFirstname(),
+            self::COL_LASTNAME => $user->getLastname(),
+            self::COL_PASSWORD => $user->getPassword(),
+            self::COL_WORKPLACE => $user->getWorkplace()
             ];
 
-        return $this->saveFiltered($data)->toArray();
+        $result = $this->saveFiltered($data)->toArray();
+        return new UserDTO(
+            $result[self::COL_ID],
+            $result[self::COL_FIRSTNAME],
+            $result[self::COL_LASTNAME],
+            $result[self::COL_EMAIL],
+            $result[self::COL_LOGIN],
+            $result[self::COL_WORKPLACE]
+        );
     }
 
-    //taky vraci userDTO
-    public function updateUser(ArrayHash $user, int $userId): array
+    /**
+     * Upraví uživatele v databází a vrátí nová data pro nastavení rolí
+     */
+    public function updateUser(UserDTO $user): UserDTO
     {
         $data = [
-            self::COL_EMAIL => $user->email,
-            self::COL_LOGIN => $user->login,
-            self::COL_FIRSTNAME => $user->firstname,
-            self::COL_LASTNAME => $user->lastname,
-            self::COL_WORKPLACE => $user->workplace
+            self::COL_EMAIL => $user->getEmail(),
+            self::COL_LOGIN => $user->getLogin(),
+            self::COL_FIRSTNAME => $user->getFirstname(),
+            self::COL_LASTNAME => $user->getLastname(),
+            self::COL_WORKPLACE => $user->getWorkplace()
         ];
 
-        if(!empty($user->password))
+        if(!empty($user->getPassword()))
         {
-            $data[self::COL_PASSWORD] = $user->password;
+            $data[self::COL_PASSWORD] = $user->getPassword();
         }
 
-        return $this->saveFiltered($data, $userId)->toArray();
+        $result = $this->saveFiltered($data, $user->getId())->toArray();
+        return new UserDTO(
+        $result[self::COL_ID],
+        $result[self::COL_FIRSTNAME],
+        $result[self::COL_LASTNAME],
+        $result[self::COL_EMAIL],
+        $result[self::COL_LOGIN],
+        $result[self::COL_WORKPLACE]
+    );
     }
 
 }

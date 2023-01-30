@@ -19,7 +19,7 @@ class BaseGrid extends BaseComponent
     /**
      * @param ITranslator $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(ITranslator $translator)
     {
         $this->translator = $translator;
     }

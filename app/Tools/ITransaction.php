@@ -2,6 +2,9 @@
 
 namespace App\Tools;
 
+/**
+ * Rozhranni pro transakce
+ */
 interface ITransaction
 {
 

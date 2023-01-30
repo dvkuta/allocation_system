@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Model\User\Role;
-
+/**
+ * Role
+ * Hodnota je zaroven id v DB
+ */
 enum ERole: int
 {
     case worker = 1;

@@ -1,3 +1,9 @@
+services:
+    iMenuFactory:
+        implement: App\Components\Menu\IMenuFactory
+        arguments:
+            menu: %menu%
+
 parameters:
     menu:
         "app.menu.userManagement":

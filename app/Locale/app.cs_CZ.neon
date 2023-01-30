@@ -28,7 +28,7 @@ baseForm:
     yes: 'Ano'
     no: 'Ne'
     selectInSelectbox: 'Vyberte z možností'
-    labelIsRequiredMasculine: '%label je povinný.'
+    labelIsRequiredMasculine: '%label je povinný údaj.'
     labelIsRequiredFeminine: '%label je povinná.'
     labelIsRequiredNeuter: '%label je povinné.'
     labelNeedsToBeFilled: '%label je nutné zadat.'
@@ -42,7 +42,7 @@ baseForm:
     labelMustBeFromTo: '%label musí být od %min% do %max%.'
     labelCanHaveOnlyChars: '%label může být nejvýše %max% znaky dlouhá.'
     wantedRecordNotFound: 'Požadovaný záznam nenalezen.'
-    saveError: 'Při ukládání došlo k chybě.'
+    saveError: 'Při ukládání došlo k chybě. Zkuste to prosím později.'
     saveOK: 'Operace proběhla úspěšně.'
 
 user:
@@ -73,6 +73,8 @@ project:
     worker_count: 'Počet pracujících'
     dateError: 'Projekt nemůže začínat po svém konci'
     addUser: 'Přidat pracovníka'
+    notExists: 'Zvolený projekt již neexistuje'
+    indefiniteEnd: 'Konec není určen'
 
 projectAllocation:
     id:  'ID'
@@ -88,6 +90,7 @@ projectAllocation:
     draft: 'Předloha'
     cancel: 'Zrušený'
     past: 'Proběhlá'
+    dateError: 'Alokace nemůže začínat po svém konci'
     projectNotExists: 'Projekt neexistuje.'
     allocationNotExists: 'Upravovaná alokace neexistuje.'
     userNotOnProject: 'Uživatel není na projektu přiřazen.'

@@ -2,6 +2,7 @@
 
 namespace App\Model\User;
 
+use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\User\Role\ERole;
 use App\Model\User\Role\RoleRepository;
@@ -12,17 +13,18 @@ use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
+/**
+ * Komplexni akce tykajici se uzivatele
+ */
 class UserFacade
 {
     private UserRepository $userRepository;
-    private RoleRepository $roleRepository;
     private ITransaction $transaction;
     private Passwords $passwords;
     private UserRoleRepository $userRoleRepository;
 
     public function __construct(
         UserRepository $userRepository,
-        RoleRepository $roleRepository,
         ITransaction    $transaction,
         UserRoleRepository $userRoleRepository,
         Passwords      $passwords,
@@ -30,7 +32,6 @@ class UserFacade
     {
 
         $this->userRepository = $userRepository;
-        $this->roleRepository = $roleRepository;
         $this->transaction = $transaction;
         $this->passwords = $passwords;
         $this->userRoleRepository = $userRoleRepository;
@@ -85,23 +86,24 @@ class UserFacade
     }
 
     /**
-     * Vytvori uzivatele a zalozi zaznam do databaze
+     * Vytvori uzivatele v databazi a overi, jestli neexistuje duplicita emailu, loginu
      * Pokud uz existuje, tak ho upravi
-     * @throws ProcessException
+     * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function createUser(ArrayHash $user): void
+    public function createUser(UserDTO $user): void
     {
         try {
             $this->transaction->begin();
 
-            $this->isEmailUnique($user->email);
-            $this->isLoginUnique($user->login);
+            $this->isEmailUnique($user->getEmail());
+            $this->isLoginUnique($user->getPassword());
+            $this->validateRoles($user->getRoles());
 
-            $user->password = $this->passwords->hash($user->password);
+            $hash = $this->passwords->hash($user->getPassword());
+            $user->setPassword($hash);
 
             $savedUser = $this->userRepository->saveUser($user);
-            $this->validateRoles($user['user_role']);
-            $this->userRoleRepository->saveUserRoles($user->user_role, $savedUser['id']);
+            $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
 
 
             $this->transaction->commit();
@@ -121,38 +123,44 @@ class UserFacade
     }
 
     /**
-     * @throws ProcessException
+     * Upravi uzivatele v databazi a overi, jestli neexistuje duplicita emailu, loginu
+     * Pokud uz existuje, tak ho upravi
+     * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function editUser(ArrayHash $user, int $userId): void
+    public function editUser(UserDTO $user): void
     {
         try
         {
             $this->transaction->begin();
 
-            $updatedUser = $this->userRepository->findRow($userId);
 
-            if($updatedUser[UserRepository::COL_EMAIL] != $user->email)
+            $updatedUser = $this->userRepository->getUser($user->getId());
+
+            if($updatedUser === null)
             {
-                $this->isEmailUnique($user->email);
+                throw new ProcessException('User not exists');
             }
 
-            if($updatedUser[UserRepository::COL_LOGIN] != $user->login)
+            if($updatedUser->getEmail() != $user->getEmail())
             {
-                $this->isLoginUnique($user->login);
+                $this->isEmailUnique($user->getEmail());
             }
 
-
-            if(!empty($user->password))
+            if($updatedUser->getLogin() != $user->getLogin())
             {
-                $user->password = $this->passwords->hash($user->password);
-                bdump($user->password);
+                $this->isLoginUnique($user->getLogin());
             }
 
-            $this->userRepository->updateUser($user,$userId);
+            $this->validateRoles($user->getRoles());
 
-            $this->validateRoles($user['user_role']);
-            $this->userRoleRepository->saveUserRoles($user->user_role, $userId);
+            if(!empty($user->getPassword()))
+            {
+                $hash = $this->passwords->hash($user->getPassword());
+                $user->setPassword($hash);
+            }
 
+            $savedUser = $this->userRepository->updateUser($user);
+            $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
             $this->transaction->commit();
 
         }

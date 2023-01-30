@@ -1,6 +1,8 @@
 <?php
 namespace App\Model\DTO;
-
+/**
+ * Data value object pro uživatele. Slouží pro snazší předávání dat mezi metodami
+ */
 class UserDTO
 {
     private string $firstname;
@@ -8,11 +10,17 @@ class UserDTO
     private string $email;
     private string $login;
     private string $workplace;
+    //nekdy neni vyplneno, pokud neni potreba
     private string $password;
-    private int $id;
+    //při vytváření není vyplněno
+    private ?int $id;
+    /**
+     * @var array ve tvaru [index => id_role]
+     */
+    private array $roles;
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @param string $firstname
      * @param string $lastname
      * @param string $email
@@ -20,7 +28,7 @@ class UserDTO
      * @param string $workplace
      * @param string $password
      */
-    public function __construct(int $id, string $firstname, string $lastname, string $email, string $login, string $workplace , string $password = "")
+    public function __construct(?int $id, string $firstname, string $lastname, string $email, string $login, string $workplace , string $password = "")
     {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
@@ -40,9 +48,9 @@ class UserDTO
     }
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -94,6 +102,43 @@ class UserDTO
     {
         return $this->workplace;
     }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+
+
+
+
 
 
 

@@ -3,13 +3,15 @@
 namespace App\Model\Project\ProjectUser;
 
 
+use App\Model\DTO\ProjectUserDTO;
 use App\Model\Repository\Base\BaseRepository;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
-use Nette\Utils\ArrayHash;
 
-
+/**
+ * Přístup k datům z tabulky project_user
+ */
 class ProjectUserRepository extends BaseRepository
 {
 
@@ -31,11 +33,16 @@ class ProjectUserRepository extends BaseRepository
 
     }
 
-    public function saveUserToProject(ArrayHash $formValues, ?int $projectId)
+    /**
+     * Přiřadí uživatele k projektu
+     * @param ProjectUserDTO $projectUserDTO
+     * @return void
+     */
+    public function saveUserToProject(ProjectUserDTO $projectUserDTO): void
     {
         $data = [
-            self::COL_USER_ID => $formValues->user_id,
-            self::COL_PROJECT_ID => $projectId,
+            self::COL_USER_ID => $projectUserDTO->getUserId(),
+            self::COL_PROJECT_ID => $projectUserDTO->getProjectId(),
         ];
 
         $this->saveFiltered($data);
@@ -62,26 +69,46 @@ class ProjectUserRepository extends BaseRepository
 
     }
 
-    public function getAllUserProjects(int $userId): Selection
+    /**
+     * Vrati selekci pro grid, ktera ukazuje vsechny projekty uzivatele
+     * @param int $userId
+     * @return Selection
+     */
+    public function getAllUserProjectGridSelection(int $userId): Selection
     {
         $by = [self::COL_USER_ID => $userId];
         return $this->findBy($by);
     }
 
-    public function getAllProjectsMembershipsOfUserIds(array $userIds)
+    /**
+     * Vrati pole vsech identifikatoru clenstvi useru na projektech
+     * @param array $userIds - pole id uzivatelu ve formatu [id, id1, id2, ...]
+     * @return array pole ve formátu [idCl => idCl, idCl1 => idCl1,...]
+     */
+    public function getAllProjectsMembershipsOfUserIds(array $userIds): array
     {
         $by = [self::COL_USER_ID => $userIds];
         return $this->findBy($by)->select('id')->fetchPairs(self::COL_ID, self::COL_ID);
     }
 
+    /**
+     * Vrati vsechny clenstvi v projektu daneho usera s $userId
+     * @param int $userId
+     * @return array c
+     */
     public function getAllProjectMembershipIds(int $userId): array
     {
-        return $this->getAllUserProjects($userId)
+        return $this->getAllUserProjectGridSelection($userId)
             ->select(self::COL_ID)
             ->fetchAssoc(self::COL_ID);
     }
 
-    public function getAllUsersOnProject(int $projectId): Selection
+    /**
+     * Vrati selekci pro grid, kde najde vsechny uzivatele(pracovniky) na projektu
+     * @param int $projectId
+     * @return Selection
+     */
+    public function getAllUsersOnProjectGridSelection(int $projectId): Selection
     {   $by = [self::COL_PROJECT_ID => $projectId];
         return $this->findBy($by);
 
@@ -90,18 +117,23 @@ class ProjectUserRepository extends BaseRepository
     /**
      * Vrati pole id zaznamu, ktere reprezentuji clenstvi useru v konkretnim projektu s projektem $projectId
      * @param int $projectId
-     * @return array
+     * @return array idCl => idCl
      */
     public function getAllUsersOnProjectIds(int $projectId): array
     {
 
-        return $this->getAllUsersOnProject($projectId)->select(self::COL_ID)->fetchAssoc(self::COL_ID);
+        return $this->getAllUsersOnProjectGridSelection($projectId)->select(self::COL_ID)->fetchAssoc(self::COL_ID);
 
     }
 
+    /**
+     * Vrati informace o vsech pracovnikach na projektu
+     * @param int $projectId
+     * @return array
+     */
     public function getAllUsersInfoOnProject(int $projectId): array
     {
-        $data = $this->getAllUsersOnProject($projectId)
+        $data = $this->getAllUsersOnProjectGridSelection($projectId)
             ->joinWhere(UserRepository::TABLE_NAME, 'user.id = user_id')
             ->select('user.id, CONCAT_WS(" ", firstname, lastname) AS fullName')
             ->fetchPairs('id','fullName');
@@ -110,6 +142,12 @@ class ProjectUserRepository extends BaseRepository
 
     }
 
+    /**
+     * Overi, jestli uzivatel pracuje na projektu
+     * @param int $userId
+     * @param int $projectId
+     * @return int pokud ano, tak vrati id jeho clenstvi, pokud ne, vraci -1
+     */
     public function isUserOnProject(int $userId, int $projectId): int
     {
         $by = [self::COL_USER_ID => $userId, self::COL_PROJECT_ID => $projectId];

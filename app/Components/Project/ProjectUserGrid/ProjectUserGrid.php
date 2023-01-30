@@ -18,6 +18,10 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Row;
 
+/**
+ * Grid sloužící k zobrazení vztahu projekt - pracovník
+ * na základě projectId a userId rozliší, který vztah má zobrazovat
+ */
 class ProjectUserGrid extends BaseGrid
 {
     private ?int $projectId;
@@ -44,19 +48,24 @@ class ProjectUserGrid extends BaseGrid
     }
 
 
-
+    /**
+     *  Definice gridu
+     */
 	public function createComponentGrid(): DataGrid
 	{
 		$grid = parent::createGrid();
 
         if(isset($this->projectId))
         {
-            $grid->setDataSource($this->projectUserRepository->getAllUsersOnProject($this->projectId));
+            $grid->setDataSource($this->projectUserRepository->getAllUsersOnProjectGridSelection($this->projectId));
         }
-
-        if(isset($this->userId))
+        else if(isset($this->userId))
         {
-            $grid->setDataSource($this->projectUserRepository->getAllUserProjects($this->userId));
+            $grid->setDataSource($this->projectUserRepository->getAllUserProjectGridSelection($this->userId));
+        }
+        else
+        {
+            $this->error();
         }
 
 
@@ -73,56 +82,24 @@ class ProjectUserGrid extends BaseGrid
             })
             ->setSortable();
 
+        if(isset($this->projectId))
+        {
+            $grid->addColumnNumber('currentAllocation', 'app.projectAllocation.currentAllocation')
+                ->setRenderer(function(ActiveRow $row) {
+                    $userId = $row->user->id;
+                    $allocation = $this->allocationFacade->getCurrentWorkloadForUser($userId);
+                    return Utils::getAllocationString($allocation, ProjectUserAllocationFacade::MAX_ALLOCATION);
+                });
 
-        $grid->addColumnNumber('currentAllocation', 'app.projectAllocation.currentAllocation')
-            ->setRenderer(function(ActiveRow $row) {
-                $userId = $row->user->id;
-                $allocation = $this->allocationFacade->getCurrentWorkloadForUser($userId);
-                return Utils::getAllocationString($allocation, ProjectUserAllocationFacade::MAX_ALLOCATION);
-            });
-
-        $grid->addColumnNumber('allAllocations', 'app.projectAllocation.currentAllocation')
-            ->setRenderer(function(ActiveRow $row) {
-                $userId = $row->user->id;
-                return $this->allocationFacade->getAllAllocationStatistic($userId);
-            });
-
-        /*$grid->addColumnText('allocation','app.projectAllocation.allocation');
-
-        $grid->addColumnDateTime('from', 'app.projectAllocation.from')
-            ->setSortable();
-
-        $grid->addColumnDateTime('to', 'app.projectAllocation.to')
-            ->setSortable();
-
-        $grid->addColumnText('description', 'app.projectAllocation.description');
-        $grid->addColumnText('state', 'app.projectAllocation.state');*/
-
-//		$grid->addColumnText('user_role.type', 'app.user.role')
-//            ->setRenderer(function( ActiveRow $row) {
-//            return $this->translator->translate($row->user_role->type);
-//        });
-
-//        $grid->addAction("edit", 'app.actions.edit', ":editAllocation");
-
+            $grid->addColumnNumber('allAllocations', 'app.projectAllocation.totalAllocation')
+                ->setRenderer(function(ActiveRow $row) {
+                    $userId = $row->user->id;
+                    return $this->allocationFacade->getAllAllocationStatistic($userId);
+                });
+        }
 
 		return $grid;
 	}
-
-    public function handleDelete(int $id)
-    {
-        //todo
-        $this->projectRepository->delete($id);
-        if($this->presenter->isAjax()) {
-            /** @var BaseGrid $grid */
-            $grid = $this["grid"];
-
-            $grid->reload();
-        }
-        $this->presenter->flashMessage("Smazání proběhlo úspěšně", "bg-success");
-
-    }
-
 
 }
 

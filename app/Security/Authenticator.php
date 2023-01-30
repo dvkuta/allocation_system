@@ -6,6 +6,9 @@ use Nette;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
+/**
+ * Slouzi pro overeni uspesneho prihlaseni uzivatele
+ */
 class Authenticator implements Nette\Security\Authenticator
 {
     private $passwords;

@@ -42,7 +42,7 @@ baseForm:
     labelMustBeFromTo: '%label must be in range from %min% to %max%.'
     labelCanHaveOnlyChars: '%label can only be %max% chars long.'
     wantedRecordNotFound: 'Requested record not found.'
-    saveError: 'An error occurred while saving.'
+    saveError: 'An error occurred while saving. Please, try again later.'
     saveOK: 'Operation completed succesfully.'
 
 user:
@@ -73,6 +73,8 @@ project:
     worker_count: 'Worker count'
     dateError: 'Project must not start after its end.'
     addUser: 'Add user'
+    notExists: 'Project not exists.'
+    indefiniteEnd: 'End is indefinite'
 
 projectAllocation:
     id:  'ID'
@@ -88,6 +90,7 @@ projectAllocation:
     draft: 'Draft'
     cancel: 'Canceled'
     past: 'Past'
+    dateError: 'Job allocation must not start after its end.'
     projectNotExists: 'Project not exist.'
     allocationNotExists: 'Edited allocation not exists.'
     userNotOnProject: 'User is not on project anymore.'

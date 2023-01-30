@@ -3,9 +3,12 @@
 namespace App\Components\Base;
 
 use Nette\Application\UI\Control;
-use Nette\DI\Attributes\Inject;
-use Nette\Localization\Translator;
 
+/**
+ * Zakladni trida pro komponenty.
+ * Vykreslí komponentu, a zároveň najde její template,
+ * který musí být ve stejné složce, jako třída vytvářející komponentu
+ */
 class BaseComponent extends Control
 {
 

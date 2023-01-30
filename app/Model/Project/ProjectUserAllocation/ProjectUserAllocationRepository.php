@@ -3,6 +3,7 @@
 namespace App\Model\Project\ProjectUserAllocation;
 
 
+use App\Model\DTO\AllocationDTO;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Repository\Base\BaseRepository;
@@ -11,9 +12,11 @@ use DateTime;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\Utils\ArrayHash;
 
 
+/**
+ * Přístup k datům z tabulky project_user_allocation
+ */
 class ProjectUserAllocationRepository extends BaseRepository
 {
 
@@ -38,7 +41,7 @@ class ProjectUserAllocationRepository extends BaseRepository
 
     }
 
-    public function getAllocation(int $id): array
+    public function getAllocation(int $id): ?AllocationDTO
     {
         $allocation = $this->findRow($id);
 
@@ -50,41 +53,59 @@ class ProjectUserAllocationRepository extends BaseRepository
             /** @var ActiveRow $project */
             $project = $allocation->project_user->project;
 
-
-
-            $allocation = $allocation->toArray();
-            $allocation['curr_project_id'] = $project->id;
-            $allocation['curr_user_id'] = $user->id;
-            $allocation['projectName'] = $project[ProjectRepository::COL_NAME];
-            $allocation['userFullName'] = $user[UserRepository::COL_FIRSTNAME] . ' ' . $user[UserRepository::COL_LASTNAME];
-            return $allocation;
+            return new AllocationDTO(
+                $allocation->id,
+                $allocation->project_user_id,
+                $allocation->allocation,
+                $allocation->from,
+                $allocation->to,
+                $allocation->description,
+                EState::from($allocation->state),
+                $project->id,
+                $project[ProjectRepository::COL_NAME],
+                $user->id,
+                $user[UserRepository::COL_FIRSTNAME] . ' ' . $user[UserRepository::COL_LASTNAME]
+            );
         }
         else
         {
-            return [];
+            return null;
         }
     }
 
-    public function saveAllocation(ArrayHash $allocation, int $projectUserId, ?int $allocation_id = null)
+
+    public function saveAllocation(AllocationDTO $allocation, int $projectUserId)
     {
         $data = [
             self::COL_PROJECT_USER_ID => $projectUserId,
-            self::COL_ALLOCATION => $allocation[self::COL_ALLOCATION],
-            self::COL_FROM => $allocation[self::COL_FROM],
-            self::COL_TO => $allocation[self::COL_TO],
-            self::COL_DESCRIPTION => $allocation[self::COL_DESCRIPTION],
-            self::COL_STATE => $allocation[self::COL_STATE]
+            self::COL_ALLOCATION => $allocation->getAllocation(),
+            self::COL_FROM => $allocation->getFrom(),
+            self::COL_TO => $allocation->getTo(),
+            self::COL_DESCRIPTION => $allocation->getDescription(),
+            self::COL_STATE => $allocation->getState()->value
         ];
 
-        $this->saveFiltered($data, $allocation_id);
+        $this->saveFiltered($data, $allocation->getId());
     }
 
+    /**
+     * selekce pro grid
+     * @param array $usersOnProjectIds
+     * @return Selection
+     */
     public function getAllAllocations(array $usersOnProjectIds): Selection
     {
         $by = [self::COL_PROJECT_USER_ID => $usersOnProjectIds];
         return $this->findBy($by);
     }
 
+    /**
+     * Spocita pracovni zatizeni pracovnika v case
+     * @param DateTime $from
+     * @param DateTime $to
+     * @param array $userProjectIds pole vsech clenstvi na projektech
+     * @return int soucet v hodinach
+     */
     public function getCurrentWorkload(DateTime $from, DateTime $to, array $userProjectIds): int
     {
         $where = [
@@ -102,7 +123,12 @@ class ProjectUserAllocationRepository extends BaseRepository
         return intval($result->currWorkLoad);
     }
 
-    public function getSumOfAllWorkload(array $userProjectIds )
+    /**
+     * Vrati soucet vsech alokaci
+     * @param array $userProjectIds pole vsech clenstvi na projektech
+     * @return int soucet v hodinach
+     */
+    public function getSumOfAllWorkload(array $userProjectIds ): int
     {
         $result = $this->getAllAllocations($userProjectIds)->select('SUM(allocation) AS allWorkLoad')->fetch();
         return intval($result->allWorkLoad);

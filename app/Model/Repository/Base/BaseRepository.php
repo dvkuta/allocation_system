@@ -8,6 +8,9 @@ use Nette\Database\Table\Selection;
 use Nette\SmartObject;
 use Traversable;
 
+/**
+ * Predek pro vsechny repository, ktere pracuji s Nette database
+ */
 class BaseRepository
 {
     use SmartObject;
@@ -28,7 +31,7 @@ class BaseRepository
      * Vraci nazev tabulky
      * @return string
      */
-    public function getTableName()
+    public function getTableName(): string
     {
         if (empty($this->tableName))
         {

@@ -20,6 +20,10 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Row;
 
+/**
+ * Grid pro vykreslení alokací uživatelů.
+ * Podle parametrů určí, jestli zobrazovat alokace relevantní k projektu, uživateli, či nadřízenému
+ */
 class ProjectUserAllocationGrid extends BaseGrid
 {
     private ?int $projectId;
@@ -28,6 +32,13 @@ class ProjectUserAllocationGrid extends BaseGrid
     private ?int $superiorId;
 
 
+    /**
+     * @param int|null $projectId
+     * @param int|null $userId
+     * @param int|null $superiorId
+     * @param ITranslator $translator
+     * @param ProjectUserAllocationFacade $allocationFacade
+     */
     public function __construct(
         ?int                        $projectId,
         ?int                        $userId,
@@ -47,7 +58,9 @@ class ProjectUserAllocationGrid extends BaseGrid
     }
 
 
-
+    /**
+     * Definice gridu
+     */
 	public function createComponentGrid(): DataGrid
 	{
 		$grid = parent::createGrid();
@@ -56,14 +69,17 @@ class ProjectUserAllocationGrid extends BaseGrid
         {
             $grid->setDataSource($this->allocationFacade->getProjectUserAllocationGridSelection($this->projectId));
         }
-        if(isset($this->userId))
+        else if(isset($this->userId))
         {
             $grid->setDataSource($this->allocationFacade->getAllUserAllocationsGridSelection($this->userId));
         }
-
-        if(isset($this->superiorId))
+        else if(isset($this->superiorId))
         {
             $grid->setDataSource($this->allocationFacade->getAllSubordinateAllocationsGridSelection($this->superiorId));
+        }
+        else
+        {
+            $this->error();
         }
 
 		$grid->addColumnText('id', 'app.projectAllocation.id')

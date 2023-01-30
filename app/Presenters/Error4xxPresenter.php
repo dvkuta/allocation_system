@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Presenters\Base\AbstractPresenter;
+use App\Presenters\Base\BasePresenter;
 use Nette;
 
-
-final class Error4xxPresenter extends AbstractPresenter
+/**
+ * Presenter pro zobrazeni erroru typu 4xx
+ */
+final class Error4xxPresenter extends BasePresenter
 {
 	public function startup(): void
 	{

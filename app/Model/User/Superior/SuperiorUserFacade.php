@@ -14,7 +14,9 @@ use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
-
+/**
+ * Komplexni akce nadrizeneho
+ */
 class SuperiorUserFacade
 {
 
@@ -32,7 +34,10 @@ class SuperiorUserFacade
     }
 
     /**
-     * @throws ProcessException
+     * Ulozi nadrizeni
+     * Nadrizeny muze byt nadrizeny pouze uzivatelum s roli worker
+     * (muze dostavat alokace) a zaroven nesmi byt zaroven nadrizeny a worker
+     * @throws ProcessException pri chybe
      */
     public function save(int $superior_id, int $worker_id): void
     {

@@ -3,6 +3,7 @@
 namespace App\Components\User\UserForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\Role\UserRoleRepository;
@@ -24,13 +25,12 @@ use Tracy\Debugger;
 use Tracy\ILogger;
 
 /**
- * Form component class for user CRUD
- * @package App\Components
+ * Formulář pro úpravu a přidávání uživatelů
  */
 class UserForm extends BaseComponent
 {
 
-    private ?int $id;
+    private ?int $id; //id uživatele, pouze při editaci
     private UserRepository $userRepository;
     private Translator $translator;
     private RoleRepository $roleRepository;
@@ -38,7 +38,12 @@ class UserForm extends BaseComponent
     private UserRoleRepository $userRoleRepository;
 
     /**
+     * @param int|null $id
      * @param UserRepository $userRepository
+     * @param Translator $translator
+     * @param RoleRepository $roleRepository
+     * @param UserRoleRepository $userRoleRepository
+     * @param UserFacade $userFacade
      */
     public function __construct(
         ?int           $id,
@@ -64,11 +69,18 @@ class UserForm extends BaseComponent
 
         if (isset($this->id)) {
             //todo
-            $row = $this->userRepository->findRow($this->id);
+            $user = $this->userRepository->getUser($this->id);
             $roles =  $this->userRoleRepository->findRolesForUser($this->id);
-            if ($row) {
+            if ($user) {
 
-                $defaults = $row->toArray();
+                $defaults = [
+                    'login' => $user->getLogin(),
+                    'firstname' => $user->getFirstname(),
+                    'lastname' => $user->getLastname(),
+                    'workplace' => $user->getWorkplace(),
+                    'email' => $user->getEmail(),
+
+                ];
                 $defaults['user_role'] = array_flip($roles);
             } else {
                 throw new BadRequestException();
@@ -86,8 +98,7 @@ class UserForm extends BaseComponent
     }
 
     /**
-     * Factory function for creating sign in form
-     * @return Form
+     * Definice formuláře
      */
     public function createComponentForm(): Form
     {
@@ -148,7 +159,7 @@ class UserForm extends BaseComponent
     }
 
     /**
-     * Function that is triggered by a successful form submission
+     * Funkce zavolaná po úspěšném odeslání formuláře
      * @param Form $form
      * @param ArrayHash $values
      */
@@ -157,14 +168,23 @@ class UserForm extends BaseComponent
         //TODO
         try {
             bdump($values);
+            $user = new UserDTO(null,
+                $values['firstname'],
+                $values['lastname'],
+                $values['email'],
+                $values['login'],
+                $values['workplace'],
+                $values['password']
+            );
+            $user->setRoles($values['user_role']);
             //vytvoreni uzivatele
             if($this->id === NULL)
             {
-                $this->userFacade->createUser($values, $this->id);
+                $this->userFacade->createUser($user);
             }
             else
-            {
-                $this->userFacade->editUser($values ,$this->id);
+            {   $user->setId($this->id);
+                $this->userFacade->editUser($user);
             }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');

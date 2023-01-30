@@ -3,13 +3,17 @@
 namespace App\Model\Project;
 
 
+use App\Model\DTO\ProjectDTO;
 use App\Model\Repository\Base\BaseRepository;
 
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
+use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
-
+/**
+ * Přístup k datům z tabulky Project
+ */
 class ProjectRepository extends BaseRepository
 {
 
@@ -33,32 +37,49 @@ class ProjectRepository extends BaseRepository
 
     }
 
-    public function saveProject(ArrayHash $project, ?int $projectId)
+    public function saveProject(ProjectDTO $project)
     {
         $data = [
-            self::COL_NAME => $project->name,
-            self::COL_USER_ID => $project->user_id,
-            self::COL_FROM => $project->from,
-            self::COL_TO => $project->to,
-            self::COL_DESCRIPTION => $project->description
+            self::COL_NAME => $project->getName(),
+            self::COL_USER_ID => $project->getProjectManagerId(),
+            self::COL_FROM => $project->getFrom(),
+            self::COL_TO => $project->getTo(),
+            self::COL_DESCRIPTION => $project->getDescription()
         ];
 
-        $this->saveFiltered($data, $projectId);
+        $this->saveFiltered($data, $project->getId());
     }
 
-    public function getProject(int $id): array
+    public function getProject(int $id): ?ProjectDTO
     {
         $project = $this->findRow($id);
 
         if($project)
         {
-            return $project->toArray();
+            return new ProjectDTO($project->id, $project->name, $project->user_id,
+                $project->user->firstname . " " . $project->user->lastname,
+                $project->from, $project->to, $project->description);
         }
         else
         {
-            return [];
+            return null;
+        }
+    }
+
+    /**
+     * Pokud je zadane ID, vrati pouze selekci projektu daneho projekt managera
+     * @param int|null $projectManagerId
+     * @return Selection
+     */
+    public function getAllProjects(?int $projectManagerId = null): Selection
+    {
+        if(isset($projectManagerId))
+        {
+            $by = [self::COL_USER_ID => $projectManagerId];
+            return $this->findBy($by);
         }
 
+        return $this->findAll();
     }
 
 

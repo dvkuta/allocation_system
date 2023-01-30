@@ -7,7 +7,9 @@ use App\Model\Repository\Base\BaseRepository;
 use Nette\Database\Explorer;
 
 
-
+/**
+ * Přístup k datům z tabulky Role
+ */
 class RoleRepository extends BaseRepository implements IRoleRepository
 {
     public const TABLE_NAME = 'role';

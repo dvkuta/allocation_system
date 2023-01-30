@@ -3,6 +3,8 @@
 namespace App\Components\Project\ProjectUserAllocationForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\DTO\AllocationDTO;
+use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
@@ -17,19 +19,19 @@ use Contributte\FormsBootstrap\Enums\RenderMode;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form component class for user CRUD
- * @package App\Components
+ * Komponenta pro vykreslení formuláře pro vytváření/editaci alokací
  */
 class ProjectUserAllocationForm extends BaseComponent
 {
 
-    private ?int $id;
-    private bool $editAllocation;
+    private ?int $id; //při editaci je to id alokace, a při vytváření je to id projektu
+    private bool $editAllocation; //jde o editaci
     private Translator $translator;
     private ProjectUserRepository $projectUserRepository;
     private ProjectRepository $projectRepository;
@@ -37,6 +39,15 @@ class ProjectUserAllocationForm extends BaseComponent
     private ProjectUserAllocationRepository $allocationRepository;
 
 
+    /**
+     * @param int|null $id
+     * @param bool $editAllocation
+     * @param Translator $translator
+     * @param ProjectUserRepository $projectUserRepository
+     * @param ProjectRepository $projectRepository
+     * @param ProjectUserAllocationFacade $allocationFacade
+     * @param ProjectUserAllocationRepository $allocationRepository
+     */
     public function __construct(
         ?int                  $id,
         bool $editAllocation,
@@ -58,7 +69,7 @@ class ProjectUserAllocationForm extends BaseComponent
     }
 
     /**
-     * @throws BadRequestException
+     * @throws BadRequestException pokud při editaci alokace nebo při vytváření projekt neexistuje
      */
     public function render()
     {
@@ -66,25 +77,35 @@ class ProjectUserAllocationForm extends BaseComponent
 
         if (isset($this->id) && $this->editAllocation === false) {
 
+            /** @var ProjectDTO $project */
             $project = $this->projectRepository->getProject($this->id);
 
-            if(empty($project))
+            if($project === null)
             {
                 throw new BadRequestException();
             }
 
-            $defaults['projectName'] = $project['name'];
+            $defaults['projectName'] = $project->getName();
         }
 
         if(isset($this->id) && $this->editAllocation === true)
         {
+            /** @var AllocationDTO $allocation */
             $allocation = $this->allocationRepository->getAllocation($this->id);
-            if(empty($allocation))
+            if($allocation === null)
             {
                 throw new BadRequestException();
             }
 
-            $defaults = $allocation;
+            $defaults = [
+                'projectName' => $allocation->getCurrentProjectName() ?? $this->translator->translate('app.baseForm.wantedRecordNotFound'),
+                'userFullName' => $allocation->getCurrentWorkerFullName() ?? $this->translator->translate('app.baseForm.wantedRecordNotFound'),
+                'from' => $allocation->getFrom(),
+                'to' => $allocation->getTo(),
+                'allocation' => $allocation->getAllocation(),
+                'description' => $allocation->getDescription(),
+                'state' => $allocation->getState()->value
+            ];
         }
 
 
@@ -99,8 +120,9 @@ class ProjectUserAllocationForm extends BaseComponent
     }
 
     /**
-     * Factory function for creating sign in form
+     * Definice formuláře
      * @return Form
+     * @throws InvalidLinkException
      */
     public function createComponentForm(): Form
     {
@@ -136,8 +158,9 @@ class ProjectUserAllocationForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine");
 ;
         $form->addInteger('allocation', 'app.projectAllocation.allocation')
-        ->addRule(FormAlias::MIN, 'app.projectAllocation.allocationMin',0)
-        ->addRule(FormAlias::MAX, 'app.projectAllocation.allocationMax',40);
+            ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
+            ->addRule(FormAlias::MIN, 'app.projectAllocation.allocationMin',0)
+            ->addRule(FormAlias::MAX, 'app.projectAllocation.allocationMax',40);
 
         $form->addTextArea('description', 'app.projectAllocation.description');
 
@@ -163,19 +186,25 @@ class ProjectUserAllocationForm extends BaseComponent
         return $form;
     }
 
+    /**
+     * validace formuláře
+     * @param Form $form
+     * @param ArrayHash $values
+     * @return void
+     */
     public function validateForm(Form $form, ArrayHash $values)
     {
         if(!empty($values['to']))
         {
-            if($values['from'] >= $values['to']) {
-                $form->addError("app.project.dateError");
+            if($values['from'] > $values['to']) {
+                $form->addError("app.projectAllocation.dateError");
             }
         }
     }
 
 
     /**
-     * Function that is triggered by a successful form submission
+     * Funkce, která je zavolá, pokud jsou ve formuláři validní data
      * @param Form $form
      * @param ArrayHash $values
      * @throws AbortException
@@ -192,17 +221,22 @@ class ProjectUserAllocationForm extends BaseComponent
             $values['from'] = null;
         }
 
+
         try {
+            $allocation = new AllocationDTO(null,null, $values['allocation'], $values['from'], $values['to'], $values['description'], EState::from($values['state']));
 
             if($this->editAllocation)
             {
-                $this->allocationFacade->editAllocation($values, $this->id);
+                $allocation->setId($this->id);
+                $this->allocationFacade->editAllocation($allocation);
                 $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
                 $this->presenter->redirect("Project:");
             }
             else
             {
-                $this->allocationFacade->createAllocation($values, $this->id);
+                $allocation->setCurrentProjectId($this->id);
+                $allocation->setCurrentWorkerId($values['user_id']);
+                $this->allocationFacade->createAllocation($allocation);
                 $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
                 $this->presenter->redirect("Project:detail",$this->id);
             }

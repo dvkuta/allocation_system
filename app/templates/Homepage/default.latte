@@ -8,7 +8,8 @@
             {control myAllocationsGrid}
         </div>
     </div>
-
+{if $user->isInRole(App\Model\User\Role\ERole::superior->value)} {/if}
+    <h3>Alokace vašich podřízených </h3>
     <div class="card">
         <div class="card-body">
             {control subordinateAllocationsGrid}
