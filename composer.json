@@ -28,17 +28,9 @@
     "latte/latte": "^3.0",
     "tracy/tracy": "^2.7.0",
     "ublaboo/datagrid": "^6.0",
-    "dibi/dibi": "^4.0.0",
     "contributte/forms-bootstrap": "^0.5.3",
     "contributte/translation": "^2.0",
     "ext-pdo": "*"
-  },
-  "require-dev": {
-    "ninjify/qa": "^0.13",
-    "phpstan/phpstan": "^1.0.0",
-    "phpstan/phpstan-dibi": "^1.0.0",
-    "phpstan/phpstan-nette": "^1.0.0",
-    "phpstan/phpstan-strict-rules": "^1.0.0"
   },
   "autoload": {
     "psr-4": {

@@ -1,3 +1,2 @@
 extensions:
-	dibi: Dibi\Bridges\Nette\DibiExtension22
 	translation: Contributte\Translation\DI\TranslationExtension
