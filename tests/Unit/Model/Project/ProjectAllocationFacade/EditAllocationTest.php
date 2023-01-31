@@ -7,7 +7,7 @@ use App\Model\DTO\ProjectDTO;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use Tester\Assert;
-//todo
+
 class EditAllocationTest extends Tester\TestCase
 {
     private Nette\DI\Container $container;
@@ -59,49 +59,56 @@ class EditAllocationTest extends Tester\TestCase
             $date2,
             "popis",
             EState::from('active'));
+        $allocation->setCurrentProjectId(5);
+        $allocation->setCurrentWorkerId(5);
 
-        $currentWorkload = 20;
-
-        $this->projectUserRepository
-            ->shouldReceive('getAllProjectMembershipIds')
-            ->with($user_id)
-            ->times(1)
-            ->andReturn($projectMemberships);
-
-        $this->allocationRepository
-            ->shouldReceive('getCurrentWorkload')
-            ->with($allocation->getFrom(), $allocation->getTo(),$projectMemberships)
-            ->times(1)
-            ->andReturn($currentWorkload);
-
-        $allocationFacade = new ProjectUserAllocationFacade($this->projectUserRepository, $this->allocationRepository, $this->projectRepository, $this->superiorUserRepository, $this->transaction);
-
-        Assert::noError(function () use ($allocation, $user_id, $allocationFacade) {
-            $allocationFacade->validateAllocationPossibility($allocation, $user_id);
-        });
-
-    }
-
-    public function testInValid()
-    {
-
-        $date1 = new DateTime();
-        $date2 = new DateTime();
-        $date1->setDate(2023,1,30);
-        $date2->setDate(2023,1,31);
-
-        $user_id = 5;
-        $projectMemberships = [5=>5, 4=>4];
-        $allocation = new AllocationDTO(
+        $storedAllocation = new AllocationDTO(
             3,5,
-            25,
+            9,
             $date1,
             $date2,
             "popis",
             EState::from('active'));
-
+        $storedAllocation->setCurrentProjectId(5);
+        $storedAllocation->setCurrentWorkerId(5);
         $currentWorkload = 20;
 
+        $this->transaction
+            ->shouldReceive('begin')
+            ->times(1)
+            ->andReturn();
+
+        $this->transaction
+            ->shouldReceive('commit')
+            ->times(1)
+            ->andReturn();
+
+        //validate worker Id
+        $projectUserId = 21;
+        $this->projectUserRepository
+            ->shouldReceive('isUserOnProject')
+            ->with($allocation->getCurrentWorkerId(), $allocation->getCurrentProjectId())
+            ->times(1)
+            ->andReturn($projectUserId);
+
+        $project = new ProjectDTO(5, 'Projekt one',
+            3,'', $date1,
+            $date2, 'popis nejaky');
+
+
+        //getStoredAllocation
+        $this->allocationRepository
+            ->shouldReceive('getAllocation')
+            ->with($allocation->getId())
+            ->andReturn($storedAllocation);
+
+        //validate allocationTime
+        $this->projectRepository
+            ->shouldReceive('getProject')
+            ->times(1)
+            ->andReturn($project);
+
+        //validate allocation possibility
         $this->projectUserRepository
             ->shouldReceive('getAllProjectMembershipIds')
             ->with($user_id)
@@ -114,19 +121,21 @@ class EditAllocationTest extends Tester\TestCase
             ->times(1)
             ->andReturn($currentWorkload);
 
+
+        //saveAllocation
+        $this->allocationRepository
+            ->shouldReceive('saveAllocation')
+            ->with($allocation, $projectUserId)
+            ->times(1)
+            ->andReturn();
+
         $allocationFacade = new ProjectUserAllocationFacade($this->projectUserRepository, $this->allocationRepository, $this->projectRepository, $this->superiorUserRepository, $this->transaction);
 
-        Assert::exception(function () use ($allocation, $user_id, $allocationFacade) {
-            $allocationFacade->validateAllocationPossibility($allocation, $user_id);
-        }, \App\Model\Exceptions\ProcessException::class);
+        Assert::noError(function () use ($allocation, $user_id, $allocationFacade) {
+            $allocationFacade->createAllocation($allocation);
+        });
 
     }
-
-
-
-
-
-
 
 
 }

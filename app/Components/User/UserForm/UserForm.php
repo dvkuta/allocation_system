@@ -63,7 +63,7 @@ class UserForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            //todo
+
             $user = $this->userRepository->getUser($this->id);
             $roles =  $this->userRoleRepository->findRolesForUser($this->id);
             if ($user) {

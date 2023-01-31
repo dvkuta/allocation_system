@@ -43,6 +43,28 @@ class ValidateUserMembershipOnProjectTest extends Tester\TestCase
     }
 
 
+    public function testValid()
+    {
+
+        $user_id = 5;
+        $project_id = 3;
+
+        $this->projectUserRepository
+            ->shouldReceive('isUserOnProject')
+            ->with($user_id, $project_id)
+            ->times(1)
+            ->andReturn(5);
+
+
+        $allocationFacade = new ProjectUserAllocationFacade($this->projectUserRepository, $this->allocationRepository, $this->projectRepository, $this->superiorUserRepository, $this->transaction);
+
+        Assert::noError(function () use ($project_id, $user_id, $allocationFacade) {
+            $allocationFacade->validateUserMembershipOnProject( $user_id, $project_id);
+        });
+
+    }
+
+
     public function testInValid()
     {
 

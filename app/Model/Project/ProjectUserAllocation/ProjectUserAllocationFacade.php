@@ -148,7 +148,7 @@ class ProjectUserAllocationFacade
 
     /**
      * Vytvoří alokaci na základě informací předaných v parametru - alokace musí mít nastavené
-     * setCurrentProjectId(); asetCurrentWorkerId(); jinak nelze alokaci vytvořit
+     * setCurrentProjectId(); setCurrentWorkerId(); jinak nelze alokaci vytvořit
      * Zároveň ověří, jestli alokaci lze vytvořit (pracuje pracovník na projektu? existuje projekt? má pracovník volný úvazek? atd...)
      * @param AllocationDTO $allocation
      * @throws ProcessException
