@@ -90,7 +90,7 @@ class ProjectUserAllocationGrid extends BaseGrid
 		$grid->addColumnText('id', 'app.projectAllocation.id')
             ->setDefaultHide();
 
-        if(isset($this->userId)) {
+        if(isset($this->userId) || isset($this->superiorId)) {
             $grid->addColumnText('projectName','app.projectAllocation.name')
             ->setRenderer(function (ActiveRow $row) {
                 return $row->project_user->project->name;

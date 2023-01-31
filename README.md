@@ -1,5 +1,15 @@
 # Semestrální práce z předmetu KIV/PIA-E
 - Systém pro správu projektů
+
+## Uživatelé
+- všichni mají heslo 1234
+- login: jarda - Role pracovník
+- login: dep - Role manažer oddělení
+- login: pman1 - Role projektový manažer, Nadřízený
+- login: pman2 - Role projektový manažer, pracovník
+- login: kuta - Role pracovník, sekretariát
+
+
 ## Spuštění projektu
 1. Pokud Vaše platforma není Linux, tak je projekt třeba umístit do filesystému wsl pod Windows
 2. Nastavíme přístupová práva adresářům pro funkčnosti Nette Frameworku
