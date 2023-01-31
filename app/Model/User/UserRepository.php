@@ -41,7 +41,7 @@ class UserRepository extends BaseRepository implements IUserRepository
      * @param string $email
      * @return bool
      */
-    public function isEmailUnique(string $email): bool
+    public function emailExists(string $email): bool
     {
         return $this->isColumnValueUsed(self::COL_EMAIL, $email);
     }
@@ -94,7 +94,7 @@ class UserRepository extends BaseRepository implements IUserRepository
      * @param string $login
      * @return bool
      */
-    public function isLoginUnique(string $login): bool
+    public function loginExists(string $login): bool
     {
         return $this->isColumnValueUsed(self::COL_LOGIN, $login);
     }

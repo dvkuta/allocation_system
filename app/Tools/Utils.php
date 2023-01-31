@@ -48,6 +48,10 @@ class Utils
      */
     public static function getAllocationString(int $allocation, int $max_allocation): string
     {
+        if($max_allocation == 0)
+        {
+            return "";
+        }
         return $allocation . "h (FTE: ". $allocation / $max_allocation. ")";
     }
 

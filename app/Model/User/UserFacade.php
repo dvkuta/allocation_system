@@ -43,7 +43,7 @@ class UserFacade
      */
     public function isEmailUnique(string $email): void
     {
-        $emailExists = $this->userRepository->isEmailUnique($email);
+        $emailExists = $this->userRepository->emailExists($email);
 
         if($emailExists)
         {
@@ -58,7 +58,7 @@ class UserFacade
      */
     public function isLoginUnique(string $login): void
     {
-        $loginExists = $this->userRepository->isLoginUnique($login);
+        $loginExists = $this->userRepository->loginExists($login);
 
         if($loginExists)
         {
@@ -67,7 +67,8 @@ class UserFacade
     }
 
     /**
-     * @param array $roles
+     * Overi, jestli jsou role validni, tj - nejsou prazde, nebo neobsahuji zaroven workera a superiora
+     * @param array $roles ve tvaru [idRole, idRole2, ....]
      * @return void
      * @throws ProcessException
      */
@@ -94,8 +95,9 @@ class UserFacade
         try {
             $this->transaction->begin();
 
+            $this->isLoginUnique($user->getLogin());
             $this->isEmailUnique($user->getEmail());
-            $this->isLoginUnique($user->getPassword());
+
             $this->validateRoles($user->getRoles());
 
             $hash = $this->passwords->hash($user->getPassword());
@@ -103,7 +105,6 @@ class UserFacade
 
             $savedUser = $this->userRepository->saveUser($user);
             $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
-
 
             $this->transaction->commit();
 

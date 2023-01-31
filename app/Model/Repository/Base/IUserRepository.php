@@ -19,7 +19,7 @@ interface IUserRepository
      * @param string $email
      * @return bool
      */
-    public function isEmailUnique(string $email): bool;
+    public function emailExists(string $email): bool;
 
     public function getUser(int $id): ?UserDTO;
 
@@ -30,7 +30,7 @@ interface IUserRepository
      * @param string $login
      * @return bool
      */
-    public function isLoginUnique(string $login): bool;
+    public function loginExists(string $login): bool;
 
 
     /**
