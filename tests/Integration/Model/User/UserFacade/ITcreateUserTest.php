@@ -33,7 +33,7 @@ class ITcreateUserTest extends Tester\TestCase
         $user->setRoles($roles);
 
         Assert::noError(function () use ($user) {
-//            $this->facade->createUser($user);
+            $this->facade->createUser($user);
         });
     }
 

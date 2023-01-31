@@ -205,7 +205,7 @@ CREATE TABLE `user_role` (
                              KEY `user_role_ROLE_FK` (`role_id`),
                              CONSTRAINT `user_role_ROLE_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
                              CONSTRAINT `user_role_USER_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='role uživatelů';
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='role uživatelů';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +214,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (82,58,1),(86,62,3),(87,63,1),(88,63,5),(92,61,2),(93,61,3),(94,59,4);
+INSERT INTO `user_role` VALUES (82,58,1),(87,63,1),(88,63,5),(92,61,2),(93,61,3),(94,59,4),(95,62,1),(96,62,3);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,4 +231,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-31 16:56:54
+-- Dump completed on 2023-01-31 18:07:40
