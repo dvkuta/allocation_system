@@ -1,5 +1,5 @@
 #
-# Zakladni konfiguracni soubor - includuji se dalsi neony.
+# Testovaci konfiguracni soubor - includuji se dalsi neony.
 #
 # To co je uvedene primo zde, nelze prepsat v includovanych neonech.
 #
@@ -9,7 +9,7 @@ parameters:
 
 includes:
     - main.neon             # nejdulezitejsi konfigurace
-    - database.neon   		# pripojeni k DB, rovnez neni v gitu
+    - database.neon   		# pripojeni k DB, pro jednoduchost stejna db
     - repository.neon       # repository
     - facade.neon           # fasady
     - component.neon        # komponenty

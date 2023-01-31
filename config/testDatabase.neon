@@ -1,4 +1,0 @@
-database:
-	dsn: 'mysql:host=database;dbname=allocation_system_test'
-	user: mysqlUser
-	password: toor

@@ -15,7 +15,7 @@ services:
     restart: "always"
     image: mariadb:latest
     volumes:
-      - my-database:/var/lib/mysql
+      - .docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     environment:
@@ -24,6 +24,3 @@ services:
       MYSQL_PASSWORD: toor
       MYSQL_DATABASE: allocation_system
       DB_HOST: 127.0.0.1
-
-volumes:
-  my-database:
