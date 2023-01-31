@@ -222,7 +222,13 @@ class ProjectUserAllocationForm extends BaseComponent
 
 
         try {
-            $allocation = new AllocationDTO(null,null, $values['allocation'], $values['from'], $values['to'], $values['description'], EState::from($values['state']));
+            $allocation = new AllocationDTO(null,
+                null,
+                $values['allocation'],
+                $values['from'],
+                $values['to'],
+                $values['description'],
+                EState::from($values['state']));
 
             if($this->editAllocation)
             {

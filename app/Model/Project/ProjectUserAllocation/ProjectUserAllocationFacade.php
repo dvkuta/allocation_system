@@ -34,7 +34,7 @@ class ProjectUserAllocationFacade
         IProjectUserRepository                $projectUserRepository,
         IProjectUserAllocationRepository      $allocationRepository,
         IProjectRepository                    $projectRepository,
-        ISuperiorUserRepository $superiorUserRepository,
+        ISuperiorUserRepository               $superiorUserRepository,
         ITransaction                          $transaction
     )
     {
