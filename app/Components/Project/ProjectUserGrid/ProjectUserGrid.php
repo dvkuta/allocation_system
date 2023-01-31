@@ -7,6 +7,7 @@ use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\Utils;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
+use Nette\Security\User;
 use Ublaboo\DataGrid\DataGrid;
 
 
@@ -21,6 +22,7 @@ class ProjectUserGrid extends BaseGrid
 
     private iProjectUserRepository $projectUserRepository;
     private ProjectUserAllocationFacade $allocationFacade;
+    private User $user;
 
 
     public function __construct(
@@ -29,6 +31,7 @@ class ProjectUserGrid extends BaseGrid
         ITranslator                 $translator,
         IProjectUserRepository       $projectUserRepository,
         ProjectUserAllocationFacade $allocationFacade,
+        User $user
     )
 	{
         parent::__construct($translator);
@@ -37,6 +40,7 @@ class ProjectUserGrid extends BaseGrid
         $this->projectId = $projectId;
         $this->userId = $userId;
         $this->allocationFacade = $allocationFacade;
+        $this->user = $user;
     }
 
 
@@ -61,11 +65,12 @@ class ProjectUserGrid extends BaseGrid
         }
 
 
-		$grid->addColumnNumber('id', 'app.projectAllocation.id', 'project_id');
+		$grid->addColumnNumber('id', 'app.projectAllocation.id', 'project_id')
+        ->setDefaultHide();
 
         if(isset($this->userId))
         {
-            $grid->addColumnLink('projectName','app.projectAllocation.name',  "Project:detail", 'project.name', ["id" => "project_id"]);
+        $grid->addColumnText('projectName','app.projectAllocation.name','project.name');
         }
 
         $grid->addColumnText('user_id', 'app.projectAllocation.user_id')

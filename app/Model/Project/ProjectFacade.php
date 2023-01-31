@@ -65,4 +65,21 @@ class ProjectFacade
 
     }
 
+    public function isUserManagerOfProject(int $userId, ?int $projectId = null, ?int $allocationId = null)
+    {
+        if(isset($projectId))
+        {
+            $isManager = $this->projectRepository->isUserManagerOfProject($userId, $projectId);
+            return $isManager;
+        }
+        else if(isset($allocationId))
+        {
+            //kontrola z allocFacade
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

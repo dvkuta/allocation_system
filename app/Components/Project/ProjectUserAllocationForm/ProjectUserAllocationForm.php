@@ -144,7 +144,7 @@ class ProjectUserAllocationForm extends BaseComponent
         else
         {
         $users = $this->projectUserRepository->getAllUsersInfoOnProject($this->id);
-        bdump($users);
+
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
         }

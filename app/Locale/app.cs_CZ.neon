@@ -7,6 +7,7 @@ info:
     footer: 'Semestrální práce z předmětu KIV/PIA-E (David Kůta)'
 
 menu:
+    home: 'Domů'
     userManagement: 'Správa uživatelů'
     projectManagement: 'Správa projektů'
 

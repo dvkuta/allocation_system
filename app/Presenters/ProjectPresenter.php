@@ -16,6 +16,8 @@ use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
 use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Base\IProjectUserAllocationRepository;
+use App\Model\User\Role\ERole;
 use App\Presenters\Base\BasePresenter;
 use App\Presenters\Base\SecuredTrait;
 use App\Tools\Utils;
@@ -37,6 +39,7 @@ final class ProjectPresenter extends BasePresenter
     private IProjectUserAllocationGridFactory $allocationGridFactory;
     private IProjectUserAllocationFormFactory $allocationFormFactory;
     private IProjectRepository $projectRepository;
+    private IProjectUserAllocationRepository $projectUserAllocationRepository;
 
     public function __construct(
         IProjectFormFactory $projectFormFactory,
@@ -45,7 +48,8 @@ final class ProjectPresenter extends BasePresenter
         IProjectUserGridFactory $IProjectUserGridFactory,
         IProjectUserAllocationGridFactory $allocationGridFactory,
         IProjectUserAllocationFormFactory $allocationFormFactory,
-        IProjectRepository $projectRepository
+        IProjectRepository $projectRepository,
+        IProjectUserAllocationRepository $projectUserAllocationRepository,
 
     )
     {
@@ -58,6 +62,7 @@ final class ProjectPresenter extends BasePresenter
         $this->allocationGridFactory = $allocationGridFactory;
         $this->allocationFormFactory = $allocationFormFactory;
         $this->projectRepository = $projectRepository;
+        $this->projectUserAllocationRepository = $projectUserAllocationRepository;
     }
 
 
@@ -70,7 +75,9 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAdd(): void
     {
-
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
     }
 
     /**
@@ -81,7 +88,27 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionEdit(int $id): void
     {
+        if(!(
+            $this->getUser()->isInRole(ERole::secretariat->name) ||
+            $this->getUser()->isInRole(ERole::department_manager->name) ||
+            $this->getUser()->isInRole(ERole::project_manager->name)
+            )
+        )
+        {
+            $this->error("",403);
+        }
 
+        if($this->getUser()->isInRole(ERole::project_manager->name)
+            && (!$this->getUser()->isInRole(ERole::department_manager->name)
+                && (!$this->getUser()->isInRole(ERole::secretariat->name))
+            )
+        )
+        {
+            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
+            {
+                $this->error("", 403);
+            }
+        }
     }
 
     /**
@@ -92,7 +119,9 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAddUser(int $id): void
     {
-
+        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+            $this->error("",403);
+        }
     }
 
     /**
@@ -104,11 +133,33 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionDetail(int $id): void
     {
+
+        if(
+            !(
+                $this->getUser()->isInRole(ERole::project_manager->name) ||
+                $this->getUser()->isInRole(ERole::department_manager->name)
+            )
+
+        )
+        {
+            $this->error("",403);
+        }
+
         $project = $this->projectRepository->getProject($id);
 
         if(empty($project))
         {
-            $this->error("Error message", 404);
+            $this->error("", 404);
+        }
+
+        if($this->getUser()->isInRole(ERole::project_manager->name)
+            && (!$this->getUser()->isInRole(ERole::department_manager->name))
+        )
+        {
+            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
+            {
+                $this->error("", 403);
+            }
         }
 
         $this->template->project = $project;
@@ -123,7 +174,25 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionEditAllocation(int $id): void
     {
+        if(
+            !(
+            $this->getUser()->isInRole(ERole::project_manager->name) ||
+            $this->getUser()->isInRole(ERole::department_manager->name)
+            )
+        )
+        {
+            $this->error("",403);
+        }
 
+        if($this->getUser()->isInRole(ERole::project_manager->name)
+            && (!$this->getUser()->isInRole(ERole::department_manager->name))
+        )
+        {
+            if(!$this->projectUserAllocationRepository->isUserProjectManagerOfProjectOfThisAllocation($this->getUser()->getId(), $id))
+            {
+                $this->error("", 403);
+            }
+        }
     }
 
     /** zobrazeni projektu uzivatele
@@ -133,7 +202,27 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionUser(int $id): void
     {
+        if(!$this->getUser()->isInRole(ERole::secretariat->name))
+        {
+            $this->error("",403);
+        }
 
+
+    }
+
+    public function actionDefault()
+    {
+        if(
+            !(
+                $this->getUser()->isInRole(ERole::secretariat->name) ||
+            $this->getUser()->isInRole(ERole::project_manager->name) ||
+            $this->getUser()->isInRole(ERole::department_manager->name)
+            )
+
+        )
+        {
+            $this->error("",403);
+        }
     }
 
     /**
@@ -143,7 +232,25 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAddAllocation(int $id): void
     {
+        if(
+            !(
+                $this->getUser()->isInRole(ERole::project_manager->name) ||
+                $this->getUser()->isInRole(ERole::department_manager->name)
+            )
+        )
+        {
+            $this->error("",403);
+        }
 
+        if($this->getUser()->isInRole(ERole::project_manager->name)
+            && (!$this->getUser()->isInRole(ERole::department_manager->name))
+        )
+        {
+            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
+            {
+                $this->error("", 403);
+            }
+        }
     }
 
     public function createComponentProjectGrid(): ProjectGrid

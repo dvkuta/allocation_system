@@ -1,21 +1,23 @@
 {block name}
-{_app.homepagePresenter.workerAllocations}
+{_app.title}
 {/block}
 
 {block content}
-
+{if $user->isInRole(App\Model\User\Role\ERole::worker->name)}
+    <h4>{_app.homepagePresenter.workerAllocations}</h4>
     <div class="card">
         <div class="card-body">
             {control myAllocationsGrid}
         </div>
     </div>
-{if $user->isInRole(App\Model\User\Role\ERole::superior->value)} {/if}
-    <h3>{_app.homepagePresenter.subordinateAllocations}</h3>
+{/if}
+{if $user->isInRole(App\Model\User\Role\ERole::superior->name)}
+    <h4>{_app.homepagePresenter.subordinateAllocations}</h4>
     <div class="card">
         <div class="card-body">
             {control subordinateAllocationsGrid}
         </div>
     </div>
-
+{/if}
 
 {/block}

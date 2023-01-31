@@ -72,9 +72,9 @@ class ProjectUserAllocationFacade
         {
             throw new ProcessException('app.projectAllocation.timeWindowError');
         }
-        bdump($project->getTo());
+
         $projectTo = $project->getTo();
-        bdump($projectTo);
+
         if($projectTo !== null)
         {
 
@@ -325,8 +325,8 @@ class ProjectUserAllocationFacade
         }
 
         return $state->value;
-
     }
+
 
 
 

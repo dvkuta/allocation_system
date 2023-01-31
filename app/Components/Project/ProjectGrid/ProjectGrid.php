@@ -38,14 +38,34 @@ class ProjectGrid extends BaseGrid
 	{
 		$grid = parent::createGrid();
 
-		$grid->setDataSource($this->projectRepository->getAllProjects());
+        if($this->user->isInRole(ERole::project_manager->name) && (!$this->user->isInRole(ERole::department_manager->name)))
+        {
+            $grid->setDataSource($this->projectRepository->getAllProjects($this->user->getId()));
+        }
+        else
+        {
+            $grid->setDataSource($this->projectRepository->getAllProjects());
+        }
+
+
 
 		$grid->addColumnText('id', 'app.project.id')
             ->setDefaultHide();
 
-        $grid->addColumnLink('name', 'app.project.name', ':detail')
+        if($this->user->isInRole(ERole::secretariat->name))
+        {
+        $grid->addColumnText('name', 'app.project.name')
             ->setSortable()
             ->setFilterText();
+        }
+        else
+        {
+            $grid->addColumnLink('name', 'app.project.name', ':detail')
+                ->setSortable()
+                ->setFilterText();
+        }
+
+
 
         $grid->addColumnText('user_id', 'app.project.user_id')
             ->setRenderer(function( ActiveRow $row) {
@@ -81,7 +101,9 @@ class ProjectGrid extends BaseGrid
         $grid->addAction("addUser", 'app.project.addUser', ":addUser");
 
         $grid->allowRowsAction('edit', function(ActiveRow $row): bool {
-            return $this->user->isInRole(ERole::secretariat->name);
+            return $this->user->isInRole(ERole::secretariat->name) ||
+                $this->user->isInRole(ERole::project_manager->name) ||
+                $this->user->isInRole(ERole::department_manager->name);
         });
 
         $grid->allowRowsAction('addUser', function(ActiveRow $row): bool {

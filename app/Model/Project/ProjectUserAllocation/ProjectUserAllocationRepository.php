@@ -135,6 +135,32 @@ class ProjectUserAllocationRepository extends BaseRepository implements IProject
         return intval($result->allWorkLoad);
     }
 
+    /**
+     * Kontrola, jestli je user s id projekt manager projektu, na kterem se tvori alokace
+     * @param int $userId
+     * @param int $allocationId
+     * @return bool
+     */
+    public function isUserProjectManagerOfProjectOfThisAllocation(int $userId, int $allocationId): bool
+    {
+        $allocation = $this->findRow($allocationId);
+
+        if($allocation === null)
+        {
+            return false;
+        }
+
+        $project = $allocation->project_user->project;
+
+        if($project === null)
+        {
+            return false;
+        }
+
+        return intval($project->user_id) === $userId;
+
+    }
+
 
 
 }

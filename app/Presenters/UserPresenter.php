@@ -52,7 +52,7 @@ final class UserPresenter extends BasePresenter
      * /user/
      * @return void
      */
-    public function actionDefault()
+    public function actionDefault(): void
     {
         if(!$this->getUser()->isInRole(ERole::secretariat->name)){
             $this->error("",403);
@@ -63,7 +63,7 @@ final class UserPresenter extends BasePresenter
      * /user/add
      * @return void
      */
-    public function actionAdd()
+    public function actionAdd(): void
     {
         if(!$this->getUser()->isInRole(ERole::secretariat->name)){
             $this->error("",403);
@@ -74,7 +74,7 @@ final class UserPresenter extends BasePresenter
      * /user/edit/$id
      * @return void
      */
-    public function actionEdit(int $id)
+    public function actionEdit(int $id): void
     {
         if(!$this->getUser()->isInRole(ERole::secretariat->name)){
             $this->error("",403);
@@ -85,7 +85,7 @@ final class UserPresenter extends BasePresenter
      * /user/addSubordinate/$id
      * @return void
      */
-    public function actionAddSubordinate(int $id)
+    public function actionAddSubordinate(int $id): void
     {
         if(!$this->getUser()->isInRole(ERole::secretariat->name)){
             $this->error("",403);

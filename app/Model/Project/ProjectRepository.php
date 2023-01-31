@@ -83,5 +83,27 @@ class ProjectRepository extends BaseRepository implements IProjectRepository
         return $this->findAll();
     }
 
+    /**
+     * Overi, jestli je user opravdu project manager daneho projektu
+     * @param int $userId
+     * @param int $projectId
+     * @return bool
+     */
+    public function isUserManagerOfProject(int $userId, int $projectId): bool
+    {
+        $by = [self::COL_ID => $projectId];
+        $project = $this->findBy($by)->select(self::COL_USER_ID)->fetch();
+
+        if($project)
+        {
+            $projManagerId = intval($project->user_id);
+            return $userId === $projManagerId;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
 }

@@ -44,6 +44,14 @@ interface IProjectUserAllocationRepository
      */
     public function getSumOfAllWorkload(array $userProjectIds ): int;
 
+    /**
+     * Kontrola, jestli je user s id projekt manager projektu, na kterem se tvori alokace
+     * @param int $userId
+     * @param int $allocationId
+     * @return bool
+     */
+    public function isUserProjectManagerOfProjectOfThisAllocation(int $userId, int $allocationId): bool;
+
 
 
 }

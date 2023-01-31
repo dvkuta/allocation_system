@@ -29,7 +29,6 @@ class Authenticator implements Nette\Security\Authenticator
     {
         $user = $this->userRepository->getUserByLogin($login);
 
-        bdump($user);
 
         if ($user === null) {
             throw new Nette\Security\AuthenticationException('app.user.loginError');
@@ -41,7 +40,8 @@ class Authenticator implements Nette\Security\Authenticator
         }
 
         $roles = $this->userRoleRepository->findRolesForUser($user->getId());
-        bdump($roles);
+
+
         return new SimpleIdentity(
             $user->getId(),
             $roles, // nebo pole více rolí

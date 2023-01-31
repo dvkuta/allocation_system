@@ -92,7 +92,7 @@ class ProjectUserForm extends BaseComponent
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
         $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
-        bdump($users);
+
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
 

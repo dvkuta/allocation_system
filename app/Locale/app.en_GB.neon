@@ -7,6 +7,7 @@ info:
     footer: 'Semestral assignment of KIV/PIA-E (David Kůta)'
 
 menu:
+    home: 'Home page'
     userManagement: 'User management'
     projectManagement: 'Project management'
 

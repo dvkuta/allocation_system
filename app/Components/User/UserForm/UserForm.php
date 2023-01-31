@@ -130,7 +130,7 @@ class UserForm extends BaseComponent
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 200);
 
         $roles = $this->roleRepository->fetchDataForSelect();
-        bdump($roles);
+
         $roles = array_map(function ($role) { return $this->translator->translate($role);}, $roles);
 
         $form->addCheckboxList('user_role', 'app.user.role', $roles )

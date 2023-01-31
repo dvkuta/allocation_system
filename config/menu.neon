@@ -6,6 +6,15 @@ services:
 
 parameters:
     menu:
+        "app.menu.home":
+            icon: fa fa-home
+            link: 'Homepage:'
+            priviledge:
+                - 'worker'
+                - 'secretariat'
+                - 'superior'
+                - 'department_manager'
+                - 'project_manager'
         "app.menu.userManagement":
             icon: fa fa-users
             link: 'User:'

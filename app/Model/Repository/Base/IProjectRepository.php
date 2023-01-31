@@ -25,5 +25,13 @@ interface IProjectRepository
      */
     public function getAllProjects(?int $projectManagerId = null): Selection;
 
+    /**
+     * Overi, jestli je user opravdu project manager daneho projektu
+     * @param int $userId
+     * @param int $projectId
+     * @return bool
+     */
+    public function isUserManagerOfProject(int $userId, int $projectId): bool;
+
 
 }
