@@ -4,11 +4,9 @@ namespace App\Components\Project\ProjectUserGrid;
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
-use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\Utils;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
-use Nette\Security\User;
 use Ublaboo\DataGrid\DataGrid;
 
 

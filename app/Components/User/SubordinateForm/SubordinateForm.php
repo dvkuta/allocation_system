@@ -4,10 +4,7 @@ namespace App\Components\User\SubordinateForm;
 
 use App\Components\Base\BaseComponent;
 use App\Model\Domain\User;
-use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Repository\Base\IUserRepository;
-use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
 use App\Model\User\Superior\SuperiorUserFacade;
 use App\Model\User\UserFacade;

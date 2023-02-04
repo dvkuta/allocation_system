@@ -3,7 +3,6 @@ namespace App\Components\Project\ProjectGrid;
 
 use App\Components\Base\BaseGrid;
 use App\Model\Project\ProjectFacade;
-use App\Model\Repository\Base\IProjectRepository;
 use App\Model\User\Role\ERole;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;

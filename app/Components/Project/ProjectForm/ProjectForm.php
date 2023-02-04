@@ -4,11 +4,8 @@ namespace App\Components\Project\ProjectForm;
 
 use App\Components\Base\BaseComponent;
 use App\Model\Domain\Project;
-use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
-use App\Model\Repository\Base\IProjectRepository;
-use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
 use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;

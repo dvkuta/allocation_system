@@ -1,26 +1,17 @@
 <?php
 namespace App\Components\Project\ProjectUserAllocationGrid;
 
-use App\Components\Base\BaseComponent;
+
 use App\Components\Base\BaseGrid;
-use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
-use App\Model\Project\ProjectUser\ProjectUserRepository;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
-use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationRepository;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\RoleRepository;
-use App\Model\User\UserRepository;
 use App\Tools\Utils;
-use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
-use Nette\Utils\DateTime;
-use Ublaboo\DataGrid\AggregationFunction\FunctionSum;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Row;
+
 
 /**
  * Grid pro vykreslení alokací uživatelů.

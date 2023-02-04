@@ -66,10 +66,6 @@ class UserDTO
         return $this->firstname;
     }
 
-    public function getFullName(): string
-    {
-        return $this->firstname . " " . $this->lastname;
-    }
 
     /**
      * @return string
