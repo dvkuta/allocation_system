@@ -2,12 +2,15 @@
 
 namespace App\Model\User;
 
+use App\Model\Domain\User;
 use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Repository\Base\IUserRepository;
 use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
+use App\Model\User\Role\RoleRepository;
 use App\Tools\ITransaction;
+use Nette\Database\Table\Selection;
 use Nette\Security\Passwords;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -35,6 +38,41 @@ class UserFacade
         $this->passwords = $passwords;
         $this->userRoleRepository = $userRoleRepository;
     }
+
+
+
+    public function getUser(int $id): ?User
+    {
+        $userDto =  $this->userRepository->getUser($id);
+        if($userDto)
+        {
+            return User::createUser($userDto);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public function getUserByLogin(string $login): ?User
+    {
+        if(empty($login))
+        {
+            return null;
+        }
+
+        $userDto =  $this->userRepository->getUserByLogin($login);
+
+        if($userDto)
+        {
+            return User::createUser($userDto);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 
     /**
      * @param string $email
@@ -90,7 +128,7 @@ class UserFacade
      * Pokud uz existuje, tak ho upravi
      * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function createUser(UserDTO $user): void
+    public function createUser(User $user): void
     {
         try {
             $this->transaction->begin();
@@ -103,7 +141,7 @@ class UserFacade
             $hash = $this->passwords->hash($user->getPassword());
             $user->setPassword($hash);
 
-            $savedUser = $this->userRepository->saveUser($user);
+            $savedUser = $this->userRepository->saveUser($user->toDTO());
             $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
 
             $this->transaction->commit();
@@ -127,7 +165,7 @@ class UserFacade
      * Pokud uz existuje, tak ho upravi
      * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function editUser(UserDTO $user): void
+    public function editUser(User $user): void
     {
         try
         {
@@ -159,7 +197,7 @@ class UserFacade
                 $user->setPassword($hash);
             }
 
-            $savedUser = $this->userRepository->updateUser($user);
+            $savedUser = $this->userRepository->updateUser($user->toDTO());
             $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
             $this->transaction->commit();
 
@@ -175,6 +213,35 @@ class UserFacade
             Debugger::log($e,ILogger::EXCEPTION);
             throw new ProcessException('app.baseForm.saveError');
         }
+    }
+
+    /**
+     * @param int $user_id
+     * @return array ve tvaru [id => typ]
+     */
+    public function findRolesForUser(int $user_id): array
+    {
+        return $this->userRoleRepository->findRolesForUser($user_id);
+    }
+
+    /**
+     * Vrati jmena a prijmeni vsech uzivatelu v dane roli.
+     * Vraci pole, jelikoz je vyuzita pouze jako zdroj vyctu moznosti pro formulare
+     * @param ERole $role
+     * @return array ve formatu [id => cele jmeno]
+     */
+    public function getAllUsersInRole(ERole $role): array
+    {
+        return $this->userRoleRepository->getAllUsersInRole($role);
+    }
+
+    /**
+     * Objekt selection pro komponentu gridu uživatelů
+     * @return Selection
+     */
+    public function getAllUsersGridSelection(): Selection
+    {
+        return $this->userRepository->getAllUsersGridSelection();
     }
 
 }

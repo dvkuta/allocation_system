@@ -1,6 +1,7 @@
 <?php
 namespace App\Security;
 use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
 use Nette;
 use Nette\Security\Passwords;
@@ -11,23 +12,20 @@ use Nette\Security\SimpleIdentity;
  */
 class Authenticator implements Nette\Security\Authenticator
 {
-    private $passwords;
-    private UserRepository $userRepository;
-    private UserRoleRepository $userRoleRepository;
+    private Passwords $passwords;
+    private UserFacade $userFacade;
 
     public function __construct(
         Passwords          $passwords,
-        UserRepository     $userRepository,
-        UserRoleRepository $userRoleRepository,
+        UserFacade $userFacade
     ) {
         $this->passwords = $passwords;
-        $this->userRepository = $userRepository;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->userFacade = $userFacade;
     }
 
     public function authenticate(string $login, string $password): SimpleIdentity
     {
-        $user = $this->userRepository->getUserByLogin($login);
+        $user = $this->userFacade->getUserByLogin($login);
 
 
         if ($user === null) {
@@ -39,12 +37,12 @@ class Authenticator implements Nette\Security\Authenticator
             throw new Nette\Security\AuthenticationException('app.user.loginError');
         }
 
-        $roles = $this->userRoleRepository->findRolesForUser($user->getId());
+        $roles = $this->userFacade->findRolesForUser($user->getId());
 
 
         return new SimpleIdentity(
             $user->getId(),
-            $roles, // nebo pole více rolí
+            $roles,
             [
                 'name' => $user->getFullName()
             ]

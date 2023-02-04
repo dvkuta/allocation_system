@@ -3,12 +3,14 @@
 namespace App\Components\Project\ProjectForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\Domain\Project;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
+use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
@@ -36,24 +38,21 @@ class ProjectForm extends BaseComponent
     private Translator $translator;
 
     private ProjectFacade $projectFacade;
-    private IProjectRepository $projectRepository;
-    private IUserRoleRepository $userRoleRepository;
+    private UserFacade $userFacade;
 
 
     public function __construct(
         ?int               $id,
         Translator         $translator,
         ProjectFacade      $projectFacade,
-        IProjectRepository  $projectRepository,
-        IUserRoleRepository $userRoleRepository,
+        UserFacade $userFacade
     )
     {
 
         $this->id = $id;
         $this->translator = $translator;
         $this->projectFacade = $projectFacade;
-        $this->projectRepository = $projectRepository;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->userFacade = $userFacade;
     }
 
     /**
@@ -66,8 +65,8 @@ class ProjectForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            /** @var ProjectDTO $project */
-            $project = $this->projectRepository->getProject($this->id);
+            /** @var Project $project */
+            $project = $this->projectFacade->getProject($this->id);
 
             if ($project) {
                 $defaults = [
@@ -110,7 +109,7 @@ class ProjectForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255);
 
-        $projectManagers = $this->userRoleRepository->getAllUsersInRole(ERole::project_manager);
+        $projectManagers = $this->userFacade->getAllUsersInRole(ERole::project_manager);
         $form->addSelect('user_id', 'app.project.user_id', $projectManagers)
         ->setTranslator(null);
 
@@ -170,7 +169,7 @@ class ProjectForm extends BaseComponent
 
         try {
 
-            $project = new ProjectDTO($this->id, $values['name'],
+            $project = new Project($this->id, $values['name'],
                 $values['user_id'],"", $values['from'],
                 $values['to'], $values['description']);
 

@@ -2,6 +2,7 @@
 namespace App\Components\Project\ProjectUserGrid;
 
 use App\Components\Base\BaseGrid;
+use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Repository\Base\IProjectUserRepository;
 use App\Tools\Utils;
@@ -20,27 +21,24 @@ class ProjectUserGrid extends BaseGrid
     private ?int $projectId;
     private ?int $userId;
 
-    private iProjectUserRepository $projectUserRepository;
     private ProjectUserAllocationFacade $allocationFacade;
-    private User $user;
+    private ProjectUserFacade $projectUserFacade;
 
 
     public function __construct(
         ?int                        $projectId,
         ?int                        $userId,
         ITranslator                 $translator,
-        IProjectUserRepository       $projectUserRepository,
         ProjectUserAllocationFacade $allocationFacade,
-        User $user
+        ProjectUserFacade $projectUserFacade
     )
 	{
         parent::__construct($translator);
 
-        $this->projectUserRepository = $projectUserRepository;
         $this->projectId = $projectId;
         $this->userId = $userId;
         $this->allocationFacade = $allocationFacade;
-        $this->user = $user;
+        $this->projectUserFacade = $projectUserFacade;
     }
 
 
@@ -53,11 +51,11 @@ class ProjectUserGrid extends BaseGrid
 
         if(isset($this->projectId))
         {
-            $grid->setDataSource($this->projectUserRepository->getAllUsersOnProjectGridSelection($this->projectId));
+            $grid->setDataSource($this->projectUserFacade->getAllUsersOnProjectGridSelection($this->projectId));
         }
         else if(isset($this->userId))
         {
-            $grid->setDataSource($this->projectUserRepository->getAllUserProjectGridSelection($this->userId));
+            $grid->setDataSource($this->projectUserFacade->getAllUserProjectGridSelection($this->userId));
         }
         else
         {

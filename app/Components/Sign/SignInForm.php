@@ -25,7 +25,6 @@ class SignInForm extends BaseComponent {
 
 	public function __construct(User $user, Translator $translator) {
 		$this->user = $user;
-
         $this->translator = $translator;
     }
 

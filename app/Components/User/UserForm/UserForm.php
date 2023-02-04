@@ -3,11 +3,9 @@
 namespace App\Components\User\UserForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\DTO\UserDTO;
+use App\Model\Domain\User;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Repository\Base\IRoleRepository;
-use App\Model\Repository\Base\IUserRepository;
-use App\Model\Repository\Base\IUserRoleRepository;
+use App\Model\User\Role\RoleFacade;
 use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
@@ -26,36 +24,28 @@ class UserForm extends BaseComponent
 {
 
     private ?int $id; //id uživatele, pouze při editaci
-    private IUserRepository $userRepository;
     private Translator $translator;
-    private IRoleRepository $roleRepository;
     private UserFacade $userFacade;
-    private IUserRoleRepository $userRoleRepository;
+    private RoleFacade $roleFacade;
 
     /**
      * @param int|null $id
-     * @param IUserRepository $userRepository
      * @param Translator $translator
-     * @param IRoleRepository $roleRepository
-     * @param IUserRoleRepository $userRoleRepository
      * @param UserFacade $userFacade
+     * @param RoleFacade $roleFacade
      */
     public function __construct(
         ?int               $id,
-        IUserRepository     $userRepository,
         Translator         $translator,
-        IRoleRepository     $roleRepository,
-        IUserRoleRepository $userRoleRepository,
         UserFacade         $userFacade,
+        RoleFacade         $roleFacade
     )
     {
 
         $this->id = $id;
-        $this->userRepository = $userRepository;
         $this->translator = $translator;
-        $this->roleRepository = $roleRepository;
         $this->userFacade = $userFacade;
-        $this->userRoleRepository = $userRoleRepository;
+        $this->roleFacade = $roleFacade;
     }
 
     public function render()
@@ -64,8 +54,8 @@ class UserForm extends BaseComponent
 
         if (isset($this->id)) {
 
-            $user = $this->userRepository->getUser($this->id);
-            $roles =  $this->userRoleRepository->findRolesForUser($this->id);
+            $user = $this->userFacade->getUser($this->id);
+            $roles =  $this->userFacade->findRolesForUser($this->id);
             if ($user) {
 
                 $defaults = [
@@ -129,7 +119,7 @@ class UserForm extends BaseComponent
             ->addRule(FormAlias::REQUIRED, "app.baseForm.labelIsRequiredMasculine")
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine", 200);
 
-        $roles = $this->roleRepository->fetchDataForSelect();
+        $roles = $this->roleFacade->fetchDataForSelect();
 
         $roles = array_map(function ($role) { return $this->translator->translate($role);}, $roles);
 
@@ -163,7 +153,7 @@ class UserForm extends BaseComponent
 
         try {
 
-            $user = new UserDTO(null,
+            $user = new User(null,
                 $values['firstname'],
                 $values['lastname'],
                 $values['email'],

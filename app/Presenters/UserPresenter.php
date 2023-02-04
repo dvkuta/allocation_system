@@ -12,6 +12,7 @@ use App\Components\User\UserForm\IUserFormFactory;
 use App\Components\User\UserForm\UserForm;
 use App\Components\User\UserGrid\IUserGridFactory;
 use App\Components\User\UserGrid\UserGrid;
+use App\Model\Permissions\PermissionFacade;
 use App\Model\User\Role\ERole;
 use App\Presenters\Base\BasePresenter;
 use App\Presenters\Base\SecuredTrait;
@@ -30,12 +31,14 @@ final class UserPresenter extends BasePresenter
     private IUserGridFactory $userGridFactory;
     private IUserFormFactory $userFormFactory;
     private ISubordinateFormFactory $subordinateFormFactory;
+    private PermissionFacade $permissionFacade;
 
 
     public function __construct(
         IUserGridFactory $userGridFactory,
         IUserFormFactory   $userFormFactory,
         ISubordinateFormFactory $subordinateFormFactory,
+        PermissionFacade $permissionFacade
     )
     {
         parent::__construct();
@@ -43,6 +46,7 @@ final class UserPresenter extends BasePresenter
         $this->userFormFactory = $userFormFactory;
         $this->userGridFactory = $userGridFactory;
         $this->subordinateFormFactory = $subordinateFormFactory;
+        $this->permissionFacade = $permissionFacade;
     }
 
 
@@ -54,7 +58,7 @@ final class UserPresenter extends BasePresenter
      */
     public function actionDefault(): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canAccessUserManagement($this->getUser())){
             $this->error("",403);
         }
     }
@@ -65,7 +69,7 @@ final class UserPresenter extends BasePresenter
      */
     public function actionAdd(): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canAccessUserManagement($this->getUser())){
             $this->error("",403);
         }
     }
@@ -76,7 +80,7 @@ final class UserPresenter extends BasePresenter
      */
     public function actionEdit(int $id): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canAccessUserManagement($this->getUser())){
             $this->error("",403);
         }
     }
@@ -87,7 +91,7 @@ final class UserPresenter extends BasePresenter
      */
     public function actionAddSubordinate(int $id): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canAccessUserManagement($this->getUser())){
             $this->error("",403);
         }
     }

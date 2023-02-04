@@ -4,6 +4,7 @@ namespace App\Model\Repository\Base;
 
 
 use App\Model\DTO\UserDTO;
+use Nette\Database\Table\Selection;
 
 
 /**
@@ -44,5 +45,11 @@ interface IUserRepository
      * Upraví uživatele v databází a vrátí nová data pro nastavení rolí
      */
     public function updateUser(UserDTO $user): UserDTO;
+
+    /**
+     * Objekt selection pro komponentu gridu uživatelů
+     * @return Selection
+     */
+    public function getAllUsersGridSelection(): Selection;
 
 }

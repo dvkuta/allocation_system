@@ -8,6 +8,7 @@ use App\Model\Repository\Base\BaseRepository;
 
 use App\Model\Repository\Base\IUserRepository;
 use Nette\Database\Explorer;
+use Nette\Database\Table\Selection;
 
 /**
  * Přístup k datům z tabulky user
@@ -159,6 +160,15 @@ class UserRepository extends BaseRepository implements IUserRepository
         $result[self::COL_LOGIN],
         $result[self::COL_WORKPLACE]
     );
+    }
+
+    /**
+     * Objekt selection pro komponentu gridu uživatelů
+     * @return Selection
+     */
+    public function getAllUsersGridSelection(): Selection
+    {
+        return $this->findAll();
     }
 
 }

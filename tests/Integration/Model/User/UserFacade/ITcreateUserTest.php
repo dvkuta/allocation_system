@@ -2,7 +2,7 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\UserDTO;
+use App\Model\Domain\User;
 use Tester\Assert;
 
 class ITcreateUserTest extends Tester\TestCase
@@ -19,7 +19,7 @@ class ITcreateUserTest extends Tester\TestCase
     public function testSuccess()
     {
 
-        $user = new UserDTO(null,
+        $user = new User(null,
             'Lada',
             'Horak',
             'lh@t.cz',

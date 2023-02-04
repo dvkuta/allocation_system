@@ -7,6 +7,7 @@ use App\Model\Exceptions\ProcessException;
 
 use App\Model\Repository\Base\ISuperiorUserRepository;
 use App\Tools\ITransaction;
+use Tracy\Debugger;
 use Tracy\ILogger;
 
 /**

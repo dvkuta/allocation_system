@@ -3,12 +3,14 @@
 namespace App\Components\User\SubordinateForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\Domain\User;
 use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Repository\Base\IUserRepository;
 use App\Model\Repository\Base\IUserRoleRepository;
 use App\Model\User\Role\ERole;
 use App\Model\User\Superior\SuperiorUserFacade;
+use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
@@ -27,33 +29,29 @@ class SubordinateForm extends BaseComponent
     // id nadřízeného
     private ?int $id;
     private Translator $translator;
-    private IUserRepository $userRepository;
-    private IUserRoleRepository $userRoleRepository;
     private SuperiorUserFacade $superiorUserFacade;
+    private UserFacade $userFacade;
 
 
     /**
      * @param int|null $id
      * @param Translator $translator
-     * @param iUserRepository $userRepository
-     * @param iUserRoleRepository $userRoleRepository
      * @param SuperiorUserFacade $superiorUserFacade
+     * @param UserFacade $userFacade
      */
     public function __construct(
         ?int               $id,
         Translator         $translator,
-        IUserRepository     $userRepository,
-        IUserRoleRepository $userRoleRepository,
         SuperiorUserFacade $superiorUserFacade,
+        UserFacade $userFacade
     )
     {
 
         $this->id = $id;
         $this->translator = $translator;
 
-        $this->userRepository = $userRepository;
-        $this->userRoleRepository = $userRoleRepository;
         $this->superiorUserFacade = $superiorUserFacade;
+        $this->userFacade = $userFacade;
     }
 
     public function render()
@@ -61,8 +59,8 @@ class SubordinateForm extends BaseComponent
         $defaults = array();
 
         if (isset($this->id)) {
-            /** @var UserDTO $user */
-            $user = $this->userRepository->getUser($this->id);
+            /** @var User $user */
+            $user = $this->userFacade->getUser($this->id);
             if ($user) {
                 $defaults['name'] = $user->getFullName();
             } else {
@@ -98,7 +96,7 @@ class SubordinateForm extends BaseComponent
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
-        $users = $this->userRoleRepository->getAllUsersInRole(ERole::worker);
+        $users = $this->userFacade->getAllUsersInRole(ERole::worker);
         $form->addSelect('user_id', 'app.subordinate.worker', $users)
         ->setTranslator(null);
 

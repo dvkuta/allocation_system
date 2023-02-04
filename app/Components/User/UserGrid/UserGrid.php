@@ -8,6 +8,7 @@ use App\Model\Repository\Base\IUserRepository;
 use App\Model\User\Role\ERole;
 use App\Model\User\Role\RoleRepository;
 use App\Model\User\Role\UserRoleRepository;
+use App\Model\User\UserFacade;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
@@ -20,28 +21,28 @@ use Ublaboo\DataGrid\Row;
 
 class UserGrid extends BaseGrid
 {
-    private IUserRepository $userRepository;
     private IRoleRepository $roleRepository;
     private User $user;
+    private UserFacade $userFacade;
 
 
     /**
      * @param ITranslator $translator
-     * @param UserRepository $userRepository
      * @param IRoleRepository $roleRepository
+     * @param UserFacade $userFacade
      * @param User $user
      */
 	public function __construct(
         ITranslator     $translator,
-        UserRepository  $userRepository,
         IRoleRepository $roleRepository,
+        UserFacade $userFacade,
         User $user,
     )
 	{
         parent::__construct($translator);
-        $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
         $this->user = $user;
+        $this->userFacade = $userFacade;
     }
 
 
@@ -49,7 +50,7 @@ class UserGrid extends BaseGrid
 	public function createComponentGrid(): DataGrid
 	{
 		$grid = parent::createGrid();
-		$grid->setDataSource($this->userRepository->findAll());
+		$grid->setDataSource($this->userFacade->getAllUsersGridSelection());
 
 		$grid->addColumnText('id', 'app.user.id')
             ->setDefaultHide();

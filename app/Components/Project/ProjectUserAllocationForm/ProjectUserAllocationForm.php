@@ -3,10 +3,14 @@
 namespace App\Components\Project\ProjectUserAllocationForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\Domain\Allocation;
+use App\Model\Domain\Project;
 use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectUser\EState;
+use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IProjectUserAllocationRepository;
@@ -32,39 +36,35 @@ class ProjectUserAllocationForm extends BaseComponent
     private ?int $id; //při editaci je to id alokace, a při vytváření je to id projektu
     private bool $editAllocation; //jde o editaci
     private Translator $translator;
-    private IProjectUserRepository $projectUserRepository;
-    private IProjectRepository $projectRepository;
     private ProjectUserAllocationFacade $allocationFacade;
-    private IProjectUserAllocationRepository $allocationRepository;
+    private ProjectFacade $projectFacade;
+    private ProjectUserFacade $projectUserFacade;
 
 
     /**
      * @param int|null $id
      * @param bool $editAllocation
      * @param Translator $translator
-     * @param IProjectUserRepository $projectUserRepository
-     * @param IProjectRepository $projectRepository
      * @param ProjectUserAllocationFacade $allocationFacade
-     * @param IProjectUserAllocationRepository $allocationRepository
+     * @param ProjectFacade $projectFacade
+     * @param ProjectUserFacade $projectUserFacade
      */
     public function __construct(
         ?int                            $id,
         bool                            $editAllocation,
         Translator                      $translator,
-        IProjectUserRepository           $projectUserRepository,
-        IProjectRepository               $projectRepository,
         ProjectUserAllocationFacade     $allocationFacade,
-        IProjectUserAllocationRepository $allocationRepository,
+        ProjectFacade $projectFacade,
+        ProjectUserFacade $projectUserFacade
     )
     {
 
         $this->id = $id;
         $this->editAllocation = $editAllocation;
         $this->translator = $translator;
-        $this->projectUserRepository = $projectUserRepository;
-        $this->projectRepository = $projectRepository;
         $this->allocationFacade = $allocationFacade;
-        $this->allocationRepository = $allocationRepository;
+        $this->projectFacade = $projectFacade;
+        $this->projectUserFacade = $projectUserFacade;
     }
 
     /**
@@ -76,8 +76,8 @@ class ProjectUserAllocationForm extends BaseComponent
 
         if (isset($this->id) && $this->editAllocation === false) {
 
-            /** @var ProjectDTO $project */
-            $project = $this->projectRepository->getProject($this->id);
+            /** @var Project $project */
+            $project = $this->projectFacade->getProject($this->id);
 
             if($project === null)
             {
@@ -89,8 +89,8 @@ class ProjectUserAllocationForm extends BaseComponent
 
         if(isset($this->id) && $this->editAllocation === true)
         {
-            /** @var AllocationDTO $allocation */
-            $allocation = $this->allocationRepository->getAllocation($this->id);
+            /** @var Allocation $allocation */
+            $allocation = $this->allocationFacade->getAllocation($this->id);
             if($allocation === null)
             {
                 throw new BadRequestException();
@@ -143,7 +143,7 @@ class ProjectUserAllocationForm extends BaseComponent
         }
         else
         {
-        $users = $this->projectUserRepository->getAllUsersInfoOnProject($this->id);
+        $users = $this->projectUserFacade->getAllUsersInfoOnProject($this->id);
 
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
@@ -222,7 +222,7 @@ class ProjectUserAllocationForm extends BaseComponent
 
 
         try {
-            $allocation = new AllocationDTO(null,
+            $allocation = new Allocation(null,
                 null,
                 $values['allocation'],
                 $values['from'],

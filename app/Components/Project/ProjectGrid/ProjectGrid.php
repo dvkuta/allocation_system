@@ -2,6 +2,7 @@
 namespace App\Components\Project\ProjectGrid;
 
 use App\Components\Base\BaseGrid;
+use App\Model\Project\ProjectFacade;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\User\Role\ERole;
 use Nette\Database\Table\ActiveRow;
@@ -15,21 +16,20 @@ use Ublaboo\DataGrid\DataGrid;
  */
 class ProjectGrid extends BaseGrid
 {
-    private IProjectRepository $projectRepository;
     private User $user;
+    private ProjectFacade $projectFacade;
 
     public function __construct(
 
         //pouzity kvuli kompatibilite, jinak naprosto stejne, jako Translator
         ITranslator $translator,
-        IProjectRepository $projectRepository,
+        ProjectFacade $projectFacade,
         User $user
     )
 	{
         parent::__construct($translator);
-
-        $this->projectRepository = $projectRepository;
         $this->user = $user;
+        $this->projectFacade = $projectFacade;
     }
 
 
@@ -40,11 +40,11 @@ class ProjectGrid extends BaseGrid
 
         if($this->user->isInRole(ERole::project_manager->name) && (!$this->user->isInRole(ERole::department_manager->name)))
         {
-            $grid->setDataSource($this->projectRepository->getAllProjects($this->user->getId()));
+            $grid->setDataSource($this->projectFacade->getAllProjects($this->user->getId()));
         }
         else
         {
-            $grid->setDataSource($this->projectRepository->getAllProjects());
+            $grid->setDataSource($this->projectFacade->getAllProjects());
         }
 
 

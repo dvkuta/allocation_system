@@ -2,8 +2,8 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\ProjectDTO;
-use App\Model\DTO\UserDTO;
+use App\Model\Domain\Project;
+
 use Tester\Assert;
 
 class ITsaveProjectTest extends Tester\TestCase
@@ -26,7 +26,7 @@ class ITsaveProjectTest extends Tester\TestCase
         $dateFrom = $dateFrom->setDate(2023,3,1);
         $dateTo = $dateTo->setDate(2023,3,31);
 
-        $project = new ProjectDTO(2, 'Projekt one',
+        $project = new Project(2, 'Projekt one',
             61,'', $dateFrom,
             $dateTo, 'popis nejaky');
 
@@ -38,7 +38,7 @@ class ITsaveProjectTest extends Tester\TestCase
     public function testCreate()
     {
 
-        $project = new ProjectDTO(null, 'Projekt oneZ',
+        $project = new Project(null, 'Projekt oneZ',
             61,'', new DateTime(),
             new DateTime(), 'popis nejaky');
 

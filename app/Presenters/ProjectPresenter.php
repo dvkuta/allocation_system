@@ -15,6 +15,9 @@ use App\Components\Project\ProjectUserForm\IProjectUserFormFactory;
 use App\Components\Project\ProjectUserForm\ProjectUserForm;
 use App\Components\Project\ProjectUserGrid\IProjectUserGridFactory;
 use App\Components\Project\ProjectUserGrid\ProjectUserGrid;
+use App\Model\Permissions\PermissionFacade;
+use App\Model\Project\ProjectFacade;
+use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IProjectUserAllocationRepository;
 use App\Model\User\Role\ERole;
@@ -40,6 +43,9 @@ final class ProjectPresenter extends BasePresenter
     private IProjectUserAllocationFormFactory $allocationFormFactory;
     private IProjectRepository $projectRepository;
     private IProjectUserAllocationRepository $projectUserAllocationRepository;
+    private ProjectFacade $projectFacade;
+    private ProjectUserAllocationFacade $projectUserAllocationFacade;
+    private PermissionFacade $permissionFacade;
 
     public function __construct(
         IProjectFormFactory $projectFormFactory,
@@ -50,6 +56,9 @@ final class ProjectPresenter extends BasePresenter
         IProjectUserAllocationFormFactory $allocationFormFactory,
         IProjectRepository $projectRepository,
         IProjectUserAllocationRepository $projectUserAllocationRepository,
+        ProjectFacade $projectFacade,
+        ProjectUserAllocationFacade $projectUserAllocationFacade,
+        PermissionFacade $permissionFacade,
 
     )
     {
@@ -63,6 +72,9 @@ final class ProjectPresenter extends BasePresenter
         $this->allocationFormFactory = $allocationFormFactory;
         $this->projectRepository = $projectRepository;
         $this->projectUserAllocationRepository = $projectUserAllocationRepository;
+        $this->projectFacade = $projectFacade;
+        $this->projectUserAllocationFacade = $projectUserAllocationFacade;
+        $this->permissionFacade = $permissionFacade;
     }
 
 
@@ -75,7 +87,8 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAdd(): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canUserAccessProjectAdd($this->getUser()))
+        {
             $this->error("",403);
         }
     }
@@ -88,27 +101,11 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionEdit(int $id): void
     {
-        if(!(
-            $this->getUser()->isInRole(ERole::secretariat->name) ||
-            $this->getUser()->isInRole(ERole::department_manager->name) ||
-            $this->getUser()->isInRole(ERole::project_manager->name)
-            )
-        )
+        if(!$this->permissionFacade->canUserEditCurrentProject($this->getUser(), $id))
         {
-            $this->error("",403);
+            $this->error("", 403);
         }
 
-        if($this->getUser()->isInRole(ERole::project_manager->name)
-            && (!$this->getUser()->isInRole(ERole::department_manager->name)
-                && (!$this->getUser()->isInRole(ERole::secretariat->name))
-            )
-        )
-        {
-            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
-            {
-                $this->error("", 403);
-            }
-        }
     }
 
     /**
@@ -119,7 +116,8 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAddUser(int $id): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name)){
+        if(!$this->permissionFacade->canUserAccessProjectAddUser($this->getUser()))
+        {
             $this->error("",403);
         }
     }
@@ -133,33 +131,15 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionDetail(int $id): void
     {
-
-        if(
-            !(
-                $this->getUser()->isInRole(ERole::project_manager->name) ||
-                $this->getUser()->isInRole(ERole::department_manager->name)
-            )
-
-        )
-        {
-            $this->error("",403);
-        }
-
-        $project = $this->projectRepository->getProject($id);
-
+        $project = $this->projectFacade->getProject($id);
         if(empty($project))
         {
             $this->error("", 404);
         }
 
-        if($this->getUser()->isInRole(ERole::project_manager->name)
-            && (!$this->getUser()->isInRole(ERole::department_manager->name))
-        )
+        if(!$this->permissionFacade->canUserAccessProjectDetail($this->getUser(), $id))
         {
-            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
-            {
-                $this->error("", 403);
-            }
+            $this->error("",403);
         }
 
         $this->template->project = $project;
@@ -174,25 +154,11 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionEditAllocation(int $id): void
     {
-        if(
-            !(
-            $this->getUser()->isInRole(ERole::project_manager->name) ||
-            $this->getUser()->isInRole(ERole::department_manager->name)
-            )
-        )
+        if(!$this->permissionFacade->canUserEditProjectAllocation($this->getUser(), $id))
         {
             $this->error("",403);
         }
 
-        if($this->getUser()->isInRole(ERole::project_manager->name)
-            && (!$this->getUser()->isInRole(ERole::department_manager->name))
-        )
-        {
-            if(!$this->projectUserAllocationRepository->isUserProjectManagerOfProjectOfThisAllocation($this->getUser()->getId(), $id))
-            {
-                $this->error("", 403);
-            }
-        }
     }
 
     /** zobrazeni projektu uzivatele
@@ -202,7 +168,7 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionUser(int $id): void
     {
-        if(!$this->getUser()->isInRole(ERole::secretariat->name))
+        if(!$this->permissionFacade->canUserAddWorkerToProject($this->getUser()))
         {
             $this->error("",403);
         }
@@ -212,14 +178,7 @@ final class ProjectPresenter extends BasePresenter
 
     public function actionDefault()
     {
-        if(
-            !(
-                $this->getUser()->isInRole(ERole::secretariat->name) ||
-            $this->getUser()->isInRole(ERole::project_manager->name) ||
-            $this->getUser()->isInRole(ERole::department_manager->name)
-            )
-
-        )
+        if(!$this->permissionFacade->canUserSeeProjectDefault($this->getUser()))
         {
             $this->error("",403);
         }
@@ -232,24 +191,9 @@ final class ProjectPresenter extends BasePresenter
      */
     public function actionAddAllocation(int $id): void
     {
-        if(
-            !(
-                $this->getUser()->isInRole(ERole::project_manager->name) ||
-                $this->getUser()->isInRole(ERole::department_manager->name)
-            )
-        )
+        if(!$this->permissionFacade->canUserAddAllocation($this->getUser(), $id))
         {
             $this->error("",403);
-        }
-
-        if($this->getUser()->isInRole(ERole::project_manager->name)
-            && (!$this->getUser()->isInRole(ERole::department_manager->name))
-        )
-        {
-            if(!$this->projectRepository->isUserManagerOfProject($this->getUser()->getId(), $id))
-            {
-                $this->error("", 403);
-            }
         }
     }
 

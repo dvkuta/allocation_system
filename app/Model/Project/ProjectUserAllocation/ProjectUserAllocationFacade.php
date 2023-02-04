@@ -3,16 +3,20 @@
 namespace App\Model\Project\ProjectUserAllocation;
 
 
+use App\Model\Domain\Allocation;
 use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Project\ProjectRepository;
 use App\Model\Project\ProjectUser\EState;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IProjectUserAllocationRepository;
 use App\Model\Repository\Base\IProjectUserRepository;
 use App\Model\Repository\Base\ISuperiorUserRepository;
+use App\Model\User\UserRepository;
 use App\Tools\ITransaction;
 use DateTime;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -49,11 +53,11 @@ class ProjectUserAllocationFacade
 
     /**
      * Ověři, jestli je časové okno alokace součástí projektu
-     * @param AllocationDTO $allocation
+     * @param Allocation $allocation
      * @param int $projectId
      * @throws ProcessException
      */
-    public function validateAllocationTime(AllocationDTO $allocation, int $projectId): void
+    public function validateAllocationTime(Allocation $allocation, int $projectId): void
     {
         /** @var ProjectDTO $project */
         $project = $this->projectRepository->getProject($projectId);
@@ -87,12 +91,12 @@ class ProjectUserAllocationFacade
 
     /**
      * Ověří, jestli je možné přiřadit alokaci pracovníkovi s id $userId
-     * @param AllocationDTO $allocation - přiřazovaná alokace
+     * @param Allocation $allocation - přiřazovaná alokace
      * @param int $userId - id pracovníka (uživatele), kterému se přiřazuje
-     * @param AllocationDTO|null $storedAllocation vyplnit pouze při editaci alokace
+     * @param Allocation|null $storedAllocation vyplnit pouze při editaci alokace
      * @throws ProcessException Pokud není možné přiřadit alokaci
      */
-    public function validateAllocationPossibility(AllocationDTO $allocation, int $userId, ?AllocationDTO $storedAllocation = null): void
+    public function validateAllocationPossibility(Allocation $allocation, int $userId, ?Allocation $storedAllocation = null): void
     {
 
         $from = $allocation->getFrom()->setTime(0,0);
@@ -150,10 +154,10 @@ class ProjectUserAllocationFacade
      * Vytvoří alokaci na základě informací předaných v parametru - alokace musí mít nastavené
      * setCurrentProjectId(); setCurrentWorkerId(); jinak nelze alokaci vytvořit
      * Zároveň ověří, jestli alokaci lze vytvořit (pracuje pracovník na projektu? existuje projekt? má pracovník volný úvazek? atd...)
-     * @param AllocationDTO $allocation
+     * @param Allocation $allocation
      * @throws ProcessException
      */
-    public function createAllocation(AllocationDTO $allocation): void
+    public function createAllocation(Allocation $allocation): void
     {
         try {
         $projectId = $allocation->getCurrentProjectId() ?? throw new ProcessException('app.projectAllocation.projectNotExists');
@@ -165,7 +169,7 @@ class ProjectUserAllocationFacade
         $this->validateAllocationPossibility($allocation, $user_id);
 
 
-        $this->allocationRepository->saveAllocation($allocation, $projectUserId);
+        $this->allocationRepository->saveAllocation($allocation->toDTO(), $projectUserId);
         $this->transaction->commit();
         }
         catch (ProcessException $e)
@@ -185,10 +189,10 @@ class ProjectUserAllocationFacade
     /**
      * Upraví alokaci na základně informací předaných v parametru. Alokace musí mít nastavené ID, jinak nelze editovat
      * Zároveň ověří, jestli alokaci lze vytvořit (pracuje pracovník na projektu? existuje projekt? má pracovník volný úvazek? atd...)
-     * @param AllocationDTO $allocation vyzaduje mit vyplnene id
+     * @param Allocation $allocation vyzaduje mit vyplnene id
      * @throws ProcessException
      */
-    public function editAllocation(AllocationDTO $allocation): void
+    public function editAllocation(Allocation $allocation): void
     {
 
         try {
@@ -200,8 +204,8 @@ class ProjectUserAllocationFacade
             }
 
             $this->transaction->begin();
-            /** @var AllocationDTO $storedAllocation */
-            $storedAllocation = $this->allocationRepository->getAllocation($allocationId);
+            /** @var Allocation $storedAllocation */
+            $storedAllocation = $this->getAllocation($allocationId);
             if(empty($storedAllocation))
             {
                 throw new ProcessException('app.projectAllocation.allocationNotExists');
@@ -213,7 +217,7 @@ class ProjectUserAllocationFacade
 
             $this->validateAllocationPossibility($allocation, $userId, $storedAllocation);
 
-            $this->allocationRepository->saveAllocation($allocation, $projectUserId);
+            $this->allocationRepository->saveAllocation($allocation->toDTO(), $projectUserId);
 
             $this->transaction->commit();
         }
@@ -325,6 +329,31 @@ class ProjectUserAllocationFacade
         }
 
         return $state->value;
+    }
+
+    /**
+     * Kontrola, jestli je user s id projekt manager projektu, na kterem se tvori alokace
+     * @param int $userId
+     * @param int $allocationId
+     * @return bool
+     */
+    public function isUserProjectManagerOfProjectOfThisAllocation(int $userId, int $allocationId): bool
+    {
+        return $this->allocationRepository->isUserProjectManagerOfProjectOfThisAllocation($userId, $allocationId);
+    }
+
+    public function getAllocation(int $id): ?Allocation
+    {
+        $allocationDTO = $this->allocationRepository->getAllocation($id);
+
+        if($allocationDTO)
+        {
+            return Allocation::createAllocation($allocationDTO);
+        }
+        else
+        {
+            return null;
+        }
     }
 
 

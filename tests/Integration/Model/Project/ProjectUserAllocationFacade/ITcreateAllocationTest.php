@@ -2,9 +2,7 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\AllocationDTO;
-use App\Model\DTO\ProjectDTO;
-use App\Model\DTO\UserDTO;
+use App\Model\Domain\Allocation;
 use App\Model\Project\ProjectUser\EState;
 use Tester\Assert;
 
@@ -28,7 +26,7 @@ class ITcreateAllocationTest extends Tester\TestCase
         $dateFrom = $dateFrom->setDate(2023,3,1);
         $dateTo = $dateTo->setDate(2023,3,31);
 
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             null,2  ,
             9,
             $dateFrom,

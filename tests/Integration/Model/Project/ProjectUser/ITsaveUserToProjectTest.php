@@ -2,8 +2,8 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\ProjectDTO;
-use App\Model\DTO\UserDTO;
+
+use App\Model\Domain\ProjectUser;
 use Tester\Assert;
 
 class ITsaveUserToProjectTest extends Tester\TestCase
@@ -21,7 +21,7 @@ class ITsaveUserToProjectTest extends Tester\TestCase
     public function testSave()
     {
 
-        $projectUser = new \App\Model\DTO\ProjectUserDTO(62, 6);
+        $projectUser = new ProjectUser(62, 6);
 
         Assert::noError(function () use ($projectUser) {
             $this->facade->saveUserToProject($projectUser);

@@ -3,9 +3,12 @@
 namespace App\Components\Project\ProjectUserForm;
 
 use App\Components\Base\BaseComponent;
+use App\Model\Domain\Project;
+use App\Model\Domain\ProjectUser;
 use App\Model\DTO\ProjectDTO;
 use App\Model\DTO\ProjectUserDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IProjectUserRepository;
@@ -27,26 +30,22 @@ class ProjectUserForm extends BaseComponent
     //id projektu
     private ?int $id;
     private Translator $translator;
-
-    private IProjectRepository $projectRepository;
-    private IProjectUserRepository $projectUserRepository;
     private ProjectUserFacade $projectUserFacade;
+    private ProjectFacade $projectFacade;
 
 
     public function __construct(
         ?int                  $id,
         Translator            $translator,
-        IProjectRepository     $projectRepository,
-        IProjectUserRepository $projectUserRepository,
-        ProjectUserFacade     $projectUserFacade
+        ProjectUserFacade     $projectUserFacade,
+        ProjectFacade $projectFacade
     )
     {
 
         $this->id = $id;
         $this->translator = $translator;
-        $this->projectRepository = $projectRepository;
-        $this->projectUserRepository = $projectUserRepository;
         $this->projectUserFacade = $projectUserFacade;
+        $this->projectFacade = $projectFacade;
     }
 
     public function render()
@@ -55,8 +54,8 @@ class ProjectUserForm extends BaseComponent
 
         if (isset($this->id)) {
 
-            /** @var ProjectDTO $project */
-            $project = $this->projectRepository->getProject($this->id);
+            /** @var Project $project */
+            $project = $this->projectFacade->getProject($this->id);
             if ($project) {
                 $defaults['name'] = $project->getName();
             } else {
@@ -91,7 +90,7 @@ class ProjectUserForm extends BaseComponent
             ->addRule(FormAlias::MAX_LENGTH, "app.baseForm.labelCanBeOnlyLongMasculine",  255)
             ->getControlPrototype()->setAttribute('readonly','readonly');
 
-        $users = $this->projectUserRepository->getAllUsersThatDoesNotWorkOnProject($this->id);
+        $users = $this->projectUserFacade->getAllUsersThatDoesNotWorkOnProject($this->id);
 
         $form->addSelect('user_id', 'app.projectAllocation.user_id', $users)
         ->setTranslator(null);
@@ -122,7 +121,7 @@ class ProjectUserForm extends BaseComponent
     {
 
         try {
-            $projectUser = new ProjectUserDTO($values['user_id'], $this->id);
+            $projectUser = new ProjectUser($values['user_id'], $this->id);
             $this->projectUserFacade->saveUserToProject($projectUser);
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
