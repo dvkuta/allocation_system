@@ -3,8 +3,8 @@
 namespace App\Components\User\UserForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\Domain\User;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Repository\Domain\User;
 use App\Model\User\Role\RoleFacade;
 use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -152,24 +152,29 @@ class UserForm extends BaseComponent
     {
 
         try {
-
-            $user = new User(null,
-                $values['firstname'],
-                $values['lastname'],
-                $values['email'],
-                $values['login'],
-                $values['workplace'],
-                $values['password']
-            );
-            $user->setRoles($values['user_role']);
             //vytvoreni uzivatele
             if($this->id === NULL)
             {
-                $this->userFacade->createUser($user);
+                $this->userFacade->createUser(
+                    $values['firstname'],
+                    $values['lastname'],
+                    $values['email'],
+                    $values['login'],
+                    $values['workplace'],
+                    $values['password'],
+                    $values['user_role']);
             }
             else
-            {   $user->setId($this->id);
-                $this->userFacade->editUser($user);
+            {
+                $this->userFacade->editUser(
+                    $this->id,
+                    $values['firstname'],
+                    $values['lastname'],
+                    $values['email'],
+                    $values['login'],
+                    $values['workplace'],
+                    $values['password'],
+                    $values['user_role']);
             }
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');

@@ -2,11 +2,11 @@
 
 namespace App\Model\User;
 
-
-use App\Model\DTO\UserDTO;
+use App\Model\Mapper\Mapper;
 use App\Model\Repository\Base\BaseRepository;
 
 use App\Model\Repository\Base\IUserRepository;
+use App\Model\Repository\Domain\User;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
 
@@ -47,13 +47,13 @@ class UserRepository extends BaseRepository implements IUserRepository
         return $this->isColumnValueUsed(self::COL_EMAIL, $email);
     }
 
-    public function getUser(int $id): ?UserDTO
+    public function getUser(int $id): ?User
     {
         $user =  $this->findRow($id);
 
         if($user)
         {
-            return new UserDTO($user->id,
+            return Mapper::mapUser($user->id,
                 $user->firstname,
                 $user->lastname,
                 $user->email,
@@ -67,14 +67,14 @@ class UserRepository extends BaseRepository implements IUserRepository
         }
     }
 
-    public function getUserByLogin(string $login): ?UserDTO
+    public function getUserByLogin(string $login): ?User
     {
         $by = [self::COL_LOGIN => $login];
         $user =  $this->findBy($by)->fetch();
 
         if($user)
         {
-            return new UserDTO(
+            return Mapper::mapUser(
                 $user->id,
                 $user->firstname,
                 $user->lastname,
@@ -108,10 +108,10 @@ class UserRepository extends BaseRepository implements IUserRepository
 
     /**
      * Uloží uživatele v databází a vrátí nová data pro nastavení rolí
-     * @param UserDTO $user
-     * @return UserDTO
+     * @param User $user
+     * @return User
      */
-    public function saveUser(UserDTO $user): UserDTO
+    public function saveUser(User $user): User
     {
         $data = [
             self::COL_EMAIL => $user->getEmail(),
@@ -123,7 +123,7 @@ class UserRepository extends BaseRepository implements IUserRepository
             ];
 
         $result = $this->saveFiltered($data)->toArray();
-        return new UserDTO(
+        return new User(
             $result[self::COL_ID],
             $result[self::COL_FIRSTNAME],
             $result[self::COL_LASTNAME],
@@ -136,7 +136,7 @@ class UserRepository extends BaseRepository implements IUserRepository
     /**
      * Upraví uživatele v databází a vrátí nová data pro nastavení rolí
      */
-    public function updateUser(UserDTO $user): UserDTO
+    public function updateUser(User $user): User
     {
         $data = [
             self::COL_EMAIL => $user->getEmail(),
@@ -152,7 +152,7 @@ class UserRepository extends BaseRepository implements IUserRepository
         }
 
         $result = $this->saveFiltered($data, $user->getId())->toArray();
-        return new UserDTO(
+        return new User(
         $result[self::COL_ID],
         $result[self::COL_FIRSTNAME],
         $result[self::COL_LASTNAME],

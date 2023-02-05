@@ -3,11 +3,11 @@
 namespace App\Components\Project\ProjectUserForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\Domain\Project;
-use App\Model\Domain\ProjectUser;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
+use App\Model\Repository\Domain\Project;
+use App\Model\Repository\Domain\ProjectUser;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;
@@ -117,8 +117,7 @@ class ProjectUserForm extends BaseComponent
     {
 
         try {
-            $projectUser = new ProjectUser($values['user_id'], $this->id);
-            $this->projectUserFacade->saveUserToProject($projectUser);
+            $this->projectUserFacade->saveUserToProject($values['user_id'], $this->id);
 
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");

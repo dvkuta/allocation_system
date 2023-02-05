@@ -3,7 +3,7 @@
 namespace App\Model\Repository\Base;
 
 
-use App\Model\DTO\AllocationDTO;
+use App\Model\Repository\Domain\Allocation;
 use DateTime;
 use Nette\Database\Table\Selection;
 
@@ -16,10 +16,10 @@ interface IProjectUserAllocationRepository
 
     public function getTableName(): string;
 
-    public function getAllocation(int $id): ?AllocationDTO;
+    public function getAllocation(int $id): ?Allocation;
 
 
-    public function saveAllocation(AllocationDTO $allocation, int $projectUserId);
+    public function saveAllocation(Allocation $allocation, int $projectUserId);
 
     /**
      * selekce pro grid

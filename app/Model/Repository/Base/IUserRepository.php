@@ -3,7 +3,7 @@
 namespace App\Model\Repository\Base;
 
 
-use App\Model\DTO\UserDTO;
+use App\Model\Repository\Domain\User;
 use Nette\Database\Table\Selection;
 
 
@@ -22,9 +22,9 @@ interface IUserRepository
      */
     public function emailExists(string $email): bool;
 
-    public function getUser(int $id): ?UserDTO;
+    public function getUser(int $id): ?User;
 
-    public function getUserByLogin(string $login): ?UserDTO;
+    public function getUserByLogin(string $login): ?User;
 
     /**
      * Kontrola, jestli je registrovan uzivatel se zadanym loginem
@@ -36,15 +36,15 @@ interface IUserRepository
 
     /**
      * Uloží uživatele v databází a vrátí nová data pro nastavení rolí
-     * @param UserDTO $user
-     * @return UserDTO
+     * @param User $user
+     * @return User
      */
-    public function saveUser(UserDTO $user): UserDTO;
+    public function saveUser(User $user): User;
 
     /**
      * Upraví uživatele v databází a vrátí nová data pro nastavení rolí
      */
-    public function updateUser(UserDTO $user): UserDTO;
+    public function updateUser(User $user): User;
 
     /**
      * Objekt selection pro komponentu gridu uživatelů

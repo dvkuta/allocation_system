@@ -3,11 +3,11 @@
 namespace App\Model\Project\ProjectUserAllocation;
 
 
-use App\Model\DTO\AllocationDTO;
+use App\Model\Mapper\Mapper;
 use App\Model\Project\ProjectRepository;
-use App\Model\Project\ProjectUser\EState;
 use App\Model\Repository\Base\BaseRepository;
 use App\Model\Repository\Base\IProjectUserAllocationRepository;
+use App\Model\Repository\Domain\Allocation;
 use App\Model\User\UserRepository;
 use DateTime;
 use Nette\Database\Explorer;
@@ -42,7 +42,7 @@ class ProjectUserAllocationRepository extends BaseRepository implements IProject
 
     }
 
-    public function getAllocation(int $id): ?AllocationDTO
+    public function getAllocation(int $id): ?Allocation
     {
         $allocation = $this->findRow($id);
 
@@ -54,7 +54,7 @@ class ProjectUserAllocationRepository extends BaseRepository implements IProject
             /** @var ActiveRow $project */
             $project = $allocation->project_user->project;
 
-            return new AllocationDTO(
+            return Mapper::mapAllocation(
                 $allocation->id,
                 $allocation->project_user_id,
                 $allocation->allocation,
@@ -75,7 +75,7 @@ class ProjectUserAllocationRepository extends BaseRepository implements IProject
     }
 
 
-    public function saveAllocation(AllocationDTO $allocation, int $projectUserId)
+    public function saveAllocation(Allocation $allocation, int $projectUserId)
     {
         $data = [
             self::COL_PROJECT_USER_ID => $projectUserId,

@@ -3,13 +3,13 @@
 namespace App\Components\Project\ProjectUserAllocationForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\Domain\Allocation;
-use App\Model\Domain\Project;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
-use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
+use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
+use App\Model\Repository\Domain\Allocation;
+use App\Model\Repository\Domain\Project;
 use App\Tools\Utils;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
@@ -217,26 +217,27 @@ class ProjectUserAllocationForm extends BaseComponent
 
 
         try {
-            $allocation = new Allocation(null,
-                null,
-                $values['allocation'],
-                $values['from'],
-                $values['to'],
-                $values['description'],
-                EState::from($values['state']));
 
             if($this->editAllocation)
             {
-                $allocation->setId($this->id);
-                $this->allocationFacade->editAllocation($allocation);
+                $this->allocationFacade->editAllocation(
+                    $this->id,
+                    $values['allocation'],
+                    $values['from'],
+                    $values['to'],
+                    $values['description'],
+                    EState::from($values['state']));
                 $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
                 $this->presenter->redirect("Project:");
             }
             else
             {
-                $allocation->setCurrentProjectId($this->id);
-                $allocation->setCurrentWorkerId($values['user_id']);
-                $this->allocationFacade->createAllocation($allocation);
+                $this->allocationFacade->createAllocation(
+                    $values['allocation'],
+                    $values['from'],
+                    $values['to'],
+                    $values['description'],
+                    EState::from($values['state']), $this->id, $values['user_id']);
                 $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
                 $this->presenter->redirect("Project:detail",$this->id);
             }

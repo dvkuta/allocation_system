@@ -3,9 +3,9 @@
 namespace App\Components\Project\ProjectForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\Domain\Project;
 use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
+use App\Model\Repository\Domain\Project;
 use App\Model\User\Role\ERole;
 use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -17,7 +17,6 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Forms\Form as FormAlias;
 use Nette\Localization\Translator;
-
 use Nette\Utils\ArrayHash;
 
 
@@ -165,14 +164,10 @@ class ProjectForm extends BaseComponent
         }
 
         try {
-
-            $project = new Project($this->id, $values['name'],
+            //vytvoreni projektu
+            $this->projectFacade->saveProject($this->id, $values['name'],
                 $values['user_id'],"", $values['from'],
                 $values['to'], $values['description']);
-
-
-            //vytvoreni uzivatele
-            $this->projectFacade->saveProject($project);
             $this->presenter->flashMessage($this->translator->translate('app.baseForm.saveOK'), 'bg-success');
             $this->presenter->redirect("Project:");
         } catch (ProcessException $e) {

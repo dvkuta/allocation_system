@@ -2,13 +2,13 @@
 
 namespace App\Model\Project;
 
-use App\Model\Domain\Project;
-use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Mapper\Mapper;
 use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Domain\Project;
 use App\Tools\ITransaction;
+use DateTime;
 use Nette\Database\Table\Selection;
-use Nette\Security\User;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
@@ -35,8 +35,15 @@ class ProjectFacade
      * Uloží stav projektu do databáze, tj pokud už existuje, tak ho upraví.
      * @throws ProcessException uložení selže, vrací identifikátor pro Translator
      */
-    public function saveProject(Project $project): void
+    public function saveProject(?int      $id,
+                                string    $name,
+                                int       $project_manager_id,
+                                string    $project_manager_name,
+                                DateTime  $from,
+                                ?DateTime $to,
+                                string $description ): void
     {
+        $project = new Project($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description);
         try {
 
             $this->transaction->begin();
@@ -48,7 +55,7 @@ class ProjectFacade
                 }
             }
 
-            $this->projectRepository->saveProject($project->toDTO());
+            $this->projectRepository->saveProject($project);
             $this->transaction->commit();
         } catch (ProcessException $e) {
             $this->transaction->rollback();
@@ -64,13 +71,7 @@ class ProjectFacade
 
     public function getProject(int $id): ?Project
     {
-        $projectDto = $this->projectRepository->getProject($id);
-
-        if ($projectDto) {
-            return Project::createProject($projectDto);
-        } else {
-            return null;
-        }
+        return $this->projectRepository->getProject($id);
     }
 
     /**

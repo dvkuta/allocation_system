@@ -1,9 +1,10 @@
 <?php
-namespace App\Model\DTO;
+namespace App\Model\Repository\Domain;
+
 /**
  * Data value object pro uživatele. Slouží pro snazší předávání dat mezi metodami
  */
-class UserDTO
+class User
 {
     private string $firstname;
     private string $lastname;
@@ -27,8 +28,9 @@ class UserDTO
      * @param string $login
      * @param string $workplace
      * @param string $password
+     * @param array $roles
      */
-    public function __construct(?int $id, string $firstname, string $lastname, string $email, string $login, string $workplace , string $password = "")
+    public function __construct(?int $id, string $firstname, string $lastname, string $email, string $login, string $workplace , string $password = "", array $roles = [])
     {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
@@ -37,6 +39,7 @@ class UserDTO
         $this->workplace = $workplace;
         $this->password = $password;
         $this->id = $id;
+        $this->roles = $roles;
     }
 
     /**
@@ -66,6 +69,10 @@ class UserDTO
         return $this->firstname;
     }
 
+    public function getFullName(): string
+    {
+        return $this->firstname . " " . $this->lastname;
+    }
 
     /**
      * @return string

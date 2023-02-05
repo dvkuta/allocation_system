@@ -2,8 +2,8 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\Domain\Allocation;
-use App\Model\Project\ProjectUser\EState;
+use App\Model\Project\ProjectUserAllocation\EState;
+use App\Model\Repository\Domain\Allocation;
 use Tester\Assert;
 
 class ITcreateAllocationTest extends Tester\TestCase

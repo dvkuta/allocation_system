@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Model\Domain;
+namespace App\Model\Repository\Domain;
 
-use App\Model\DTO\ProjectDTO;
-use App\Model\DTO\UserDTO;
 use DateTime;
 
 /**
@@ -56,22 +54,6 @@ class Project
         $this->from = $from;
         $this->to = $to;
         $this->description = $description;
-    }
-
-    public static function createProject(ProjectDTO $projectDTO): Project
-    {
-        return new Project($projectDTO->getId(), $projectDTO->getName(),
-            $projectDTO->getProjectManagerId(),
-            $projectDTO->getProjectManagerName(),
-            $projectDTO->getFrom(), $projectDTO->getTo(), $projectDTO->getDescription());
-    }
-
-    public function toDTO(): ProjectDTO
-    {
-        return new ProjectDTO($this->getId(), $this->getName(),
-            $this->getProjectManagerId(),
-            $this->getProjectManagerName(),
-            $this->getFrom(), $this->getTo(), $this->getDescription());
     }
 
     /**

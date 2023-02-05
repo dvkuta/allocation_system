@@ -2,13 +2,12 @@
 
 namespace App\Model\User;
 
-use App\Model\Domain\User;
-use App\Model\DTO\UserDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Mapper\Mapper;
 use App\Model\Repository\Base\IUserRepository;
 use App\Model\Repository\Base\IUserRoleRepository;
+use App\Model\Repository\Domain\User;
 use App\Model\User\Role\ERole;
-use App\Model\User\Role\RoleRepository;
 use App\Tools\ITransaction;
 use Nette\Database\Table\Selection;
 use Nette\Security\Passwords;
@@ -43,15 +42,7 @@ class UserFacade
 
     public function getUser(int $id): ?User
     {
-        $userDto =  $this->userRepository->getUser($id);
-        if($userDto)
-        {
-            return User::createUser($userDto);
-        }
-        else
-        {
-            return null;
-        }
+        return $this->userRepository->getUser($id);
     }
 
     public function getUserByLogin(string $login): ?User
@@ -61,16 +52,7 @@ class UserFacade
             return null;
         }
 
-        $userDto =  $this->userRepository->getUserByLogin($login);
-
-        if($userDto)
-        {
-            return User::createUser($userDto);
-        }
-        else
-        {
-            return null;
-        }
+        return $this->userRepository->getUserByLogin($login);
     }
 
 
@@ -126,10 +108,21 @@ class UserFacade
     /**
      * Vytvori uzivatele v databazi a overi, jestli neexistuje duplicita emailu, loginu
      * Pokud uz existuje, tak ho upravi
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     * @param string $login
+     * @param string $workplace
+     * @param string $password
+     * @param array $roles
      * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function createUser(User $user): void
+    public function createUser(string $firstname, string $lastname, string $email,
+                               string $login, string $workplace, string $password, array $roles) :void
     {
+
+        $user = new User(null, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
+
         try {
             $this->transaction->begin();
 
@@ -141,7 +134,7 @@ class UserFacade
             $hash = $this->passwords->hash($user->getPassword());
             $user->setPassword($hash);
 
-            $savedUser = $this->userRepository->saveUser($user->toDTO());
+            $savedUser = $this->userRepository->saveUser($user);
             $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
 
             $this->transaction->commit();
@@ -165,8 +158,10 @@ class UserFacade
      * Pokud uz existuje, tak ho upravi
      * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
-    public function editUser(User $user): void
+    public function editUser(int $id, string $firstname, string $lastname, string $email,
+                             string $login, string $workplace, string $password, array $roles): void
     {
+        $user = new User($id, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
         try
         {
             $this->transaction->begin();
@@ -197,7 +192,7 @@ class UserFacade
                 $user->setPassword($hash);
             }
 
-            $savedUser = $this->userRepository->updateUser($user->toDTO());
+            $savedUser = $this->userRepository->updateUser($user);
             $this->userRoleRepository->saveUserRoles($user->getRoles(), $savedUser->getId());
             $this->transaction->commit();
 

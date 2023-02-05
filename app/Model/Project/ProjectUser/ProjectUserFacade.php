@@ -2,11 +2,10 @@
 
 namespace App\Model\Project\ProjectUser;
 
-use App\Model\Domain\ProjectUser;
-use App\Model\DTO\ProjectUserDTO;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Mapper\Mapper;
 use App\Model\Repository\Base\IProjectUserRepository;
-use App\Model\User\UserRepository;
+use App\Model\Repository\Domain\ProjectUser;
 use App\Tools\ITransaction;
 use Nette\Database\Table\Selection;
 use Tracy\Debugger;
@@ -33,11 +32,15 @@ class ProjectUserFacade
 
     /**
      * Uloží uživatele do existujícího projektu.
+     * @param int $userId
+     * @param int $projectId
      * @throws ProcessException Projekt neexistuje, nebo chyba databáze
      */
-    public function saveUserToProject(ProjectUser $projectUserDTO): void
+    public function saveUserToProject(int $userId, int $projectId): void
     {
-        $projectId = $projectUserDTO->getProjectId();
+
+        $projectUser = new ProjectUser($userId, $projectId);
+        $projectId = $projectUser->getProjectId();
 
         if($projectId === null)
         {
@@ -46,13 +49,13 @@ class ProjectUserFacade
 
         try {
             $this->transaction->begin();
-            $userProjectId = $this->projectUserRepository->isUserOnProject($projectUserDTO->getUserId(), $projectId);
+            $userProjectId = $this->projectUserRepository->isUserOnProject($projectUser->getUserId(), $projectId);
             if($userProjectId > 0)
             {
                 throw new ProcessException('app.baseForm.saveError');
             }
 
-            $this->projectUserRepository->saveUserToProject($projectUserDTO->toDTO());
+            $this->projectUserRepository->saveUserToProject($projectUser);
             $this->transaction->commit();
         }
         catch (ProcessException $e)

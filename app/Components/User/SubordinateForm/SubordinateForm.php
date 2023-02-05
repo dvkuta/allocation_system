@@ -3,8 +3,8 @@
 namespace App\Components\User\SubordinateForm;
 
 use App\Components\Base\BaseComponent;
-use App\Model\Domain\User;
 use App\Model\Exceptions\ProcessException;
+use App\Model\Repository\Domain\User;
 use App\Model\User\Role\ERole;
 use App\Model\User\Superior\SuperiorUserFacade;
 use App\Model\User\UserFacade;

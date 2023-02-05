@@ -2,8 +2,7 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\Domain\Project;
-
+use App\Model\Repository\Domain\Project;
 use Tester\Assert;
 
 class ITsaveProjectTest extends Tester\TestCase

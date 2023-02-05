@@ -2,9 +2,6 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\AllocationDTO;
-use App\Model\DTO\ProjectDTO;
-use App\Model\Project\ProjectUser\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use Tester\Assert;
 

@@ -3,14 +3,12 @@
 namespace App\Model\Project;
 
 
-use App\Model\DTO\ProjectDTO;
+use App\Model\Mapper\Mapper;
 use App\Model\Repository\Base\BaseRepository;
-
 use App\Model\Repository\Base\IProjectRepository;
+use App\Model\Repository\Domain\Project;
 use Nette\Database\Explorer;
-use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\Utils\ArrayHash;
 
 /**
  * Přístup k datům z tabulky Project
@@ -38,7 +36,7 @@ class ProjectRepository extends BaseRepository implements IProjectRepository
 
     }
 
-    public function saveProject(ProjectDTO $project)
+    public function saveProject(Project $project)
     {
         $data = [
             self::COL_NAME => $project->getName(),
@@ -51,13 +49,13 @@ class ProjectRepository extends BaseRepository implements IProjectRepository
         $this->saveFiltered($data, $project->getId());
     }
 
-    public function getProject(int $id): ?ProjectDTO
+    public function getProject(int $id): ?Project
     {
         $project = $this->findRow($id);
 
         if($project)
         {
-            return new ProjectDTO($project->id, $project->name, $project->user_id,
+            return Mapper::mapProject($project->id, $project->name, $project->user_id,
                 $project->user->firstname . " " . $project->user->lastname,
                 $project->from, $project->to, $project->description);
         }

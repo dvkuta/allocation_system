@@ -3,20 +3,15 @@
 namespace App\Model\Project\ProjectUserAllocation;
 
 
-use App\Model\Domain\Allocation;
-use App\Model\DTO\AllocationDTO;
-use App\Model\DTO\ProjectDTO;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Project\ProjectRepository;
-use App\Model\Project\ProjectUser\EState;
 use App\Model\Repository\Base\IProjectRepository;
 use App\Model\Repository\Base\IProjectUserAllocationRepository;
 use App\Model\Repository\Base\IProjectUserRepository;
 use App\Model\Repository\Base\ISuperiorUserRepository;
-use App\Model\User\UserRepository;
+use App\Model\Repository\Domain\Allocation;
+use App\Model\Repository\Domain\Project;
 use App\Tools\ITransaction;
 use DateTime;
-use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -59,7 +54,7 @@ class ProjectUserAllocationFacade
      */
     public function validateAllocationTime(Allocation $allocation, int $projectId): void
     {
-        /** @var ProjectDTO $project */
+        /** @var Project $project */
         $project = $this->projectRepository->getProject($projectId);
 
         if ($project === null) {
@@ -151,14 +146,27 @@ class ProjectUserAllocationFacade
     }
 
     /**
-     * Vytvoří alokaci na základě informací předaných v parametru - alokace musí mít nastavené
-     * setCurrentProjectId(); setCurrentWorkerId(); jinak nelze alokaci vytvořit
+     * Vytvoří alokaci na základě informací předaných v parametrech
      * Zároveň ověří, jestli alokaci lze vytvořit (pracuje pracovník na projektu? existuje projekt? má pracovník volný úvazek? atd...)
-     * @param Allocation $allocation
+     * @param int $allocation
+     * @param DateTime $from
+     * @param DateTime $to
+     * @param string $description
+     * @param EState $state
+     * @param int $currentProjectId
+     * @param int $currentWorkerId
      * @throws ProcessException
      */
-    public function createAllocation(Allocation $allocation): void
+    public function createAllocation(int $allocation,
+                    DateTime $from,
+                    DateTime $to,
+                    string $description,
+                    EState $state, int $currentProjectId, int $currentWorkerId): void
     {
+
+        $allocation = new Allocation(null, null, $allocation, $from, $to, $description,
+            $state, $currentProjectId, "", $currentWorkerId, "");
+
         try {
         $projectId = $allocation->getCurrentProjectId() ?? throw new ProcessException('app.projectAllocation.projectNotExists');
         $this->transaction->begin();
@@ -169,7 +177,7 @@ class ProjectUserAllocationFacade
         $this->validateAllocationPossibility($allocation, $user_id);
 
 
-        $this->allocationRepository->saveAllocation($allocation->toDTO(), $projectUserId);
+        $this->allocationRepository->saveAllocation($allocation, $projectUserId);
         $this->transaction->commit();
         }
         catch (ProcessException $e)
@@ -189,12 +197,22 @@ class ProjectUserAllocationFacade
     /**
      * Upraví alokaci na základně informací předaných v parametru. Alokace musí mít nastavené ID, jinak nelze editovat
      * Zároveň ověří, jestli alokaci lze vytvořit (pracuje pracovník na projektu? existuje projekt? má pracovník volný úvazek? atd...)
-     * @param Allocation $allocation vyzaduje mit vyplnene id
+     * @param int $id
+     * @param int $allocation vyzaduje mit vyplnene id
+     * @param DateTime $from
+     * @param DateTime $to
+     * @param string $description
+     * @param EState $state
      * @throws ProcessException
      */
-    public function editAllocation(Allocation $allocation): void
+    public function editAllocation(int $id,
+                                   int $allocation,
+                                   DateTime $from,
+                                   DateTime $to,
+                                   string $description,
+                                   EState $state): void
     {
-
+        $allocation = new Allocation($id, null, $allocation, $from, $to, $description, $state);
         try {
             $allocationId = $allocation->getId();
 
@@ -217,7 +235,7 @@ class ProjectUserAllocationFacade
 
             $this->validateAllocationPossibility($allocation, $userId, $storedAllocation);
 
-            $this->allocationRepository->saveAllocation($allocation->toDTO(), $projectUserId);
+            $this->allocationRepository->saveAllocation($allocation, $projectUserId);
 
             $this->transaction->commit();
         }
@@ -344,16 +362,7 @@ class ProjectUserAllocationFacade
 
     public function getAllocation(int $id): ?Allocation
     {
-        $allocationDTO = $this->allocationRepository->getAllocation($id);
-
-        if($allocationDTO)
-        {
-            return Allocation::createAllocation($allocationDTO);
-        }
-        else
-        {
-            return null;
-        }
+        return $this->allocationRepository->getAllocation($id);
     }
 
 

@@ -3,7 +3,7 @@ namespace App\Components\Project\ProjectUserAllocationGrid;
 
 
 use App\Components\Base\BaseGrid;
-use App\Model\Project\ProjectUser\EState;
+use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\User\Role\ERole;
 use App\Tools\Utils;

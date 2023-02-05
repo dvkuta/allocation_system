@@ -3,9 +3,9 @@
 namespace App\Model\Project\ProjectUser;
 
 
-use App\Model\DTO\ProjectUserDTO;
 use App\Model\Repository\Base\BaseRepository;
 use App\Model\Repository\Base\IProjectUserRepository;
+use App\Model\Repository\Domain\ProjectUser;
 use App\Model\User\UserRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
@@ -36,14 +36,14 @@ class ProjectUserRepository extends BaseRepository implements IProjectUserReposi
 
     /**
      * Přiřadí uživatele k projektu
-     * @param ProjectUserDTO $projectUserDTO
+     * @param ProjectUser $projectUserDTO
      * @return void
      */
-    public function saveUserToProject(ProjectUserDTO $projectUserDTO): void
+    public function saveUserToProject(ProjectUser $projectUser): void
     {
         $data = [
-            self::COL_USER_ID => $projectUserDTO->getUserId(),
-            self::COL_PROJECT_ID => $projectUserDTO->getProjectId(),
+            self::COL_USER_ID => $projectUser->getUserId(),
+            self::COL_PROJECT_ID => $projectUser->getProjectId(),
         ];
 
         $this->saveFiltered($data);

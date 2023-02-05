@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Model\Domain;
+namespace App\Model\Repository\Domain;
 
-use App\Model\DTO\AllocationDTO;
-use App\Model\Project\ProjectUser\EState;
+use App\Model\Project\ProjectUserAllocation\EState;
 use DateTime;
 
 /**
@@ -98,24 +97,6 @@ class Allocation
         $this->currentProjectName = $currentProjectName;
         $this->currentWorkerId = $currentWorkerId;
         $this->currentWorkerFullName = $currentWorkerFullName;
-    }
-
-    public static function createAllocation(AllocationDTO $allocationDTO): Allocation
-    {
-        return new Allocation($allocationDTO->getId(), $allocationDTO->getUserProjectMembershipId(),
-            $allocationDTO->getAllocation(), $allocationDTO->getFrom(), $allocationDTO->getTo(),
-            $allocationDTO->getDescription(), $allocationDTO->getState(), $allocationDTO->getCurrentProjectId(),
-            $allocationDTO->getCurrentProjectName(), $allocationDTO->getCurrentWorkerId(),
-        $allocationDTO->getCurrentWorkerFullName());
-    }
-
-    public function toDTO(): AllocationDTO
-    {
-        return new AllocationDTO($this->getId(), $this->getUserProjectMembershipId(),
-            $this->getAllocation(), $this->getFrom(), $this->getTo(),
-            $this->getDescription(), $this->getState(), $this->getCurrentProjectId(),
-            $this->getCurrentProjectName(), $this->getCurrentWorkerId(),
-            $this->getCurrentWorkerFullName());
     }
 
     /**

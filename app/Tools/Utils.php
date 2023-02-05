@@ -1,9 +1,6 @@
 <?php
 namespace App\Tools;
 
-use App\Model\Project\ProjectUser\EState;
-use UnitEnum;
-
 /**
  * Trida s pomocnymi funkcionalitami
  */

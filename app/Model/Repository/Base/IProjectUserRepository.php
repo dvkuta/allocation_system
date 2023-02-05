@@ -3,7 +3,7 @@
 namespace App\Model\Repository\Base;
 
 
-use App\Model\DTO\ProjectUserDTO;
+use App\Model\Repository\Domain\ProjectUser;
 use Nette\Database\Table\Selection;
 
 /**
@@ -16,10 +16,10 @@ interface IProjectUserRepository
 
     /**
      * Přiřadí uživatele k projektu
-     * @param ProjectUserDTO $projectUserDTO
+     * @param ProjectUser $projectUser
      * @return void
      */
-    public function saveUserToProject(ProjectUserDTO $projectUserDTO): void;
+    public function saveUserToProject(ProjectUser $projectUser): void;
 
     /**
      * Vrati pole uzivatelu v roli pracovnik, kteri momentalne nepracuji na danem projektu

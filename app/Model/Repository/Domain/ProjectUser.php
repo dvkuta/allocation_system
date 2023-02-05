@@ -1,10 +1,10 @@
 <?php
-namespace App\Model\DTO;
+namespace App\Model\Repository\Domain;
 
 /**
  * Data value object pro přiřazení uživatele k projektu. Slouží pro snazší předávání dat mezi metodami
  */
-class ProjectUserDTO
+class ProjectUser
 {
 
     private int $userId;

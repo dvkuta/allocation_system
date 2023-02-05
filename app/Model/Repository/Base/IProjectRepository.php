@@ -3,7 +3,7 @@
 namespace App\Model\Repository\Base;
 
 
-use App\Model\DTO\ProjectDTO;
+use App\Model\Repository\Domain\Project;
 use Nette\Database\Table\Selection;
 
 /**
@@ -14,9 +14,9 @@ interface IProjectRepository
 
     public function getTableName(): string;
 
-    public function saveProject(ProjectDTO $project);
+    public function saveProject(Project $project);
 
-    public function getProject(int $id): ?ProjectDTO;
+    public function getProject(int $id): ?Project;
 
     /**
      * Pokud je zadane ID, vrati pouze selekci projektu daneho projekt managera

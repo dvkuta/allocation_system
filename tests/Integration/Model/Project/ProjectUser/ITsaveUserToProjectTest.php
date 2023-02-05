@@ -3,7 +3,7 @@
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
 
-use App\Model\Domain\ProjectUser;
+use App\Model\Repository\Domain\ProjectUser;
 use Tester\Assert;
 
 class ITsaveUserToProjectTest extends Tester\TestCase

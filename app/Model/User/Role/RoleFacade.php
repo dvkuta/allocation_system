@@ -10,7 +10,7 @@ use Nette\Database\Explorer;
 
 
 /**
- * Přístup k datům z tabulky Role
+ * Service vrstva pro role
  */
 class RoleFacade
 {
