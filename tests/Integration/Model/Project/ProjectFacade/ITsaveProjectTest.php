@@ -25,24 +25,20 @@ class ITsaveProjectTest extends Tester\TestCase
         $dateFrom = $dateFrom->setDate(2023,3,1);
         $dateTo = $dateTo->setDate(2023,3,31);
 
-        $project = new Project(2, 'Projekt one',
-            61,'', $dateFrom,
-            $dateTo, 'popis nejaky');
 
-        Assert::noError(function () use ($project) {
-            $this->facade->saveProject($project);
+        Assert::noError(function () use ($dateTo, $dateFrom) {
+            $this->facade->saveProject(2, 'Projekt one',
+                61,'', $dateFrom,
+                $dateTo, 'popis nejaky');
         });
     }
 
     public function testCreate()
     {
-
-        $project = new Project(null, 'Projekt oneZ',
-            61,'', new DateTime(),
-            new DateTime(), 'popis nejaky');
-
-        Assert::noError(function () use ($project) {
-            $this->facade->saveProject($project);
+        Assert::noError(function () {
+            $this->facade->saveProject(null, 'Projekt oneZ',
+                61,'', new DateTime(),
+                new DateTime(), 'popis nejaky');
         });
     }
 

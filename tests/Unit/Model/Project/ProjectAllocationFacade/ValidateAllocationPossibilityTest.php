@@ -5,6 +5,7 @@ $container = require __DIR__ . '/../../../../bootstrap.php';
 use App\Model\DTO\AllocationDTO;
 use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
+use App\Model\Repository\Domain\Allocation;
 use Tester\Assert;
 
 class ValidateAllocationPossibilityTest extends Tester\TestCase
@@ -51,7 +52,7 @@ class ValidateAllocationPossibilityTest extends Tester\TestCase
 
         $user_id = 5;
         $projectMemberships = [5=>5, 4=>4];
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             3,5,
             5,
             $date1,
@@ -91,7 +92,7 @@ class ValidateAllocationPossibilityTest extends Tester\TestCase
 
         $user_id = 5;
         $projectMemberships = [5=>5, 4=>4];
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             3,5,
             25,
             $date1,

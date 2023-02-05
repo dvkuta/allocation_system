@@ -19,21 +19,19 @@ class ITcreateUserTest extends Tester\TestCase
     public function testSuccess()
     {
 
-        $user = new User(null,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
-        );
+
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
             \App\Model\User\Role\ERole::project_manager->value => \App\Model\User\Role\ERole::project_manager->value];
-        $user->setRoles($roles);
 
-        Assert::noError(function () use ($user) {
-            $this->facade->createUser($user);
+        Assert::noError(function () use ($roles) {
+            $this->facade->createUser('Lada',
+                'Horak',
+                'lh@t.cz',
+                'lada',
+                'KIV',
+                'heslo',
+            $roles);
         });
     }
 

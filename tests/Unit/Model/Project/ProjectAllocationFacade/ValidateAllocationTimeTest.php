@@ -6,6 +6,8 @@ use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
+use App\Model\Repository\Domain\Allocation;
+use App\Model\Repository\Domain\Project;
 use Tester\Assert;
 
 class ValidateAllocationTimeTest extends Tester\TestCase
@@ -51,10 +53,10 @@ class ValidateAllocationTimeTest extends Tester\TestCase
         $date1->setDate(2023,1,30);
         $date2->setDate(2023,1,31);
 
-        $project = new ProjectDTO(5, 'Projekt one',
+        $project = new Project(5, 'Projekt one',
             3,'', $date1,
             $date2, 'popis nejaky');
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             3,5,
             4,
             $date1,
@@ -89,10 +91,10 @@ class ValidateAllocationTimeTest extends Tester\TestCase
         $date3->setDate(2023,1,30);
         $date4->setDate(2023,1,31);
 
-        $project = new ProjectDTO(5, 'Projekt one',
+        $project = new Project(5, 'Projekt one',
             3,'', $date3,
             $date4, 'popis nejaky');
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             3,5,
             4,
             $date1,
@@ -126,10 +128,10 @@ class ValidateAllocationTimeTest extends Tester\TestCase
         $date3->setDate(2023,1,30);
         $date4->setDate(2023,1,31);
 
-        $project = new ProjectDTO(5, 'Projekt one',
+        $project = new Project(5, 'Projekt one',
             3,'', $date3,
             $date4, 'popis nejaky');
-        $allocation = new AllocationDTO(
+        $allocation = new Allocation(
             3,5,
             4,
             $date1,

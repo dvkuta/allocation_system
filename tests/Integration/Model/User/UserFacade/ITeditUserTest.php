@@ -19,21 +19,19 @@ class ITeditUserTest extends Tester\TestCase
     public function testSuccess()
     {
 
-        $user = new User(58,
-            'Jarda',
-            'Blatníček',
-            'aa@ss.cz',
-            'jarda',
-            'KIV',
-            '1234'
-        );
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
             \App\Model\User\Role\ERole::project_manager->value => \App\Model\User\Role\ERole::project_manager->value];
-        $user->setRoles($roles);
 
-        Assert::noError(function () use ($user) {
-            $this->facade->editUser($user);
+        Assert::noError(function () use ($roles) {
+            $this->facade->editUser(58,
+                'Jarda',
+                'Blatníček',
+                'aa@ss.cz',
+                'jarda',
+                'KIV',
+                '1234',
+            $roles);
         });
     }
 

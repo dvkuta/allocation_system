@@ -33,10 +33,10 @@ class ProjectUserFacade
     /**
      * Uloží uživatele do existujícího projektu.
      * @param int $userId
-     * @param int $projectId
+     * @param int|null $projectId
      * @throws ProcessException Projekt neexistuje, nebo chyba databáze
      */
-    public function saveUserToProject(int $userId, int $projectId): void
+    public function saveUserToProject(int $userId, ?int $projectId): void
     {
 
         $projectUser = new ProjectUser($userId, $projectId);

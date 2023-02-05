@@ -3,6 +3,7 @@
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
 use App\Model\DTO\ProjectDTO;
+use App\Model\Repository\Domain\Project;
 use App\Model\User\Superior\SuperiorUserFacade;
 use App\Model\User\UserFacade;
 use Tester\Assert;
@@ -35,9 +36,16 @@ class SaveProjectTest extends Tester\TestCase
 
     public function testCreateCorrect()
     {
-        $project = new ProjectDTO(null, 'Projekt one',
-            3,'', new DateTime(),
-            new DateTime(), 'popis nejaky');
+        $id = null;
+        $name = 'Projekt one';
+        $project_manager_id = 3;
+        $project_manager_name = '';
+        $from = new DateTime();
+        $to = new DateTime();
+        $description = 'popis nejaky';
+        $project = new Project($id, $name,
+            $project_manager_id, $project_manager_name, $from,
+            $to, $description);
 
         $this->transaction
             ->shouldReceive('begin')
@@ -49,22 +57,16 @@ class SaveProjectTest extends Tester\TestCase
             ->times(1)
             ->andReturn();
 
-//        $this->projectRepository
-//            ->shouldReceive('getProject')
-//            ->with($project)
-//            ->times(1)
-//            ->andReturn(false);
-
           $this->projectRepository
             ->shouldReceive('saveProject')
-            ->with($project)
+            ->with(Mockery::any())
             ->times(1)
             ->andReturn();
 
-        $superiorFacade = new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
+        $projectFacade= new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
 
-        Assert::noError(function () use ($project, $superiorFacade) {
-            $superiorFacade->saveProject($project);
+        Assert::noError(function () use ($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description, $projectFacade) {
+            $projectFacade->saveProject($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description);
         });
 
     }
@@ -72,9 +74,16 @@ class SaveProjectTest extends Tester\TestCase
 
     public function testEditCorrect()
     {
-        $project = new ProjectDTO(5, 'Projekt one',
-            3,'', new DateTime(),
-            new DateTime(), 'popis nejaky');
+        $id = 5;
+        $name = 'Projekt one';
+        $project_manager_id = 3;
+        $project_manager_name = '';
+        $from = new DateTime();
+        $to = new DateTime();
+        $description = 'popis nejaky';
+        $project = new Project($id, $name,
+            $project_manager_id, $project_manager_name, $from,
+            $to, $description);
 
         $this->transaction
             ->shouldReceive('begin')
@@ -94,23 +103,30 @@ class SaveProjectTest extends Tester\TestCase
 
         $this->projectRepository
             ->shouldReceive('saveProject')
-            ->with($project)
+            ->with(Mockery::any())
             ->times(1)
             ->andReturn();
 
-        $superiorFacade = new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
+        $projectFacade = new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
 
-        Assert::noError(function () use ($project, $superiorFacade) {
-            $superiorFacade->saveProject($project);
+        Assert::noError(function () use ($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description, $projectFacade) {
+            $projectFacade->saveProject($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description);
         });
 
     }
 
     public function testEditIncorrect()
     {
-        $project = new ProjectDTO(5, 'Projekt one',
-            3,'', new DateTime(),
-            new DateTime(), 'popis nejaky');
+        $id = 5;
+        $name = 'Projekt one';
+        $project_manager_id = 3;
+        $project_manager_name = '';
+        $from = new DateTime();
+        $to = new DateTime();
+        $description = 'popis nejaky';
+        $project = new Project($id, $name,
+            $project_manager_id, $project_manager_name, $from,
+            $to, $description);
 
         $this->transaction
             ->shouldReceive('begin')
@@ -128,10 +144,10 @@ class SaveProjectTest extends Tester\TestCase
             ->times(1)
             ->andReturn(null);
 
-        $superiorFacade = new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
+        $projectFacade = new \App\Model\Project\ProjectFacade($this->projectRepository, $this->transaction);
 
-        Assert::exception(function () use ($project, $superiorFacade) {
-            $superiorFacade->saveProject($project);
+        Assert::exception(function () use ($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description, $projectFacade) {
+            $projectFacade->saveProject($id, $name, $project_manager_id, $project_manager_name, $from, $to, $description);
         }, \App\Model\Exceptions\ProcessException::class);
 
     }

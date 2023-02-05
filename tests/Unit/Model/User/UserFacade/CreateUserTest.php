@@ -3,6 +3,7 @@
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
 use App\Model\DTO\UserDTO;
+use App\Model\Repository\Domain\User;
 use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserFacade;
 use Tester\Assert;
@@ -41,13 +42,21 @@ class CreateUserTest extends Tester\TestCase
 
     public function testCreateUser()
     {
-        $user = new UserDTO(null,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $name = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+
+
+        $user = new User(null,
+            $name,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
@@ -81,12 +90,12 @@ class CreateUserTest extends Tester\TestCase
             ->times(1)
             ->andReturn($user->getPassword());
 
-        $savedUser = new UserDTO(5,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
+        $savedUser = new User(5,
+            $name,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
             ''
         );
         $savedUser->setRoles($roles);
@@ -95,7 +104,7 @@ class CreateUserTest extends Tester\TestCase
 
         $this->userRepository
             ->shouldReceive('saveUser')
-            ->with($user)
+            ->with(Mockery::any())
             ->times(1)
             ->andReturn($savedUser);
 
@@ -107,20 +116,28 @@ class CreateUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::noError(function () use ($user, $userFacade) {
-            $userFacade->createUser($user);
+        Assert::noError(function () use ($roles, $email, $login, $workplace, $password, $lastname, $name, $userFacade) {
+            $userFacade->createUser($name, $lastname, $email, $login, $workplace, $password, $roles );
         });
     }
 
     public function testCreateUserLoginError()
     {
-        $user = new UserDTO(null,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $name = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+
+
+        $user = new User(null,
+            $name,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
@@ -146,20 +163,28 @@ class CreateUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::exception(function () use ($user, $userFacade) {
-            $userFacade->createUser($user);
+        Assert::exception(function () use ($password, $roles, $workplace, $login, $email, $name, $lastname, $userFacade) {
+            $userFacade->createUser($name, $lastname, $email, $login, $workplace, $password, $roles);
         }, \App\Model\Exceptions\ProcessException::class);
     }
 
     public function testCreateUserEmailError()
     {
-        $user = new UserDTO(null,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $name = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+
+
+        $user = new User(null,
+            $name,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
@@ -191,8 +216,8 @@ class CreateUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::exception(function () use ($user, $userFacade) {
-            $userFacade->createUser($user);
+        Assert::exception(function () use ($password, $roles, $workplace, $login, $email, $name, $lastname, $userFacade) {
+            $userFacade->createUser($name, $lastname, $email, $login, $workplace, $password, $roles);
         }, \App\Model\Exceptions\ProcessException::class);
     }
 

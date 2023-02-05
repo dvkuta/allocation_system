@@ -3,6 +3,7 @@
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
 use App\Model\DTO\UserDTO;
+use App\Model\Repository\Domain\User;
 use App\Model\User\Role\UserRoleRepository;
 use App\Model\User\UserFacade;
 use Tester\Assert;
@@ -41,16 +42,23 @@ class EditUserTest extends Tester\TestCase
 
     public function testEditUser()
     {
-        $user = new UserDTO(5,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $firstname = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+        $id = 5;
+        $user = new User($id,
+            $firstname,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
-        $updatedUser = new UserDTO(5,
+        $updatedUser = new User(5,
             'Lada',
             'Horak',
             'lhh@t.cz',
@@ -61,7 +69,7 @@ class EditUserTest extends Tester\TestCase
 
         $roles = [\App\Model\User\Role\ERole::worker->value => \App\Model\User\Role\ERole::worker->value,
             \App\Model\User\Role\ERole::project_manager->value => \App\Model\User\Role\ERole::project_manager->value];
-        $user->setRoles($roles);
+
         $updatedUser->setRoles($roles);
 
         $this->transaction
@@ -102,7 +110,7 @@ class EditUserTest extends Tester\TestCase
 
         $this->userRepository
             ->shouldReceive('updateUser')
-            ->with($user)
+            ->with(Mockery::any())
             ->times(1)
             ->andReturn($user);
 
@@ -114,20 +122,27 @@ class EditUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::noError(function () use ($user, $userFacade) {
-            $userFacade->editUser($user);
+        Assert::noError(function () use ($roles, $password, $workplace, $login, $email, $lastname, $firstname, $id, $userFacade) {
+            $userFacade->editUser($id, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
         });
     }
 
     public function testEditUserFailure()
     {
-        $user = new UserDTO(5,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $firstname = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+        $id = 5;
+        $user = new User($id,
+            $firstname,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
         $updatedUser = null;
@@ -154,23 +169,30 @@ class EditUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::exception(function () use ($user, $userFacade) {
-            $userFacade->editUser($user);
+        Assert::exception(function () use ($roles, $password, $workplace, $login, $email, $lastname, $firstname, $id, $userFacade) {
+            $userFacade->editUser($id, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
         }, \App\Model\Exceptions\ProcessException::class);
     }
 
     public function testEditUserFailure_1()
     {
-        $user = new UserDTO(5,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $firstname = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+        $id = 5;
+        $user = new User($id,
+            $firstname,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
-        $updatedUser = new UserDTO(5,
+        $updatedUser = new User(5,
             'Lada',
             'Horak',
             'lhh@t.cz',
@@ -208,23 +230,30 @@ class EditUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::exception(function () use ($user, $userFacade) {
-            $userFacade->editUser($user);
-        },\App\Model\Exceptions\ProcessException::class);
+        Assert::exception(function () use ($roles, $password, $workplace, $login, $email, $lastname, $firstname, $id, $userFacade) {
+            $userFacade->editUser($id, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
+        }, \App\Model\Exceptions\ProcessException::class);
     }
 
     public function testEditUserFailure_2()
     {
-        $user = new UserDTO(5,
-            'Lada',
-            'Horak',
-            'lh@t.cz',
-            'lada',
-            'KIV',
-            'heslo'
+        $firstname = 'Lada';
+        $lastname = 'Horak';
+        $email = 'lh@t.cz';
+        $login = 'lada';
+        $workplace = 'KIV';
+        $password = 'heslo';
+        $id = 5;
+        $user = new User($id,
+            $firstname,
+            $lastname,
+            $email,
+            $login,
+            $workplace,
+            $password
         );
 
-        $updatedUser = new UserDTO(5,
+        $updatedUser = new User(5,
             'Lada',
             'Horak',
             'lhh@t.cz',
@@ -267,9 +296,9 @@ class EditUserTest extends Tester\TestCase
 
         $userFacade = new UserFacade($this->userRepository, $this->transaction, $this->userRoleRepository, $this->passwords);
 
-        Assert::exception(function () use ($user, $userFacade) {
-            $userFacade->editUser($user);
-        },\App\Model\Exceptions\ProcessException::class);
+        Assert::exception(function () use ($roles, $password, $workplace, $login, $email, $lastname, $firstname, $id, $userFacade) {
+            $userFacade->editUser($id, $firstname, $lastname, $email, $login, $workplace, $password, $roles);
+        }, \App\Model\Exceptions\ProcessException::class);
     }
 
 

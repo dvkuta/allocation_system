@@ -21,10 +21,8 @@ class ITsaveUserToProjectTest extends Tester\TestCase
     public function testSave()
     {
 
-        $projectUser = new ProjectUser(62, 6);
-
-        Assert::noError(function () use ($projectUser) {
-            $this->facade->saveUserToProject($projectUser);
+        Assert::noError(function () {
+            $this->facade->saveUserToProject(62, 6);
         });
     }
 

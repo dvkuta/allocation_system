@@ -26,16 +26,14 @@ class ITeditAllocationTest extends Tester\TestCase
         $dateFrom = $dateFrom->setDate(2023,3,1);
         $dateTo = $dateTo->setDate(2023,3,31);
 
-        $allocation = new Allocation(
-            10,2,
-            1,
-            $dateFrom,
-            $dateTo,
-            "popis",
-            EState::from('active'));
 
-        Assert::noError(function () use ($allocation) {
-             $this->facade->editAllocation($allocation);
+        Assert::noError(function () use ($dateTo, $dateFrom) {
+             $this->facade->editAllocation(10,
+                 1,
+                 $dateFrom,
+                 $dateTo,
+                 "popis",
+                 EState::from('active'));
         });
     }
 

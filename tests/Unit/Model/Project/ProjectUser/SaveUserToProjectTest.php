@@ -4,6 +4,7 @@ $container = require __DIR__ . '/../../../../bootstrap.php';
 
 use App\Model\DTO\ProjectDTO;
 use App\Model\DTO\ProjectUserDTO;
+use App\Model\Repository\Domain\ProjectUser;
 use App\Model\User\Superior\SuperiorUserFacade;
 use App\Model\User\UserFacade;
 use Tester\Assert;
@@ -37,7 +38,9 @@ class SaveUserToProjectTest extends Tester\TestCase
     public function testSaveCorrect()
     {
 
-        $projectUser = new ProjectUserDTO(5, 3);
+        $userId = 5;
+        $projectId = 3;
+        $projectUser = new ProjectUser($userId, $projectId);
 
         $this->transaction
             ->shouldReceive('begin')
@@ -57,14 +60,14 @@ class SaveUserToProjectTest extends Tester\TestCase
 
         $this->projectUserRepository
             ->shouldReceive('saveUserToProject')
-            ->with($projectUser)
+            ->with(Mockery::any())
             ->times(1)
             ->andReturn();
 
         $projectUserFacade = new \App\Model\Project\ProjectUser\ProjectUserFacade( $this->transaction, $this->projectUserRepository);
 
-        Assert::noError(function () use ($projectUser, $projectUserFacade) {
-            $projectUserFacade->saveUserToProject($projectUser);
+        Assert::noError(function () use ($projectId, $userId, $projectUserFacade) {
+            $projectUserFacade->saveUserToProject($userId, $projectId);
         });
 
     }
@@ -72,13 +75,15 @@ class SaveUserToProjectTest extends Tester\TestCase
     public function testSaveFailure()
     {
 
-        $projectUser = new ProjectUserDTO(5, null);
+        $userId = 5;
+        $projectId = null;
+        $projectUser = new ProjectUser($userId, $projectId);
 
 
         $projectUserFacade = new \App\Model\Project\ProjectUser\ProjectUserFacade( $this->transaction, $this->projectUserRepository);
 
-        Assert::exception(function () use ($projectUser, $projectUserFacade) {
-            $projectUserFacade->saveUserToProject($projectUser);
+        Assert::exception(function () use ($userId, $projectId, $projectUserFacade) {
+            $projectUserFacade->saveUserToProject($userId, $projectId);
         },\App\Model\Exceptions\ProcessException::class);
 
     }
@@ -87,7 +92,9 @@ class SaveUserToProjectTest extends Tester\TestCase
     public function testSaveFailure_2()
     {
 
-        $projectUser = new ProjectUserDTO(5, 3);
+        $userId = 5;
+        $projectId = 3;
+        $projectUser = new ProjectUser($userId, $projectId);
 
         $this->transaction
             ->shouldReceive('begin')
@@ -107,9 +114,9 @@ class SaveUserToProjectTest extends Tester\TestCase
 
         $projectUserFacade = new \App\Model\Project\ProjectUser\ProjectUserFacade( $this->transaction, $this->projectUserRepository);
 
-        Assert::exception(function () use ($projectUser, $projectUserFacade) {
-            $projectUserFacade->saveUserToProject($projectUser);
-        }, \App\Model\Exceptions\ProcessException::class);
+        Assert::exception(function () use ($userId, $projectId, $projectUserFacade) {
+            $projectUserFacade->saveUserToProject($userId, $projectId);
+        },\App\Model\Exceptions\ProcessException::class);
 
     }
 

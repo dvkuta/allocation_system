@@ -41,8 +41,6 @@ final class ProjectPresenter extends BasePresenter
     private IProjectUserGridFactory $projectUserGridFactory;
     private IProjectUserAllocationGridFactory $allocationGridFactory;
     private IProjectUserAllocationFormFactory $allocationFormFactory;
-    private IProjectRepository $projectRepository;
-    private IProjectUserAllocationRepository $projectUserAllocationRepository;
     private ProjectFacade $projectFacade;
     private ProjectUserAllocationFacade $projectUserAllocationFacade;
     private PermissionFacade $permissionFacade;
@@ -54,8 +52,6 @@ final class ProjectPresenter extends BasePresenter
         IProjectUserGridFactory $IProjectUserGridFactory,
         IProjectUserAllocationGridFactory $allocationGridFactory,
         IProjectUserAllocationFormFactory $allocationFormFactory,
-        IProjectRepository $projectRepository,
-        IProjectUserAllocationRepository $projectUserAllocationRepository,
         ProjectFacade $projectFacade,
         ProjectUserAllocationFacade $projectUserAllocationFacade,
         PermissionFacade $permissionFacade,
@@ -70,8 +66,6 @@ final class ProjectPresenter extends BasePresenter
         $this->projectUserGridFactory = $IProjectUserGridFactory;
         $this->allocationGridFactory = $allocationGridFactory;
         $this->allocationFormFactory = $allocationFormFactory;
-        $this->projectRepository = $projectRepository;
-        $this->projectUserAllocationRepository = $projectUserAllocationRepository;
         $this->projectFacade = $projectFacade;
         $this->projectUserAllocationFacade = $projectUserAllocationFacade;
         $this->permissionFacade = $permissionFacade;

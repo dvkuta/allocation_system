@@ -26,18 +26,12 @@ class ITcreateAllocationTest extends Tester\TestCase
         $dateFrom = $dateFrom->setDate(2023,3,1);
         $dateTo = $dateTo->setDate(2023,3,31);
 
-        $allocation = new Allocation(
-            null,2  ,
-            9,
-            $dateFrom,
-            $dateTo,
-            "popis",
-            EState::from('active'));
-        $allocation->setCurrentProjectId(2);
-        $allocation->setCurrentWorkerId(58);
-
-        Assert::noError(function () use ($allocation) {
-            $this->facade->createAllocation($allocation);
+        Assert::noError(function () use ($dateTo, $dateFrom) {
+            $this->facade->createAllocation(9,
+                $dateFrom,
+                $dateTo,
+                "popis",
+                EState::from('active'),2,58);
         });
     }
 

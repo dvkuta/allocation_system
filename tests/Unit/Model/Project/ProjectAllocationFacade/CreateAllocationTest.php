@@ -6,6 +6,8 @@ use App\Model\DTO\AllocationDTO;
 use App\Model\DTO\ProjectDTO;
 use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
+use App\Model\Repository\Domain\Allocation;
+use App\Model\Repository\Domain\Project;
 use Tester\Assert;
 
 class CreateAllocationTest extends Tester\TestCase
@@ -50,17 +52,21 @@ class CreateAllocationTest extends Tester\TestCase
         $date1->setDate(2023,1,30);
         $date2->setDate(2023,1,31);
 
-        $user_id = 5;
         $projectMemberships = [5=>5, 4=>4];
-        $allocation = new AllocationDTO(
+        $allocationNumber = 5;
+        $description = "popis";
+        $state = EState::from('active');
+        $allocation = new Allocation(
             3,5,
-            5,
+            $allocationNumber,
             $date1,
             $date2,
-            "popis",
-            EState::from('active'));
-        $allocation->setCurrentProjectId(5);
-        $allocation->setCurrentWorkerId(5);
+            $description,
+            $state);
+        $currentWorkerId = 5;
+        $currentProjectId = 5;
+        $allocation->setCurrentProjectId($currentProjectId);
+        $allocation->setCurrentWorkerId($currentWorkerId);
         $currentWorkload = 20;
 
         $this->transaction
@@ -81,7 +87,7 @@ class CreateAllocationTest extends Tester\TestCase
             ->times(1)
             ->andReturn($projectUserId);
 
-        $project = new ProjectDTO(5, 'Projekt one',
+        $project = new Project(5, 'Projekt one',
             3,'', $date1,
             $date2, 'popis nejaky');
 
@@ -94,7 +100,7 @@ class CreateAllocationTest extends Tester\TestCase
         //validate allocation possibility
         $this->projectUserRepository
             ->shouldReceive('getAllProjectMembershipIds')
-            ->with($user_id)
+            ->with(5)
             ->times(1)
             ->andReturn($projectMemberships);
 
@@ -108,14 +114,14 @@ class CreateAllocationTest extends Tester\TestCase
         //saveAllocation
         $this->allocationRepository
             ->shouldReceive('saveAllocation')
-            ->with($allocation, $projectUserId)
+            ->with(Mockery::any(), $projectUserId)
             ->times(1)
             ->andReturn();
 
         $allocationFacade = new ProjectUserAllocationFacade($this->projectUserRepository, $this->allocationRepository, $this->projectRepository, $this->superiorUserRepository, $this->transaction);
 
-        Assert::noError(function () use ($allocation, $user_id, $allocationFacade) {
-            $allocationFacade->createAllocation($allocation);
+        Assert::noError(function () use ($currentWorkerId, $currentProjectId, $state, $description, $date1, $date2, $allocationNumber, $allocationFacade) {
+            $allocationFacade->createAllocation($allocationNumber, $date1, $date2, $description, $state, $currentProjectId, $currentWorkerId);
         });
 
     }
