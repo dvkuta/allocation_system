@@ -8,6 +8,9 @@ use App\Model\Repository\Domain\ProjectUser;
 use App\Model\Repository\Domain\User;
 use DateTime;
 
+/**
+ * Trida slouzici pro mapovani hodnot na domenove objekty
+ */
 class Mapper
 {
     /**

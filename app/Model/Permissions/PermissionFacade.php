@@ -5,6 +5,9 @@ use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\User\Role\ERole;
 use Nette\Security\User;
 
+/**
+ * Facade pro overeni opravneni na jednotlive akce
+ */
 class PermissionFacade
 {
 
