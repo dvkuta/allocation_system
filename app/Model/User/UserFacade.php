@@ -156,6 +156,14 @@ class UserFacade
     /**
      * Upravi uzivatele v databazi a overi, jestli neexistuje duplicita emailu, loginu
      * Pokud uz existuje, tak ho upravi
+     * @param int $id
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     * @param string $login
+     * @param string $workplace
+     * @param string $password
+     * @param array $roles
      * @throws ProcessException obsahujici kod chybove hlasky pro translator
      */
     public function editUser(int $id, string $firstname, string $lastname, string $email,

@@ -2,8 +2,7 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\ProjectDTO;
-use App\Model\DTO\ProjectUserDTO;
+
 use App\Model\Repository\Domain\ProjectUser;
 use App\Model\User\Superior\SuperiorUserFacade;
 use App\Model\User\UserFacade;

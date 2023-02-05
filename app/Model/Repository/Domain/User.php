@@ -2,7 +2,7 @@
 namespace App\Model\Repository\Domain;
 
 /**
- * Data value object pro uživatele. Slouží pro snazší předávání dat mezi metodami
+ * Reprezentace User, pro repository
  */
 class User
 {

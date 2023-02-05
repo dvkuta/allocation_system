@@ -2,7 +2,6 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\UserDTO;
 use Tester\Assert;
 
 class ITsaveTest extends Tester\TestCase

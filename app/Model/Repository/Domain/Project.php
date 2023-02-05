@@ -5,7 +5,7 @@ namespace App\Model\Repository\Domain;
 use DateTime;
 
 /**
- * Data value object pro projekt. Slouží pro snazší předávání dat mezi metodami
+ * Reprezentace projektu, pro repository
  */
 class Project
 {

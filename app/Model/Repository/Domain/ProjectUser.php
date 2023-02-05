@@ -2,7 +2,7 @@
 namespace App\Model\Repository\Domain;
 
 /**
- * Data value object pro přiřazení uživatele k projektu. Slouží pro snazší předávání dat mezi metodami
+ * Reprezentace projectUser, pro repository
  */
 class ProjectUser
 {

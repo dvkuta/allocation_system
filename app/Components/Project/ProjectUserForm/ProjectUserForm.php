@@ -7,7 +7,6 @@ use App\Model\Exceptions\ProcessException;
 use App\Model\Project\ProjectFacade;
 use App\Model\Project\ProjectUser\ProjectUserFacade;
 use App\Model\Repository\Domain\Project;
-use App\Model\Repository\Domain\ProjectUser;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\BootstrapRenderer;
 use Contributte\FormsBootstrap\Enums\RenderMode;

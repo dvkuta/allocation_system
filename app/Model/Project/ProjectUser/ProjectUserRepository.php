@@ -36,7 +36,7 @@ class ProjectUserRepository extends BaseRepository implements IProjectUserReposi
 
     /**
      * Přiřadí uživatele k projektu
-     * @param ProjectUser $projectUserDTO
+     * @param ProjectUser $projectUser
      * @return void
      */
     public function saveUserToProject(ProjectUser $projectUser): void

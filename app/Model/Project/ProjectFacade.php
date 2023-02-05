@@ -33,6 +33,13 @@ class ProjectFacade
 
     /**
      * Uloží stav projektu do databáze, tj pokud už existuje, tak ho upraví.
+     * @param int|null $id
+     * @param string $name
+     * @param int $project_manager_id
+     * @param string $project_manager_name
+     * @param DateTime $from
+     * @param DateTime|null $to
+     * @param string $description
      * @throws ProcessException uložení selže, vrací identifikátor pro Translator
      */
     public function saveProject(?int      $id,

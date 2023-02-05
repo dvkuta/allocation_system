@@ -2,7 +2,7 @@
 
 $container = require __DIR__ . '/../../../../bootstrap.php';
 
-use App\Model\DTO\AllocationDTO;
+
 use App\Model\Project\ProjectUserAllocation\EState;
 use App\Model\Project\ProjectUserAllocation\ProjectUserAllocationFacade;
 use App\Model\Repository\Domain\Allocation;

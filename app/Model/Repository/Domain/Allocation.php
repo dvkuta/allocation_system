@@ -6,7 +6,7 @@ use App\Model\Project\ProjectUserAllocation\EState;
 use DateTime;
 
 /**
- * Data value object pro alokaci pracovníka. Slouží pro snazší předávání dat mezi metodami
+ * Reprezentace alokace, pro repository
  */
 class Allocation
 {

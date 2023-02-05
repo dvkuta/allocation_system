@@ -4,7 +4,6 @@ namespace App\Components\User\UserForm;
 
 use App\Components\Base\BaseComponent;
 use App\Model\Exceptions\ProcessException;
-use App\Model\Repository\Domain\User;
 use App\Model\User\Role\RoleFacade;
 use App\Model\User\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
